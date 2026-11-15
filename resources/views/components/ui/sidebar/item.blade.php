@@ -9,18 +9,26 @@
     External (`external`): opens in a new tab (rel noopener noreferrer), is never active,
     and shows the kit's external affordance: a 14px arrow-up-right after the label and
     "(opens in new tab)" for screen readers (the rail's name says it too).
+    In-app links use wire:navigate when the sidebar's `navigate` is on (the default):
+    the main region cross-fades and the persisted sidebar keeps its scroll and state.
+    `reload` makes one item an ordinary link (a full page load), for destinations
+    outside the shell's layout. External and disabled items never navigate in place.
+    An item whose `active` is left to the href (null) is re-marked on the client after
+    each wire:navigate (data-nav-match, resources/js/navigate.js).
     Props: href, icon, label (or the slot), active (null: SidebarTones::isActive(href)),
     count, badge, badgeVariant (neutral), new, disabled, reason, nested (inside a group),
-    external.
+    external, reload.
 --}}
-@aware(['variant' => 'light'])
-@props(['href' => '#', 'icon' => null, 'label' => null, 'active' => null, 'count' => null, 'badge' => null, 'badgeVariant' => 'neutral', 'new' => false, 'disabled' => false, 'reason' => null, 'nested' => false, 'external' => false])
+@aware(['variant' => 'light', 'navigate' => true])
+@props(['href' => '#', 'icon' => null, 'label' => null, 'active' => null, 'count' => null, 'badge' => null, 'badgeVariant' => 'neutral', 'new' => false, 'disabled' => false, 'reason' => null, 'nested' => false, 'external' => false, 'reload' => false])
 
 @php
     use TallUiKit\Support\SidebarTones;
 
     $tone = SidebarTones::tones($variant);
     $text = $label ?? trim(strip_tags((string) $slot));
+    $matched = $active === null && ! $disabled && ! $external && $href !== '#';
+    $navigates = $navigate && ! $reload && ! $disabled && ! $external && $href !== '#';
     $active ??= ! $disabled && ! $external && $href !== '#' && SidebarTones::isActive($href);
     $reasonId = $disabled && $reason ? 'nav-reason-'.\Illuminate\Support\Str::slug($text).'-'.substr(md5($href.$text), 0, 6) : null;
     $tip = trim($text.($count !== null ? ' '.number_format($count) : ''));
@@ -31,6 +39,8 @@
     <a
         @if ($disabled) aria-disabled="true" role="link" tabindex="0" @if ($reasonId) aria-describedby="{{ $reasonId }}" @endif @else href="{{ $href }}" @endif
         @if ($external && ! $disabled) target="_blank" rel="noopener noreferrer" data-nav-external @endif
+        @if ($navigates) wire:navigate @endif
+        @if ($matched) data-nav-match @endif
         x-ref="link"
         @if ($active) aria-current="page" @endif
         x-bind:aria-label="railed($el) ? @js($railName) : null"
@@ -51,7 +61,7 @@
         ]) }}
     >
         @if ($icon)
-            <x-ui.icon :name="$icon" :stroke-width="1.75" :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0 transition-colors duration-100', $tone['iconActive'] => $active, $tone['iconDisabled'] => $disabled, $tone['icon'] => ! $active && ! $disabled])" />
+            <x-ui.icon :name="$icon" :stroke-width="1.75" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0 transition-colors duration-100', $tone['iconActive'] => $active, $tone['iconDisabled'] => $disabled, $tone['icon'] => ! $active && ! $disabled])" />
         @endif
         <span @class(['flex-1 wrap-anywhere rail:hidden', 'underline decoration-dashed underline-offset-4' => $disabled])>{{ $text }}@if ($external)<span class="sr-only"> (opens in new tab)</span><x-ui.icon name="arrow-up-right" class="ml-0.5 inline-block size-3.5 align-[-2px]" />@endif</span>
         @if ($new)

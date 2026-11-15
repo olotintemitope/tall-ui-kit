@@ -13,8 +13,16 @@
     Keyboard: Up and Down move between nav items, Home and End jump. Collapse animates
     the width (150ms, ease-motion-in-out; instant under reduced motion), a measured
     exception to the transform-and-opacity rule. Focus mode hides it from lg.
+    Page changes: `navigate` (true) puts wire:navigate on the items, the header's logo
+    and the account menu's Settings, so only the main region changes. `persist` (a
+    key, or true for "sidebar-<area>"; shell only) keeps this very element across
+    wire:navigate (Livewire's x-persist): its nav scroll, collapse, open sections and
+    tooltips survive, and resources/js/navigate.js re-marks the current item from the
+    URL (SidebarTones::isActive's rule; `exact` lists the hrefs that match only
+    exactly, default config('tall-ui-kit.sidebar.exact')). Put anything that changes the items (counts,
+    badges, capabilities) into the key, so a page whose items differ swaps it.
 --}}
-@props(['variant' => 'light', 'collapsible' => true, 'area' => null, 'fixed' => true, 'collapsed' => false, 'label' => 'Sidebar'])
+@props(['variant' => 'light', 'collapsible' => true, 'area' => null, 'fixed' => true, 'collapsed' => false, 'label' => 'Sidebar', 'navigate' => true, 'persist' => null, 'exact' => null])
 
 @php
     $tone = \TallUiKit\Support\SidebarTones::tones($variant);
@@ -23,8 +31,22 @@
         ? 'collapsed: $persist(false).as('.\Illuminate\Support\Js::from($storageKey).')'
         : 'collapsed: '.\Illuminate\Support\Js::from((bool) $collapsed);
     $edge = $variant === 'light' ? 'border-r border-line' : '';
+    $persistKey = $fixed && $persist ? ($persist === true ? 'sidebar-'.($area ?? 'shell') : (string) $persist) : null;
+    // The class sets navigate.js swaps when the current item changes after wire:navigate.
+    $groupRail = $variant === 'dark'
+        ? 'rail:bg-white/[0.10] rail:ring-1 rail:ring-inset rail:ring-white/40'
+        : 'rail:bg-black/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
+    $navTones = [
+        'item' => $tone['item'],
+        'itemActive' => $tone['itemActive'],
+        'icon' => $tone['icon'],
+        'iconActive' => $tone['iconActive'],
+        'groupActive' => $tone['name'].' font-medium '.$groupRail,
+    ];
 @endphp
 
+{{-- The persisted element is a plain wrapper: Livewire destroys and re-initialises the persisted element's own Alpine directives on every visit, which would leave its children bound to a stale scope. --}}
+@if ($persistKey)<div x-persist="{{ $persistKey }}" class="contents" data-sidebar-persist>@endif
 <div
     x-data="{
         {!! $state !!},
@@ -53,6 +75,11 @@
         x-on:open-sidebar-drawer.window="openDrawer()"
         x-on:resize.window.debounce.150ms="if (window.matchMedia('(min-width: 1024px)').matches) closeDrawer()"
         class="contents"
+        @if ($navigate)
+            data-nav-sync
+            data-nav-exact="{{ json_encode(array_values($exact ?? (array) config('tall-ui-kit.sidebar.exact', []))) }}"
+            data-nav-tones="{{ json_encode($navTones) }}"
+        @endif
     @else
         {{ $attributes->class(['flex']) }}
     @endif
@@ -101,6 +128,7 @@
                     x-on:keydown.home="moveNav($event, 'first')"
                     x-on:keydown.end="moveNav($event, 'last')"
                     class="min-h-0 flex-1 overflow-y-auto overscroll-contain no-scrollbar px-3 pb-4 rail:px-2"
+                    @if ($persistKey) wire:navigate:scroll @endif
                     data-sidebar-nav
                 >
                     {{ $nav ?? $slot }}
@@ -113,3 +141,4 @@
         </{{ $tag }}>
     @endforeach
 </div>
+@if ($persistKey)</div>@endif

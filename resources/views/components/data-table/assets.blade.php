@@ -271,7 +271,8 @@
                 const scrolls = box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1;
                 if (scrolls) { box.setAttribute('tabindex', '0'); box.setAttribute('role', 'region'); box.setAttribute('aria-label', box.dataset.dtScroll); }
                 else { box.removeAttribute('tabindex'); box.removeAttribute('role'); box.removeAttribute('aria-label'); }
-                if (! box._dtObserved) { box._dtObserved = true; new ResizeObserver(() => window.Alpine.$data(root).scrollRegion()).observe(box); }
+                // wire:navigate leaves the old page's table detached: its observer stops there.
+                if (! box._dtObserved) { box._dtObserved = true; const watcher = new ResizeObserver(() => { if (! root.isConnected) { watcher.disconnect(); return; } window.Alpine.$data(root).scrollRegion?.(); }); watcher.observe(box); }
             },
 
             // A stack table stacks below 640px (CSS) and, below 1024px, whenever its columns do not

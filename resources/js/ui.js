@@ -4,6 +4,7 @@ import './defer';
 import './select';
 import './forms';
 import './checklist';
+import './navigate';
 
 /*
  * x-ui behaviours that are too long for an inline x-data. Registered on
@@ -152,7 +153,7 @@ document.addEventListener('alpine:init', () => {
     /*
      * Command palette over the sidebar destinations (partials/shell/command-palette).
      * Opens with Cmd+K / Ctrl+K or an `open-command-palette` window event.
-     * `items` is a list of { label, href, section }; `commands` a list of
+     * `items` is a list of { label, href, section, reload? }; `commands` a list of
      * { command, label, section } run in place (only `focus-mode` today, from lg).
      */
     Alpine.data('commandPalette', (items = [], commands = []) => ({
@@ -238,7 +239,12 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            window.location.assign(item.href);
+            // In place with wire:navigate, like the sidebar; `reload` items are full page loads.
+            if (window.Livewire?.navigate && !item.reload) {
+                window.Livewire.navigate(item.href);
+            } else {
+                window.location.assign(item.href);
+            }
         },
     }));
 });
@@ -437,10 +443,35 @@ function isUsable(el) {
     return el instanceof HTMLElement && el.isConnected && el.getClientRects().length > 0;
 }
 
+/*
+ * A heading or region made focusable here (tabindex="-1") keeps that through Livewire
+ * morphs: the server's markup has no tabindex, and removing it from the focused element
+ * makes the browser drop focus to <body> (the page heading after wire:navigate, when the
+ * page's first lazy request renders).
+ */
+function makeFocusable(el) {
+    el.setAttribute('tabindex', '-1');
+    el._uiFocusable = true;
+}
+
+let focusableHooked = false;
+
+function hookFocusable() {
+    if (focusableHooked || !window.Livewire?.hook) return;
+    focusableHooked = true;
+    window.Livewire.hook('morph.updating', ({ el, toEl }) => {
+        if (el?._uiFocusable && toEl instanceof Element && !toEl.hasAttribute('tabindex')) toEl.setAttribute('tabindex', '-1');
+    });
+}
+
+// Livewire may already have started when this module runs.
+hookFocusable();
+document.addEventListener('livewire:init', hookFocusable);
+
 function mainHeading() {
     const heading = document.querySelector('#main h1') ?? document.querySelector('main h1') ?? document.querySelector('#main');
     if (heading && !heading.hasAttribute('tabindex')) {
-        heading.setAttribute('tabindex', '-1');
+        makeFocusable(heading);
     }
 
     return heading;
@@ -462,7 +493,7 @@ function sectionOf(el) {
 function headingOf(container) {
     const labelled = container.getAttribute?.('aria-labelledby');
     const heading = (labelled && document.getElementById(labelled.split(' ')[0])) || container.querySelector?.('h1, h2, h3');
-    if (heading && !heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+    if (heading && !heading.hasAttribute('tabindex')) makeFocusable(heading);
 
     return heading ?? null;
 }
@@ -499,7 +530,7 @@ function focusAfter(target, fallbacks = []) {
     for (const el of candidates) {
         if (!isUsable(el) || el.closest('[inert]')) continue;
         if (!el.matches(FOCUSABLE) && !el.hasAttribute('tabindex')) {
-            el.setAttribute('tabindex', '-1');
+            makeFocusable(el);
         }
         el.focus({ preventScroll: false });
         if (document.activeElement === el) return el;
@@ -555,7 +586,7 @@ function plan(focused) {
         const heading = labelled ? document.getElementById(labelled.getAttribute('aria-labelledby')) : list?.closest('section')?.querySelector('h2, h3');
         if (heading) {
             if (!heading.id) heading.id = `focus-heading-${Math.random().toString(36).slice(2, 8)}`;
-            if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+            if (!heading.hasAttribute('tabindex')) makeFocusable(heading);
             plans.push({ id: heading.id });
         }
     }
@@ -742,11 +773,15 @@ document.addEventListener('keydown', (event) => {
 });
 
 // When the focused toast is dismissed (by its button or the 4s timer), return focus.
-document.addEventListener('alpine:initialized', () => {
+// wire:navigate brings a new toaster with the new <body>, so it is watched again then.
+const watchedToastRegions = new WeakSet();
+
+function watchToastRegion() {
     const region = document.querySelector('[data-toast-region]');
-    if (!region) {
+    if (!region || watchedToastRegions.has(region)) {
         return;
     }
+    watchedToastRegions.add(region);
     let focusedToast = null;
     region.addEventListener('focusin', (event) => {
         focusedToast = event.target;
@@ -760,4 +795,7 @@ document.addEventListener('alpine:initialized', () => {
             beforeToasts = null;
         }
     }).observe(region, { childList: true, subtree: true });
-});
+}
+
+document.addEventListener('alpine:initialized', watchToastRegion);
+document.addEventListener('livewire:navigated', watchToastRegion);

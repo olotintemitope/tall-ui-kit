@@ -3,15 +3,16 @@
     rail; "Close menu" in the mobile drawer) and the Cmd+K search trigger, which
     dispatches `open-command-palette`. Props: home (logo link), search (true),
     searchLabel (Search), and a `logo` slot that replaces the configured logo
-    (config('tall-ui-kit.brand'): logo_light, logo_dark, name). Reads variant and collapsible from x-ui.sidebar.
+    (config('tall-ui-kit.brand'): logo_light, logo_dark, name). Reads variant, collapsible
+    and navigate (wire:navigate on the logo link) from x-ui.sidebar.
 --}}
-@aware(['variant' => 'light', 'collapsible' => true])
+@aware(['variant' => 'light', 'collapsible' => true, 'navigate' => true])
 @props(['home' => '/', 'search' => true, 'searchLabel' => 'Search', 'logo' => null])
 
 @php $tone = \TallUiKit\Support\SidebarTones::tones($variant); @endphp
 
 <div class="flex h-14 items-center justify-between gap-2 px-4 rail:justify-center rail:px-0">
-    <a href="{{ $home }}" class="flex items-center rounded-sm focus-ring rail:hidden">
+    <a href="{{ $home }}" @if ($navigate) wire:navigate @endif class="flex items-center rounded-sm focus-ring rail:hidden">
         @if ($logo)
             {{ $logo }}
         @elseif ($tone['logo'])

@@ -5,13 +5,15 @@
     child is active and starts open then. In the icon rail the children hide and the
     parent takes the active fill; clicking it expands the sidebar and the group.
     Props: label, icon, active (null: true when a child in the slot is the current
-    page), open (null: follows active), count.
+    page; then re-marked with its children after wire:navigate), open (null: follows
+    active), count.
 --}}
 @aware(['variant' => 'light'])
 @props(['label', 'icon' => null, 'active' => null, 'open' => null, 'count' => null])
 
 @php
     $tone = \TallUiKit\Support\SidebarTones::tones($variant);
+    $matched = $active === null;
     $active ??= str_contains((string) $slot, 'aria-current="page"');
     $open ??= $active;
     $railActive = $variant === 'dark'
@@ -19,7 +21,7 @@
         : 'rail:bg-black/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
 @endphp
 
-<li x-data="{ open: @js((bool) $open), tip: false }" x-id="['sidebar-group']" data-nav-group @if ($active) data-active @endif>
+<li x-data="{ open: @js((bool) $open), tip: false }" x-id="['sidebar-group']" data-nav-group @if ($active) data-active @endif @if ($matched) data-nav-match @endif>
     <button
         type="button"
         x-ref="link"
@@ -40,7 +42,7 @@
         ])
     >
         @if ($icon)
-            <x-ui.icon :name="$icon" :stroke-width="1.75" :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0', $tone['iconActive'] => $active, $tone['icon'] => ! $active])" />
+            <x-ui.icon :name="$icon" :stroke-width="1.75" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0', $tone['iconActive'] => $active, $tone['icon'] => ! $active])" />
         @endif
         <span class="flex-1 wrap-anywhere rail:hidden">{{ $label }}</span>
         @if ($count !== null)

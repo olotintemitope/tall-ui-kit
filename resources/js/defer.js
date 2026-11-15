@@ -146,6 +146,16 @@ function setup(Alpine) {
         setTimeout(() => target.dispatchEvent(new CustomEvent(type, { detail: event.detail, bubbles: true, composed: true })), 0);
     }, { capture: true }));
 
+    // wire:navigate drops the old <body>: forget its sections that never started (the persisted sidebar stays).
+    document.addEventListener('livewire:navigated', () => {
+        for (const el of [...waiting]) {
+            if (el.isConnected) continue;
+            waiting.delete(el);
+            observer?.unobserve(el);
+        }
+        for (let i = queue.length - 1; i >= 0; i--) if (!queue[i].isConnected) queue.splice(i, 1);
+    });
+
     window.uiDefer = { flush, pending: () => waiting.size };
 }
 

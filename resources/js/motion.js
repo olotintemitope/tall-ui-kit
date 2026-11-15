@@ -221,7 +221,8 @@ function watchIndicators() {
             if (from && to && !group.closest('[data-motion-static]')) slideIndicator(group, from, to, kind);
         }
     });
-    observer.observe(document.body, { subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ['data-segmented-indicator', 'aria-selected'] });
+    // On <html>, not <body>: wire:navigate replaces <body>, and the indicators must keep sliding after it.
+    observer.observe(document.documentElement, { subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ['data-segmented-indicator', 'aria-selected'] });
 }
 
 /* --- Count-up ------------------------------------------------------------------- */

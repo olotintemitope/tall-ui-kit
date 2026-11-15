@@ -7,8 +7,10 @@
     above when they are not given), areas (list of key, label, href), current (area
     key; defaults to the sidebar's area), settingsHref (null hides Settings),
     logoutAction (null: route('logout') when it exists, else no Log out item).
+    Settings uses wire:navigate when the sidebar's `navigate` is on; area switches stay
+    full page loads (another area is another shell and sidebar), as does Log out (a form).
 --}}
-@aware(['variant' => 'light', 'area' => null])
+@aware(['variant' => 'light', 'area' => null, 'navigate' => true])
 @props(['user' => null, 'name' => null, 'email' => null, 'role' => null, 'initials' => null, 'settingsHref' => null, 'areas' => [], 'current' => null, 'logoutAction' => null])
 
 @php
@@ -65,7 +67,7 @@
         <x-ui.dropdown.separator />
     @endif
     @if ($settingsHref)
-        <x-ui.dropdown.item :href="$settingsHref">
+        <x-ui.dropdown.item :href="$settingsHref" :wire:navigate="$navigate">
             <x-ui.icon name="settings" />
             Settings
         </x-ui.dropdown.item>
