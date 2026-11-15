@@ -36,7 +36,7 @@ it('renders a text field, a calendar button and a popup anchored below, with no 
     $html = Blade::render('<x-ui.field label="Launch" name="launchDate" hint="Weekdays only." required><x-ui.date wire:model.live="launchDate" min="2026-01-01" value="2026-11-15" /></x-ui.field>');
 
     expect($html)
-        ->toContain('<div x-data="uiDatePicker()" data-value="2026-11-15" x-modelable="value" data-mode="date" data-min="2026-01-01" class="relative max-w-full w-40" wire:model.live="launchDate" data-ui-date>')
+        ->toContain('<div x-data="uiDatePicker()" data-value="2026-11-15" x-modelable="value" data-mode="date" data-min="2026-01-01" class="relative min-w-0 max-w-full w-40" wire:model.live="launchDate" data-ui-date>')
         ->toContain('x-modelable="value"')->toContain('data-value="2026-11-15"')
         ->toMatch('/<input type="text"[^>]*id="field-launchdate" value="15 Nov 2026" placeholder="DD\/MM\/YYYY"/')
         ->toContain('aria-required="true"')->toContain('aria-describedby="field-launchdate-hint"')
@@ -98,7 +98,7 @@ it('hands min, max, disabled dates and the week start to the script, normalised'
     expect($config)->toBe(['disabledDates' => ['weekends', '2026-12-25'], 'weekStart' => 0]);
     // min and max ride on data attributes; one that is not a date is dropped.
     expect($html)->toContain('data-min="2026-01-01"')->not->toContain('data-max');
-    expect(Blade::render('<x-ui.month min="2025-01" max="2027-12" />'))->toContain('data-min="2025-01" data-max="2027-12" class="relative max-w-full w-40" data-ui-date>')->toContain('x-data="uiDatePicker()"');
+    expect(Blade::render('<x-ui.month min="2025-01" max="2027-12" />'))->toContain('data-min="2025-01" data-max="2027-12" class="relative min-w-0 max-w-full w-40" data-ui-date>')->toContain('x-data="uiDatePicker()"');
     expect($html)->toContain('x-data="uiDatePicker(JSON.parse(&#039;');
 
     $time = Blade::render('<x-ui.time-input step="900" hours="12" />');

@@ -148,7 +148,7 @@
 @endphp
 
 {{-- Kept small (a Livewire island re-renders it): looks live in the kit CSS (.ui-date-*), listeners are added by datepicker.js. --}}
-<div {{ $rootAttributes->class(['relative max-w-full', $widthClass])->merge($state) }} data-ui-date{{ $defer ? ' data-ui-defer' : '' }}>
+<div {{ $rootAttributes->class(['relative min-w-0 max-w-full', $widthClass])->merge($state) }} data-ui-date{{ $defer ? ' data-ui-defer' : '' }}>
 <div x-ref="box" @class(['ui-date-box', 'ui-date-sm' => $size === 'sm', 'ui-date-invalid' => $isInvalid]) data-control-box>
 <input type="text" {{ $textAttributes->merge([
     'id' => $controlId,

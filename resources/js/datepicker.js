@@ -343,21 +343,37 @@ document.addEventListener('alpine:init', () => {
         },
 
         /*
-         * A fixed popup does not lengthen the page, so near the end of a short page there is
-         * nothing to scroll and it would hang off the screen: a spacer at the end of the body
-         * makes that room while it is open (never inside a dialog or sheet: they scroll their own body).
+         * A fixed popup does not lengthen what scrolls under it, so near the end of a short
+         * page, sheet or dialog body there is nothing to scroll and it would hang off the
+         * screen. A spacer at the end of that scroll box makes the room while it is open, then
+         * $revealBelow scrolls to it (never a flip above).
          */
         makeRoom() {
             const box = this.$refs.box;
-            if (box.closest('dialog, [role=dialog]:not(.ui-date-pop)')) return;
-            const page = document.scrollingElement || document.documentElement;
-            const need = box.getBoundingClientRect().bottom + 6 + this.$refs.popup.offsetHeight + 8 - window.innerHeight;
-            const spare = page.scrollHeight - page.clientHeight - page.scrollTop;
+            // On a page the page scrolls; in a dialog or sheet, its own scrolling body (a table's sideways wrapper is not one).
+            const modal = box.closest('dialog, [role=dialog]:not(.ui-date-pop)');
+            let scroller = null;
+            for (let el = this.$root.parentElement; modal && el && modal.contains(el); el = el.parentElement) {
+                if (/(auto|scroll)/.test(getComputedStyle(el).overflowY) && !el.matches('[data-table-scroll], .overflow-x-auto')) {
+                    scroller = el;
+                    break;
+                }
+            }
+            if (modal && !scroller) return;
+            const page = !scroller;
+            const target = scroller ?? document.scrollingElement ?? document.documentElement;
+            const bottom = page ? window.innerHeight : Math.min(window.innerHeight, scroller.getBoundingClientRect().bottom);
+            const need = box.getBoundingClientRect().bottom + 6 + this.$refs.popup.offsetHeight + 8 - bottom;
+            const spare = target.scrollHeight - target.clientHeight - target.scrollTop;
             if (need <= spare) return;
             this.spacer = Object.assign(document.createElement('div'), { ariaHidden: 'true' });
             this.spacer.setAttribute('data-date-spacer', '');
-            this.spacer.style.height = `${Math.ceil(need - spare)}px`;
-            document.body.append(this.spacer);
+            // flex: none, or a flex column (a sheet's body) shrinks it away.
+            this.spacer.style.cssText = `height: ${Math.ceil(need - spare)}px; flex: none`;
+            (page ? document.body : scroller).append(this.spacer);
+            // A short body had empty room below its content that the spacer filled first: top it up.
+            const short = need - (target.scrollHeight - target.clientHeight - target.scrollTop);
+            if (short > 0) this.spacer.style.height = `${Math.ceil(need - spare + short)}px`;
         },
 
         close(focus = true) {
