@@ -18,7 +18,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const arg = (name, fallback) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split('=')[1] ?? fallback;
 
 const base = process.env.BASE ?? 'http://127.0.0.1:8077';
-const pages = arg('pages', '/,/forms,/overlays,/data,/charts,/tables,/workflow,/checklist,/sidebar').split(',');
+const pages = arg('pages', '/,/forms,/overlays,/data,/charts,/tables,/workflow,/checklist,/dates,/sidebar').split(',');
 const widths = arg('widths', '1440,390').split(',').map(Number);
 const themes = arg('themes', 'neutral,newbanger').split(',');
 
@@ -41,6 +41,11 @@ for (const theme of themes) {
             if (path === '/overlays') {
                 states.push(['open menu', async () => { await page.getByRole('button', { name: 'Actions' }).click(); }]);
                 states.push(['open dialog', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Dialog', exact: true }).click(); }]);
+            }
+            if (path === '/dates') {
+                states.push(['open calendar', async () => { await page.getByRole('button', { name: 'Choose date' }).first().click(); }]);
+                states.push(['open range', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Choose dates' }).first().click(); }]);
+                states.push(['open time', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Choose time' }).first().click(); }]);
             }
             if (path === '/forms') {
                 states.push(['open select', async () => { await page.getByRole('combobox', { name: 'Payout day' }).click(); }]);

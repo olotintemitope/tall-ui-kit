@@ -2,6 +2,7 @@ import './anchor';
 import { storageKey } from './storage';
 import './defer';
 import './select';
+import './datepicker';
 import './forms';
 import './checklist';
 import './navigate';

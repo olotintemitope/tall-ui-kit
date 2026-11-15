@@ -78,9 +78,10 @@ it('wires textarea, select and date controls', function () {
         ->assertDontSee('<select', false);
 
     $this->blade('<x-ui.field label="Launch" name="launchDate"><x-ui.date wire:model="launchDate" min="2026-01-01" /></x-ui.field>')
-        ->assertSee('type="date"', false)
+        ->assertSee('data-ui="date"', false)
+        ->assertDontSee('type="date"', false)
         ->assertSee('id="field-launchdate"', false)
-        ->assertSee('min="2026-01-01"', false)
+        ->assertSee('data-min="2026-01-01"', false)
         ->assertSee('wire:model="launchDate"', false);
 });
 

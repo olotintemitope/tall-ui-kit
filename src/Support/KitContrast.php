@@ -194,6 +194,20 @@ class KitContrast
             ['Progress warning fill against its buffer', 'amber-800', 'line-strong', 'ui', 3.0, 4.72],
             ['Progress danger fill against its buffer', 'red-700', 'line-strong', 'ui', 3.0, 4.28],
             ['Upload failed status and error', 'red-700', 'white', 'text', 4.5, 6.42],
+
+            // Date and time pickers (x-ui.date, x-ui.date-range, x-ui.time-input ...)
+            ['Calendar day, weekday header, time option', 'ink', 'white', 'text', 4.5, 15.81],
+            ['Calendar day or option, hover and active', 'ink', 'surface-subtle', 'text', 4.5, 14.63],
+            ['Calendar active option outline', 'control', 'surface-subtle', 'ui', 3.0, 3.38],
+            ['Calendar chosen day, week, month, time and pressed preset', 'white', 'secondary', 'text', 4.5, 15.81],
+            ['Calendar days inside a range', 'ink', 'surface-muted', 'text', 4.5, 13.63],
+            ['Calendar disabled day inside a range', 'ink-muted', 'surface-muted', 'text', 4.5, 5.05],
+            ['Calendar disabled day, week number, outside day', 'ink-muted', 'white', 'text', 4.5, 5.85],
+            ['Calendar Today and Done', 'primary-text', 'white', 'text', 4.5, 5.21],
+            ['Calendar Today and Done, hover', 'primary-text', 'surface-subtle', 'text', 4.5, 4.82],
+            ['Calendar preset edge', 'control', 'white', 'ui', 3.0, 3.65],
+            ['Calendar focus outline on a range tint', 'focus', 'surface-muted', 'ui', 3.0, 3.55],
+            ['Calendar focus outline beside a chosen day', 'focus', 'secondary', 'ui', 3.0, 3.84],
         ];
     }
 

@@ -13,6 +13,7 @@
         'tables' => ['label' => 'Data table', 'href' => route('gallery.tables')],
         'workflow' => ['label' => 'Workflow', 'href' => route('gallery.workflow')],
         'checklist' => ['label' => 'Checklist', 'href' => route('gallery.checklist')],
+        'dates' => ['label' => 'Dates', 'href' => route('gallery.dates')],
         'sidebar' => ['label' => 'Sidebar', 'href' => route('gallery.sidebar')],
     ];
 @endphp
