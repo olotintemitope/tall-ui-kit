@@ -14,7 +14,7 @@ These rules are the kit. A page built from kit components that breaks one of the
 8. **Toasts sit above modals.** `x-ui.toaster` is placed once; while a modal `<dialog>` is open its node moves into the top-most dialog so toasts stay visible and clickable (`resources/js/toaster-layer.js`). Toasts never take focus.
 9. **Text is never cut off.** No `truncate`, ellipsis or line clamp; things wrap and grow (rules below).
 10. **Pills are one line**, sized to the label, never wrapped or clipped.
-11. **Only tokens and type roles.** No raw hex, `gray-*` or arbitrary values in views.
+11. **Only tokens and type roles.** No raw hex, `gray-*` or arbitrary values in views, and no `bg-white`, `text-white`, `bg-black/NN` or Tailwind status colours (`red-*`, `emerald-*`, `amber-*`, `blue-*`): use `surface`, `card`, `popover`, `on-secondary`, `ink/NN` and the status tokens, so dark mode works. The dark sidebar's own white tones are the one exception.
 
 ## App guidance (not enforced by the kit)
 

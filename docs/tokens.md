@@ -1,17 +1,18 @@
 # Tokens, type roles and states
 
-Values below are the NewBanger theme; the neutral theme uses the same token names with its own values (see [theming.md](theming.md)). `composer contrast` prints every measured pair for both themes.
+Values below are the NewBanger theme in light; the neutral theme uses the same token names with its own values, and both themes give every token a dark value (see [theming.md](theming.md), Dark mode, and the table at the end of this section). `composer contrast` prints every measured pair for both themes in both schemes.
 
 ## Colour tokens
 
-Ratios are against white unless stated.
+Ratios are against white (`surface` in light) unless stated.
 
 | Token | Value | Use | Contrast |
 |---|---|---|---|
-| `ink` / `secondary` | `#212322` | Titles, strong text, checked controls | 15.9:1 |
+| `surface` / `card` / `popover` | `#FFFFFF` | The page, panels, popovers and dialogs. Never `bg-white`: these turn dark in the dark scheme | |
+| `ink` / `secondary` | `#212322` | Titles, strong text, checked controls (`on-secondary` white on it) | 15.9:1 |
 | `ink-body` | `#373938` | Body text | 11.64:1 |
 | `ink-muted` | `#646564` | Meta, captions, labels, placeholders, inactive nav | 5.86:1 (5.46:1 on `#F6F7F9`, 5.47:1 on `page-muted`) |
-| `primary` | `#FF614D` | Accent fill; carries `ink` text | ink on it 5.32:1 (white would be 2.97:1); fill 2.97:1 on white |
+| `primary` | `#FF614D` | Accent fill; carries `on-primary` text (`ink` in light) | ink on it 5.32:1 (white would be 2.97:1); fill 2.97:1 on white |
 | `primary-hover` | `#E5543F` | Primary button border (its 3:1 boundary) | 3.70:1 |
 | `primary-fill-hover` | `#FF7462` | Hovered primary button fill | ink on it 5.97:1 |
 | `primary-text` | `#BC4530` | Accent text, links. Any orange text uses this, never `primary` | 5.21:1 |
@@ -27,8 +28,10 @@ Ratios are against white unless stated.
 | `panel-border` | `#E7E7E9` | Panel, popover and dialog borders | |
 | `panel-footer` | `#FAFAFA` | Panel action bar, table header, row hover (`hover:bg-panel-footer`), light sidebars, auth page background | |
 | `scrim` | `#212322` at 40% | Behind dialogs, the command palette and the mobile drawer (`bg-scrim`) | |
-| Error text | `red-700` | Field errors, late counts, inline load errors, falling deltas | 6.42:1 (Tailwind 4 `#c10007` as rendered) |
-| Success text | `emerald-700` | Rising deltas, inflows, footnote lead-ins | 5.36:1 (`#007a55`) |
+| `danger-text` | `#C10007` | Field errors, late counts, inline load errors, falling deltas | 6.42:1 |
+| `success-text` | `#007A55` | Rising deltas, inflows, footnote lead-ins | 5.36:1 |
+| `danger` / `on-danger` | `#E7000B` / white | Destructive button, invalid field edge | 4.77:1 |
+| Status tones | `{danger,success,warning,info}-{text,strong,tint,edge}` | Alerts, toasts, banners, badges, progress tones (see [theming.md](theming.md)) | below |
 
 Text links: `x-ui.link-arrow` (ink, accent text on hover) or `x-ui.button variant="link"` (`primary-text`). Orange text is always `primary-text`; `#FF614D` text is 2.97:1 and fails. The primary button is an orange fill with `ink` text.
 
@@ -48,9 +51,28 @@ Defined in a `@theme static` block so they always reach the stylesheet: chart li
 
 See [Charts](components/data-display.md) for the marks. Hand-checked contrast against white: `chart-accent` 5.21:1, `chart-1` 15.81:1, `chart-2` 5.85:1, `chart-3` 3.16:1. On the `surface-muted` track of horizontal bars `chart-2` is 5.05:1 but `chart-3` only 2.73:1, so horizontal bars use `chart-1` or `chart-2`. Stacked segments sit on white gaps, so each is measured against white.
 
-Dark admin sidebar (`#212322`): items `white/70` (8.40:1; 7.35:1 on hover), section labels and counts `white/65` (7.44:1), icons `white/60` (6.56:1), active item `white` on `white/10` (11.63:1) with a `white/40` inset ring (3.72:1 against the sidebar). Light sidebars (`panel-footer`): items `ink-muted` (5.61:1), active `ink` on `black/6` (13.26:1) with a `control-hover` inset ring (4.17:1 on the active fill, 4.76:1 on the sidebar).
+Dark admin sidebar (`sidebar`, `#212322`; stays dark in the dark scheme): items `white/70` (8.40:1; 7.35:1 on hover), section labels and counts `white/65` (7.44:1), icons `white/60` (6.56:1), active item `white` on `white/10` (11.63:1) with a `white/40` inset ring (3.72:1 against the sidebar). Light sidebars (`panel-footer`): items `ink-muted` (5.61:1), active `ink` on `ink/6` (13.26:1) with a `control-hover` inset ring (4.17:1 on the active fill, 4.76:1 on the sidebar).
 
-Status badges (text on fill, re-measured with Tailwind 4's rendered palette): success emerald-800/50 7.23, warning amber-800/50 6.84, danger red-700/50 5.87, info blue-700/50 6.28, neutral ink/`surface-muted` 13.63, accent `#BC4530` on `primary/10` 4.67. Alerts and toasts: red-800 on red-50 7.64, amber-900 on amber-50 8.73, emerald-800 on emerald-50 7.23, ink on `panel-footer` 15.15.
+Status badges (text on tint): success `success-strong` 7.23, warning `warning-text` 6.84, danger `danger-text` 5.87, info `info-text` 6.28, neutral ink/`surface-muted` 13.63, accent `#BC4530` on `primary/10` 4.67. Alerts and toasts: `danger-strong` on `danger-tint` 7.64, warning 8.73, success 7.23, ink on `panel-footer` 15.15.
+
+### Dark values
+
+The same names in the dark scheme (neutral / NewBanger). Every pair is measured again; the lowest text pair is 4.66:1 and the lowest non-text 3.21 / 3.04:1 (`composer contrast`).
+
+| Token | Neutral dark | NewBanger dark |
+|---|---|---|
+| `surface` (page) / `card` / `popover` | `#111213` / `#18191B` / `#1C1D20` | `#121312` / `#191A19` / `#1D1E1D` |
+| `page-muted` / `panel-footer` / `sidebar` | `#0C0D0E` / `#16171A` / `#17181A` | `#0D0E0D` / `#171817` / `#181918` |
+| `ink` / `ink-body` / `ink-muted` | `#ECEDEE` / `#CFD0D2` / `#A0A2A6` | `#EDEEED` / `#D0D1D0` / `#A2A3A2` |
+| `line` / `line-strong` / `panel-border` | `#27282B` / `#34363A` / `#2A2B2E` | `#282928` / `#353735` / `#2B2C2B` |
+| `surface-subtle` / `surface-muted` / `skeleton` | `#1F2023` / `#28292C` / `#232427` | `#202120` / `#292A29` / `#242524` |
+| `control` / `control-hover` / `focus` | `#6F7276` / `#8A8D91` / `#6383A1` | `#707270` / `#8B8D8B` / `#E0563F` |
+| `primary` / `primary-text` / `on-primary` | `#AFC0D1` / `#A9BED3` / `#111213` | `#FF614D` / `#FF614D` / `#121312` |
+| `secondary` / `on-secondary` | `#E6E7E8` / `#111213` | `#E6E7E6` / `#121312` |
+| `danger` / `danger-text` / `danger-tint` | `#D9343B` / `#FF8D8A` / `#2A1517` | same |
+| `success-text` / `warning-text` / `info-text` | `#4CC38A` / `#E9A23B` / `#79A6FF` | same |
+| `chart-accent` / `chart-1` / `chart-2` / `chart-3` | `#8FAACB` / `#D5D7DA` / `#A0A2A6` / `#75787C` | `#FF614D` / `#D6D7D6` / `#A2A3A2` / `#767876` |
+| `scrim` | black at 60% | black at 60% |
 
 ## Type roles
 
@@ -88,7 +110,7 @@ Defined once in `tall-ui-kit.css` as variants that cover both the real pseudo-cl
 | Secondary | ink fill, white 15.81:1 | `secondary-light`, white 13.14:1 | `neutral-900`, white 18.78:1 | same | same | white spinner |
 | Outline | white, `control` edge 3.65:1, ink 15.81:1 | `surface-subtle`, `control-hover` edge 4.60:1, ink 14.63:1 | `surface-muted`, ink 13.63:1 | same | same | ink spinner |
 | Ghost | no fill, `ink-body` 11.64:1 | `surface-subtle`, ink 14.63:1 | `surface-muted`, ink 13.63:1 | same | same | ink spinner |
-| Destructive | `red-600`, white 4.77:1 (boundary 4.77:1) | `red-700`, white 6.42:1 | `red-800`, white 8.36:1 | same | same | white spinner |
+| Destructive | `danger`, `on-danger` 4.77:1 (boundary 4.77:1) | `danger-hover`, 6.42:1 | `danger-active`, 8.36:1 | same | same | white spinner |
 | Link | `primary-text` 5.21:1 | underlined | ink 15.81:1, underlined | same | `ink-muted` 5.85:1, no underline | ink spinner |
 
 - Toggle buttons (`pressed` prop or `x-bind:aria-pressed`): on is a `surface-muted` fill, ink text and icon (13.63:1) and a 1px `control` border (3.65:1), so on differs from off by a border as well as the fill. Icons may also swap (focus mode).

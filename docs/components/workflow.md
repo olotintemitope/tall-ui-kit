@@ -38,7 +38,7 @@ JavaScript: `resources/js/widgets.js` (imported by `index.js`) registers the tag
 | `action` | Livewire method called with the step number (`goTo(2)`); a step's own `href` or `action` wins; without either, a bubbling `ui-step` event, detail `{ step, key }` |
 | `label`, `id` | The nav's name ("Progress") |
 
-**Look.** 24px markers: complete a 1px ink ring with an ink check, current an ink disc with a white number (15.81:1), upcoming a 1px `control` ring with an ink-muted number (3.65:1 and 5.85:1), error a 1px red-700 ring with an x, the label and description in red-700 (6.42:1). Labels in body (current in body-strong), descriptions in meta. A 1px `line` rule joins steps. No fills besides the current disc, no progress bar.
+**Look.** 24px markers: complete a 1px ink ring with an ink check, current an ink disc with a white number (15.81:1), upcoming a 1px `control` ring with an ink-muted number (3.65:1 and 5.85:1), error a 1px danger-text ring with an x, the label and description in danger-text (6.42:1). Labels in body (current in body-strong), descriptions in meta. A 1px `line` rule joins steps. No fills besides the current disc, no progress bar.
 
 **Accessibility.** `aria-current="step"` on the current `<li>`; every label starts with a hidden "Completed:", "Current:", "Upcoming:" or "Error:", so state never rests on colour or the marker. Clickable steps are buttons or links with the focus ring; the rest are text.
 
@@ -162,7 +162,7 @@ Do: give each row a stable `key` and keep `label` (it names the grip and the ann
 
 | Prop | Meaning |
 |---|---|
-| `tone` | info (blue-700 on blue-50, 6.28:1), success (emerald-800 on emerald-50, 7.23:1), warning (amber-900 on amber-50, 8.73:1), danger (red-800 on red-50, 7.64:1) |
+| `tone` | info (info-text on info-tint, 6.28:1), success (success-strong on success-tint, 7.23:1), warning (warning-strong on warning-tint, 8.73:1), danger (danger-strong on danger-tint, 7.64:1) |
 | `title`, slot, `actionLabel`, `actionHref` | Title in body-strong, message in body, the action an underlined link in the same tone |
 | `variant` | `page` (full width, 1px rule below) or `inset` (1px border, 6px radius, inside content) |
 | `dismissible`, `name`, `persist`, `dismissed`, `dismissLabel` | See below |
@@ -228,7 +228,7 @@ The existing props (`label`, `value`, `max`, `valueText`, `hideLabel`, `id`) wor
 | Prop | Meaning |
 |---|---|
 | `size` | `sm` 4px (default), `md` 8px, `lg` 12px |
-| `tone` | `default` (chart-1), `success` (emerald-700), `warning` (amber-800), `danger` (red-700): each 3:1 or more on the `surface-muted` track and on white |
+| `tone` | `default` (chart-1), `success` (success-text), `warning` (warning-text), `danger` (danger-text): each 3:1 or more on the `surface-muted` track and on white |
 | `labelPosition` | `top` (label left, value right), `end` (the value after the bar on one line), `hidden` (both kept for assistive tech) |
 | `format` | `percent`, `count` ("3 of 5"), `bytes` ("2.1 MB of 5 MB", decimal units) |
 | `buffer` | A second, lighter fill (`line-strong`) on the same scale, for uploads and streams that load ahead; each tone's fill is 3:1 or more against it |
@@ -243,7 +243,7 @@ A circular SVG progress for tiles, cells and buttons where a bar does not fit. I
 
 ### `x-ui.upload-progress` and `x-ui.upload-progress.list`
 
-A file row: the name (body, never cut: it wraps anywhere), size and status in meta ("2.4 MB · Uploading, 45%", "Uploaded", "Failed" in red-700 with the error below), a linear progress (danger tone on failure; label hidden but kept), and the actions for its state: Cancel while waiting or uploading, Retry and Remove on failure, Remove when done, each named with the file ("Cancel upload of report.pdf").
+A file row: the name (body, never cut: it wraps anywhere), size and status in meta ("2.4 MB · Uploading, 45%", "Uploaded", "Failed" in danger-text with the error below), a linear progress (danger tone on failure; label hidden but kept), and the actions for its state: Cancel while waiting or uploading, Retry and Remove on failure, Remove when done, each named with the file ("Cancel upload of report.pdf").
 
 - `x-ui.upload-progress` is server-driven: `name`, `size` (bytes), `progress`, `status` (queued, uploading, done, failed), `error`, `cancelAction`, `retryAction`, `removeAction` (Livewire calls; without them the buttons fire a bubbling `ui-upload` event, `{ action, name }`), `as` (div, li).
 - `x-ui.upload-progress.list for="files"` follows Livewire's own upload events from the input bound with `wire:model="files"` (`livewire-upload-start`, `-progress`, `-finish`, `-error`, `-cancel`; livewire.laravel.com/docs/4.x/uploads, checked 2026-11-15) and shows a row per chosen file, plus an overall line and bar with several files ("Uploading 3 files, 45%"). Cancel calls `$wire.cancelUpload`, Retry uploads the same files again (`$wire.upload` / `uploadMultiple`), Remove sets a single file's property to null or calls `removeAction(index)`. Props: `for`, `multiple`, `removeAction`, `label` ("Uploads"). Livewire uploads a multiple selection as one request, so its files share one percent.

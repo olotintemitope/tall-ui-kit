@@ -132,6 +132,7 @@ Vite resolves `gsap` from your app's `node_modules`: `npm install gsap` (3.15 or
 
 | Module | What it registers |
 |---|---|
+| `color-scheme.js` | `window.uiColorScheme` (`get`, `set`, `resolved`, `allowed`), the `ui-color-scheme` window event (also on OS changes under system, and from other tabs), `uiThemeToggle` (x-ui.theme-toggle). See [Dark mode](theming.md) |
 | `kit.js` | `privacy` store (x-ui.money masking, H shortcut), `dismissible` data, the `uiChart` component (`charts.js`) |
 | `toasts.js` | `toasts` store, `$toast` magic, the `toast` browser event (Livewire `$this->dispatch('toast', ...)`); imports `toaster-layer.js` (toasts above modals) |
 | `dialogs.js` | `uiDialog` (native `<dialog>`: open, close, busy, dirty guard, `open-dialog`/`open-confirm` events); imports `placement.js` |
@@ -151,7 +152,7 @@ Sizes measured on the workbench build: the whole kit entry is 19.5 KB gzip, plus
 
 ## Head script
 
-Put `<x-ui.head />` in `<head>` (with `:area="'admin'"` in a shell that has a sidebar). It sets the storage prefix and applies privacy mode, sidebar collapse and focus mode before first paint, so nothing flashes.
+Put `<x-ui.head />` in `<head>` (with `:area="'admin'"` in a shell that has a sidebar). It sets the storage prefix and applies the colour scheme (`html[data-color-scheme]`), privacy mode, sidebar collapse and focus mode before first paint, so nothing flashes. Put it before the stylesheet link.
 # UI kit: icons and copy to clipboard
 
 Companion to [the components index](components.md). Gallery: the workbench gallery, section "Copy to clipboard"
@@ -224,7 +225,7 @@ Three components on one Alpine behaviour, `uiCopy` in `resources/js/ui.js`.
 | State | Icon | Label | Colour | Announced |
 |---|---|---|---|---|
 | Idle | copy | "Copy" (or `label`) | ink (label), ink-muted icon buttons (5.86:1), primary-text links (5.21:1) | |
-| Copied, 2s | check, cross-faded over 150ms (opacity only) | "Copied" | emerald-700, 5.48:1 on white | "Copied to clipboard" (polite) |
+| Copied, 2s | check, cross-faded over 150ms (opacity only) | "Copied" | success-text, 5.48:1 on white | "Copied to clipboard" (polite) |
 | Failed | copy | stays "Copy"; a hint attached below the button reads "Press ⌘C to copy" (Ctrl+C off a Mac) | as idle; the hint is white on ink (15.9:1) | "Copy failed. Press ⌘C to copy." (polite); the button is `aria-describedby` the hint while it shows |
 
 - A repeat click restarts the 2s timer and announces again (the live region is cleared first).

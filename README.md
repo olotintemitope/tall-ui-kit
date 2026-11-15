@@ -35,7 +35,7 @@ Requires PHP 8.4, `laravel/framework` 13, `livewire/livewire` 4.4 and `mallarddu
 @import '../../vendor/olotintemitope/tall-ui-kit/resources/css/themes/neutral.css';
 ```
 
-Switch theme by changing the last line to `themes/newbanger.css` ([theming](docs/theming.md)).
+Switch theme by changing the last line to `themes/newbanger.css` ([theming](docs/theming.md)). Each theme has light and dark colour schemes: `x-ui.head` applies the stored choice before first paint and `x-ui.theme-toggle` switches it ([dark mode](docs/theming.md#dark-mode)).
 
 ### JavaScript
 
@@ -99,13 +99,14 @@ Recommended in `config/blade-icons.php`: `'components' => ['disabled' => true]`,
 | Data table: `WithDataTable` trait, `Column`, `Filter`, `Action`, `TableView`, `RowRenderer` | `src/Livewire/Concerns`, `src/Support/DataTable` |
 | Charts: `ChartPlot`, `NiceScale`, `TickThinning` | `src/Support/Charts` |
 | Support: `Format`, `Money` (NGN and USD), `FormControl`, `LucideIcons`, `Embed`, `KitContrast`, `SidebarContrast`, `SidebarTones`, `Exports\ExportColumn`, `Exports\ExportRange` | `src/Support` |
+| Colour scheme: `ColorScheme`, `ColorSchemeStore` (session by default), `WithColorScheme` | `src/Support/ColorScheme`, `src/Livewire/Concerns` |
 
 Not in the package (app code): navigation data, shells and command palette data, the export pipeline (`WithExports`, writer, Dompdf), the notification inbox, and any business components.
 
 ## Documentation
 
 - [Rules](docs/rules.md): no AI look, borders, focus, contrast, below-only popups, no native `<select>` or date inputs, tables, toasts above modals, one-line pills, short references and UUID URLs
-- [Theming](docs/theming.md) and [tokens, type roles and states](docs/tokens.md)
+- [Theming and dark mode](docs/theming.md) and [tokens, type roles and states](docs/tokens.md)
 - [Components index](docs/components/README.md): every component with its props and slots
   - [Forms and form layouts](docs/components/forms.md), [HTML5 and media elements](docs/components/html-elements.md)
   - [Navigation: tabs, sidebar, focus mode](docs/components/navigation.md)
@@ -119,14 +120,14 @@ Not in the package (app code): navigation data, shells and command palette data,
 
 ## Configuration
 
-`config/tall-ui-kit.php`: `storage_prefix`, `brand` (name and logos), `pagination` (route paginators through `x-ui.pagination`), `progress_bar` (turn Livewire's navigate bar off for `x-ui.progress-bar`), `sidebar.exact`, `data_table.gate`, `exports`. To change a component's markup, publish the views (`--tag=tall-ui-kit-views`); a published copy in `resources/views/vendor/tall-ui-kit/components` wins.
+`config/tall-ui-kit.php`: `storage_prefix`, `brand` (name and logos), `color_scheme` (default, schemes, persist), `pagination` (route paginators through `x-ui.pagination`), `progress_bar` (turn Livewire's navigate bar off for `x-ui.progress-bar`), `sidebar.exact`, `data_table.gate`, `exports`. To change a component's markup, publish the views (`--tag=tall-ui-kit-views`); a published copy in `resources/views/vendor/tall-ui-kit/components` wins.
 
 ## Gallery (workbench)
 
 ```bash
 composer install && npm install
 npm run build                 # builds both themes and the kit JS into workbench/dist
-composer serve                # http://127.0.0.1:8000 (?theme=neutral or ?theme=newbanger)
+composer serve                # http://127.0.0.1:8000 (?theme=neutral or ?theme=newbanger; the Mode toggle or ?scheme=dark)
 ```
 
 Pages: Basics, Forms, Overlays, Data display, Charts, Data table (Livewire, 320 sample rows on a private SQLite file), Workflow (Livewire demos of the sortable, tree, tag input, slider, banner and uploads), Sidebar.
@@ -135,8 +136,8 @@ Pages: Basics, Forms, Overlays, Data display, Charts, Data table (Livewire, 320 
 
 ```bash
 composer test                 # Pest + Orchestra Testbench: component renders, data table, contrast, guards
-composer contrast             # every contrast pair for both themes; exits 1 on a failure
-BASE=http://127.0.0.1:8000 npm run a11y   # axe-core on every gallery page, both themes, 1440 and 390
+composer contrast             # every contrast pair for both themes in light and dark (four sets); exits 1 on a failure
+BASE=http://127.0.0.1:8000 npm run a11y   # axe-core on every gallery page, both themes and schemes, 1440 and 390
 ```
 
 ## AI skills

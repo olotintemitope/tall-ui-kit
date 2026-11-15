@@ -1,6 +1,6 @@
 ---
 name: tall-ui-kit
-description: Build Laravel Livewire pages and components with the private TALL UI kit (olotintemitope/tall-ui-kit, used by NewBanger) - x-ui.* Blade components, x-data-table, WithDataTable, server-rendered charts, Tailwind 4 tokens and type-* roles, neutral and NewBanger themes. Use whenever writing or reviewing Blade/Livewire UI in an app that has x-ui components or the tall-ui-kit package, including admin pages, forms, tables, dialogs, toasts, charts and sidebars, and when checking a screen against the kit rules (no AI look, contrast, focus, no native select, below-only popups, tables never scroll the page, one-line pills).
+description: Build Laravel Livewire pages and components with the private TALL UI kit (olotintemitope/tall-ui-kit, used by NewBanger) - x-ui.* Blade components, x-data-table, WithDataTable, server-rendered charts, Tailwind 4 tokens and type-* roles, neutral and NewBanger themes, each with light and dark colour schemes. Use whenever writing or reviewing Blade/Livewire UI in an app that has x-ui components or the tall-ui-kit package, including admin pages, forms, tables, dialogs, toasts, charts and sidebars, and when checking a screen against the kit rules (no AI look, contrast in light and dark, focus, no native select, below-only popups, tables never scroll the page, one-line pills), or adding dark mode and the theme toggle.
 ---
 
 # TALL UI kit
@@ -17,8 +17,9 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 
 - **No AI look.** Banned: thick or coloured edge borders (accent bars on alerts, cards, tabs, toasts), icon-in-a-tile or centred hero empty states, coloured icon badges, `rounded-2xl`+, heavy, stacked or coloured shadows, glows, blur or glass, gradients, KPI card grids with icons, donut/pie/gauge/progress-ring charts, gradient area fills, delta chips with arrows in tinted pills, medals, emoji, filler copy ("Insights", "at a glance", "Glad to see you again"), em dashes in user-facing copy (use commas, colons or full stops).
 - **Borders are 1px.** Only the 2px focus outline is thicker.
-- **Tokens only:** colours `ink`, `ink-body`, `ink-muted`, `primary`, `primary-text`, `secondary`, `line`, `control`, `focus`, `surface-subtle`, `surface-muted`, `page-muted`, `panel-border`, `panel-footer`, `chart-*`; status colours via kit components. No hex, no `gray-*`, no arbitrary shadows or radii. Text uses `type-title|heading|subheading|label|body|body-strong|field-label|meta|caption|figure|numeric`.
-- **Contrast:** text 4.5:1, boundaries and marks 3:1, every state, no exemptions. Orange/accent text is `primary-text`, never `primary`. Disabled never uses opacity.
+- **Tokens only:** colours `surface` (the page), `card` (panels), `popover` (menus, dialogs, toasts), `ink`, `ink-body`, `ink-muted`, `primary`, `primary-text`, `on-primary`, `secondary`, `on-secondary`, `line`, `control`, `focus`, `surface-subtle`, `surface-muted`, `page-muted`, `panel-border`, `panel-footer`, `chart-*`; status colours via kit components or the status tokens (`danger-text`, `success-text`, `{danger,success,warning,info}-{strong,tint,edge}`). No hex, no `gray-*`, no `bg-white`/`text-white`/`bg-black/NN`, no Tailwind `red-*`/`emerald-*`/`amber-*`/`blue-*`, no arbitrary shadows or radii. Every token has a dark value, so token-only screens work in dark mode with no `dark:` classes. Text uses `type-title|heading|subheading|label|body|body-strong|field-label|meta|caption|figure|numeric`.
+- **Contrast:** text 4.5:1, boundaries and marks 3:1, every state, in light and dark, no exemptions. Orange/accent text is `primary-text`, never `primary`. Disabled never uses opacity.
+- **Dark mode:** `<x-ui.head />` goes before the stylesheet (it sets `html[data-color-scheme]` before first paint: no flash); the switch is `x-ui.theme-toggle` (Light / Dark / System), never a hand-made one. Dark is a calm near-black with 1px borders carrying edges: no glow, neon, gradients or heavy shadows. Logos: `brand.logo_dark` or `x-ui.logo`. Emails and PDFs stay light ([references/theming.md](references/theming.md), Dark mode).
 - **Focus:** `focus-ring` on custom controls; focus never falls to `<body>`; after deletes move focus to the next item, then the previous, then the list heading.
 - **No native `<select>`.** Use `x-ui.select` (or `x-ui.combobox` to filter by typing).
 - **No native date or time inputs.** Never `type="date|time|month|week|datetime-local"` (not even on `x-ui.input`): use `x-ui.date`, `x-ui.datetime`, `x-ui.time-input`, `x-ui.month`, `x-ui.week` or `x-ui.date-range`. Values stay ISO (Y-m-d, H:i, Y-m, 2026-W47).
@@ -109,12 +110,13 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | Charts | `x-ui.chart` / `x-ui.card.chart`: line, bar, stacked-bar, bar-horizontal, sparkline only; up to 3 series |
 | Money and numbers | `x-ui.money` (privacy-aware), `x-ui.number`, `x-ui.delta`; `TallUiKit\Support\Format` in PHP |
 | Icons | `x-ui.icon name="..."` (Lucide names); icon-only buttons need `aria-label` |
+| Light / dark switch | `x-ui.theme-toggle` (`label`, `size`, `iconOnly`); `WithColorScheme` + a bound `ColorSchemeStore` to keep it per user; the logo: `x-ui.logo` |
 
 ## References (load when needed)
 
 - [references/rules.md](references/rules.md): every rule in detail (borders, radii, cut-off text, contrast, states).
 - [references/components.md](references/components.md): every component with props and slots, typography components, icons.
-- [references/tokens.md](references/tokens.md): colour tokens with ratios, type roles, spacing, radii, elevation, states matrix.
+- [references/tokens.md](references/tokens.md): colour tokens with ratios (light and dark values), type roles, spacing, radii, elevation, states matrix.
 - [references/forms.md](references/forms.md) and [references/html-elements.md](references/html-elements.md): form layouts, native inputs, media, embeds.
 - [references/data-table.md](references/data-table.md): `WithDataTable`, `Column`, `Filter`, `Action`, layouts, focus, performance.
 - [references/overlays.md](references/overlays.md), [references/feedback.md](references/feedback.md), [references/navigation.md](references/navigation.md), [references/data-display.md](references/data-display.md): dialogs, loading, toasts, notifications, tabs, sidebar, cards, charts.
@@ -124,4 +126,4 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 
 ## Before you hand over
 
-Check the screen against the hard rules above, then: no console errors; no page-level sideways scroll at 1440, 1024, 768, 390, 320; axe-core clean (WCAG 2.2 AA + best-practice); keyboard path works (Tab order, Escape closes, focus returns); long names, emails and titles wrap; empty, loading and error states exist. In the kit repo: `composer test`, `composer contrast`, `npm run a11y`.
+Check the screen against the hard rules above, then: no console errors; no page-level sideways scroll at 1440, 1024, 768, 390, 320; axe-core clean (WCAG 2.2 AA + best-practice); keyboard path works (Tab order, Escape closes, focus returns); long names, emails and titles wrap; empty, loading and error states exist. Check dark too: the screen in the dark scheme has no hard-coded light colour and no console errors. In the kit repo: `composer test`, `composer contrast` (four sets: each theme in light and dark), `npm run a11y` (both schemes).

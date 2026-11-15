@@ -14,7 +14,7 @@ Always:
   8. Toasts sit above modals; place x-ui.toaster once; toasts never take focus.
   9. Text is never cut off: no truncate, ellipsis or line-clamp; long strings wrap.
   10. Status pills (x-ui.badge) are one line, sized to the label, never wrapped or clipped.
-  11. Tokens only: no hex, gray-*, or arbitrary values.
+  11. Tokens only: no hex, gray-*, bg-white/text-white, Tailwind red/emerald/amber/blue, or arbitrary values (use surface, card, popover, on-secondary and the status tokens, so dark mode works).
 - Forms sit on a tinted page (x-ui.form-page) in white x-ui.panel elements; data pages are flat white with 1px rules.
 - Web URLs use model UUIDs (route('name', $model) with {model:uuid} binding); people see short references like TXN-9F3C21AB.
 - Motion comes from the kit (06-accessibility-performance-motion-js-icons.md): wire:transition.navigate on the layout's <main> only; charts draw in once by themselves (motion="none" opts out); no page, chart or idle animations of your own; only transform and opacity animate; reduced motion is instant.

@@ -19,7 +19,7 @@ Every control is `h-9` (36px), or `h-8` with `size="sm"`, has a 1px `control` bo
 
 | State | How |
 |---|---|
-| Client invalid | `:user-invalid` on the control turns its `[data-control-box]` border `red-600`, only after the user edits or submits. Fallback for every browser and for screen readers: on blur, a kit control that fails its own constraints (`type=email`, `url`, `pattern`, `min`/`max`) gets `aria-invalid="true"` (`data-client-invalid`), removed once valid. Server errors (`aria-invalid` from `$errors`) are never removed by it |
+| Client invalid | `:user-invalid` on the control turns its `[data-control-box]` border `danger`, only after the user edits or submits. Fallback for every browser and for screen readers: on blur, a kit control that fails its own constraints (`type=email`, `url`, `pattern`, `min`/`max`) gets `aria-invalid="true"` (`data-client-invalid`), removed once valid. Server errors (`aria-invalid` from `$errors`) are never removed by it |
 | Read-only | `[data-control-box]` with a read-only kit input: `panel-footer` fill, default cursor, border unchanged. `x-ui.copy-field` stays white |
 | Print | data pages print without the sidebar, top bar, progress bar, toasts or anything with `data-print-hide`; links in `main` print their address after the text (`data-print-no-url` opts out); table headers repeat; panels lose their shadow; privacy-mode money stays blurred |
 
@@ -50,7 +50,7 @@ Every control is `h-9` (36px), or `h-8` with `size="sm"`, has a 1px `control` bo
 | `x-ui.accordion`, `.item` | `exclusive`, `name`, `label`; item `summary`, `open`, `meta` | Items divided by 1px `line` rules. `exclusive` closes the others (give each exclusive accordion a unique `name`) |
 | `x-ui.popover` | `label`, `title`, `placement`, `width`; slot `trigger` | See the decision below |
 | `x-ui.progress` | `label`, `value`, `max`, `valueText`, `hideLabel`, `id`; `size`, `tone`, `labelPosition`, `format`, `buffer` ([workflow](workflow.md) "Progress") | Native `<progress>` for the semantics, drawn as a `surface-muted` track (4, 8 or 12px) with a fill that scales to the value (`chart-1` 15.8:1, 13.6:1 on the track; or a status tone), label and percent. No `value`: indeterminate, a 30% segment slides (transform only, no stripes); reduced motion holds it and pulses. Not the page-level `x-ui.progress-bar` |
-| `x-ui.meter` | `label`, `value`, `min`, `max`, `low`, `high`, `optimum`, `format`, `valueText`, `words` | Native `<meter>`; the browser picks the bar: optimum `emerald-700`, next `amber-700`, far `red-700` (5.36, 5.03, 6.42 on white; 4.62, 4.34, 5.53 on the track). The value and "Good", "Fair" or "Poor" are printed, so colour is never the only cue |
+| `x-ui.meter` | `label`, `value`, `min`, `max`, `low`, `high`, `optimum`, `format`, `valueText`, `words` | Native `<meter>`; the browser picks the bar: optimum `success-text`, next `warning-text`, far `danger-text` (5.36, 5.03, 6.42 on white; 4.62, 4.34, 5.53 on the track). The value and "Good", "Fair" or "Poor" are printed, so colour is never the only cue |
 
 ### Decision: Popover API
 

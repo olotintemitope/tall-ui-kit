@@ -17,6 +17,7 @@ Vite resolves `gsap` from your app's `node_modules`: `npm install gsap` (3.15 or
 
 | Module | What it registers |
 |---|---|
+| `color-scheme.js` | `window.uiColorScheme` (`get`, `set`, `resolved`, `allowed`), the `ui-color-scheme` window event (also on OS changes under system, and from other tabs), `uiThemeToggle` (x-ui.theme-toggle). See [Dark mode](theming.md) |
 | `kit.js` | `privacy` store (x-ui.money masking, H shortcut), `dismissible` data, the `uiChart` component (`charts.js`) |
 | `toasts.js` | `toasts` store, `$toast` magic, the `toast` browser event (Livewire `$this->dispatch('toast', ...)`); imports `toaster-layer.js` (toasts above modals) |
 | `dialogs.js` | `uiDialog` (native `<dialog>`: open, close, busy, dirty guard, `open-dialog`/`open-confirm` events); imports `placement.js` |
@@ -36,4 +37,4 @@ Sizes measured on the workbench build: the whole kit entry is 19.5 KB gzip, plus
 
 ## Head script
 
-Put `<x-ui.head />` in `<head>` (with `:area="'admin'"` in a shell that has a sidebar). It sets the storage prefix and applies privacy mode, sidebar collapse and focus mode before first paint, so nothing flashes.
+Put `<x-ui.head />` in `<head>` (with `:area="'admin'"` in a shell that has a sidebar). It sets the storage prefix and applies the colour scheme (`html[data-color-scheme]`), privacy mode, sidebar collapse and focus mode before first paint, so nothing flashes. Put it before the stylesheet link.

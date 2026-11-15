@@ -70,7 +70,7 @@ Three components on one Alpine behaviour, `uiCopy` in `resources/js/ui.js`.
 | State | Icon | Label | Colour | Announced |
 |---|---|---|---|---|
 | Idle | copy | "Copy" (or `label`) | ink (label), ink-muted icon buttons (5.86:1), primary-text links (5.21:1) | |
-| Copied, 2s | check, cross-faded over 150ms (opacity only) | "Copied" | emerald-700, 5.48:1 on white | "Copied to clipboard" (polite) |
+| Copied, 2s | check, cross-faded over 150ms (opacity only) | "Copied" | success-text, 5.48:1 on white | "Copied to clipboard" (polite) |
 | Failed | copy | stays "Copy"; a hint attached below the button reads "Press ⌘C to copy" (Ctrl+C off a Mac) | as idle; the hint is white on ink (15.9:1) | "Copy failed. Press ⌘C to copy." (polite); the button is `aria-describedby` the hint while it shows |
 
 - A repeat click restarts the 2s timer and announces again (the live region is cleared first).
