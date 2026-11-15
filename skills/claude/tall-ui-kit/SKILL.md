@@ -21,7 +21,8 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 - **Contrast:** text 4.5:1, boundaries and marks 3:1, every state, no exemptions. Orange/accent text is `primary-text`, never `primary`. Disabled never uses opacity.
 - **Focus:** `focus-ring` on custom controls; focus never falls to `<body>`; after deletes move focus to the next item, then the previous, then the list heading.
 - **No native `<select>`.** Use `x-ui.select` (or `x-ui.combobox` to filter by typing).
-- **Popups open below** their trigger, never flipped above (`x-ui.select`, `x-ui.dropdown`, `x-ui.combobox`, `x-ui.popover` already do; do not add `top` placements except deliberately, e.g. an account menu at the foot of a sidebar).
+- **No native date or time inputs.** Never `type="date|time|month|week|datetime-local"` (not even on `x-ui.input`): use `x-ui.date`, `x-ui.datetime`, `x-ui.time-input`, `x-ui.month`, `x-ui.week` or `x-ui.date-range`. Values stay ISO (Y-m-d, H:i, Y-m, 2026-W47).
+- **Popups open below** their trigger, never flipped above (`x-ui.select`, `x-ui.dropdown`, `x-ui.combobox`, `x-ui.popover` and the date pickers already do; do not add `top` placements except deliberately, e.g. an account menu at the foot of a sidebar).
 - **Tables never push the page sideways** at any width. List pages: `x-data-table` with `tableLayout()` = `'stack'`. Plain `x-ui.table` scrolls inside its own box. Check 1440, 1024, 768, 390, 320.
 - **Text is never cut off:** no `truncate`, `text-ellipsis`, `line-clamp`, fixed heights on text; long strings use `wrap-anywhere` (or `wrap-break-word` in cells).
 - **Pills** (`x-ui.badge`, the only `rounded-full`) are status badges only: one line, sized to the label, never wrapped or clipped.
@@ -90,6 +91,7 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | One record's fields | `x-ui.card.detail`, `x-ui.dl`, `x-ui.kv-list` |
 | Switch views of one subject | `x-ui.tabs`; period or table/chart of the same data: `x-ui.segmented` |
 | Choices | `x-ui.select`, `x-ui.combobox`, `x-ui.radio-group` (5 or fewer visible), `x-ui.checkbox`, `x-ui.switch` |
+| Dates and times | `x-ui.date`, `x-ui.datetime`, `x-ui.time-input`, `x-ui.month`, `x-ui.week`; a period: `x-ui.date-range wire:model.start.live="from" wire:model.end.live="to"` (presets built in). Typed text is parsed; keyboard per the APG date picker ([references/forms.md](references/forms.md), Dates and times) |
 | Menu of actions | `x-ui.dropdown` + `.item`, `.separator`, `.label` |
 | Extra detail on demand | `x-ui.popover`; hint text: `x-ui.tooltip` |
 | Modal work | `x-ui.dialog`, `x-ui.dialog.form`, `x-ui.dialog.steps`, `x-ui.sheet` |

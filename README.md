@@ -104,7 +104,7 @@ Not in the package (app code): navigation data, shells and command palette data,
 
 ## Documentation
 
-- [Rules](docs/rules.md): no AI look, borders, focus, contrast, below-only popups, no native `<select>`, tables, toasts above modals, one-line pills, short references and UUID URLs
+- [Rules](docs/rules.md): no AI look, borders, focus, contrast, below-only popups, no native `<select>` or date inputs, tables, toasts above modals, one-line pills, short references and UUID URLs
 - [Theming](docs/theming.md) and [tokens, type roles and states](docs/tokens.md)
 - [Components index](docs/components/README.md): every component with its props and slots
   - [Forms and form layouts](docs/components/forms.md), [HTML5 and media elements](docs/components/html-elements.md)

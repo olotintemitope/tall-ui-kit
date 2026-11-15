@@ -12,6 +12,7 @@ Companion to [the components index](components.md); field-level controls (`x-ui.
 | Focus on the first error | Any `x-ui.form` submit (`resources/js/ui.js`): the error summary when it shows, otherwise the first `aria-invalid` field, scrolled clear of the top bar and the sticky actions. Success leaves focus on the submit button and a toast confirms |
 | Client checks | `:user-invalid` borders and the `aria-invalid` fallback from `docs/components/html-elements.md` flag a malformed email or URL on blur, before the server runs |
 | Choices | `x-ui.select` (custom listbox; no native `<select>` anywhere, `PopupPlacementTest` guards it), `x-ui.combobox` when the list needs typing to filter, `x-ui.radio-group` for up to five visible choices. The select's list opens below and is never clipped by a sheet or dialog. Workbench: `/forms` |
+| Dates and times | `x-ui.date`, `x-ui.datetime`, `x-ui.time-input`, `x-ui.month`, `x-ui.week`, `x-ui.date-range`: custom pickers, never the browser's (see Dates and times below; `DatePickerTest` guards the views). Workbench: `/dates` |
 | Mobile (390) | One column; side columns (summary rail, preview, section nav) move below or above the form; panel and footer buttons go full width, side by side (`max-sm:[&>*]:flex-1`); toolbars wrap |
 | Ids | Do not put an `id` attribute on a component that wraps fields (`x-ui.form-section`, `x-ui.panel`): `@aware` hands it to the controls inside. Put anchor ids on a plain wrapping element |
 
@@ -90,6 +91,41 @@ A sticky 200px list from lg (`top-20`); the link of the section under a reading 
 
 `x-ui.field inline`: from `sm` the label and hint sit in a 220px column, the control and its error on the right, centred on the control; stacked on phones. Wiring (`for`, `id`, `aria-describedby`) is the same as a stacked field. `x-ui.form-layout.inline` divides the rows with 1px `line` rules inside a panel.
 
+## Dates and times
+
+Every date or time control is a text field plus a calendar (or clock) button and a popup below the field. No native `<input type="date|time|month|week|datetime-local">` anywhere: the browser's picker cannot be kept below its field, styled, or made to match the kit (`DatePickerTest` fails on one in any view). One engine, `x-ui.date-picker`, behind six components; behaviour in `resources/js/datepicker.js`, parsing and formats in `resources/js/date-core.js` (tested under `node --test`), server side in `TallUiKit\Support\DateInput`.
+
+| Component | Value (what the server receives) | Field shows | Popup |
+|---|---|---|---|
+| `x-ui.date` | `2026-11-15` (Y-m-d) | 15 Nov 2026 | Month grid |
+| `x-ui.datetime` | `2026-11-15T18:05` | 15 Nov 2026, 18:05 | Month grid, hour and minute columns beside it (below it on phones), Done |
+| `x-ui.time-input` | `18:05` (H:i, also with `hours="12"`) | 18:05, or 6:05 pm | Hour and minute columns (and am/pm) |
+| `x-ui.month` | `2026-11` | November 2026 | Year header, 12 months |
+| `x-ui.week` | `2026-W47` (ISO week, Monday first) | Week 47, 2026 | Month grid with week numbers; a row is a week |
+| `x-ui.date-range` | two Y-m-d dates | 1 Nov 2026 – 15 Nov 2026 | Preset buttons, then the month grid: first click the start, second the end, the days between preview on hover |
+
+The public API of the five older components is unchanged: name, `wire:model` (any modifier) or `x-model`, `min`, `max`, `step`, `disabled`, `required`, `invalid`, `hint` and `error` through `x-ui.field`, and the value format. Extra props: `disabledDates` (a list of Y-m-d dates and `sat`, `sun`, `weekends`; or the name of a global JS function given a Y-m-d date that returns true to disable it), `weekStart` (0 to 6; default the visitor's locale, else Monday; `<html data-ui-week-start>` sets it for a whole app), `minuteStep` (5; or `step` in seconds as before), `hours` (24 or 12, display only), `defaultTime` (09:00, the time a datetime takes when only a day is chosen), `placeholder` (a format hint by default: DD/MM/YYYY), `defer`.
+
+Range binding: two properties, `<x-ui.date-range wire:model.start.live="from" wire:model.end.live="to" />` (one request when the range is chosen, never one per end), or one array property `['start' => , 'end' => ]` with `wire:model`. `presets`: `true` (Last 7 days, Last 30 days, This month, Custom), a list of keys (`today`, `last7`, `last30`, `last90`, `thisMonth`, `lastMonth`, `thisYear`, `custom`), keys to labels, or `['label', 'start', 'end']` entries; `false` hides them. Preset dates are worked out on the server in the app timezone. Plain forms post `name[start]` and `name[end]` (or `startName`, `endName`).
+
+Typing: the field takes text and parses it on Enter or blur, leniently: `15/11/2026`, `15-11-26`, `15 Nov 2026`, `Nov 15, 2026`, `2026-11-15`, `15 Nov` (this year), `today`, `tomorrow`; times `18:05`, `1805`, `6pm`, `6:30 pm`; months `11/2026`, `Nov 2026`; weeks `2026-W47`, `W47 2026`, or any date; ranges `start – end`, `start to end`. Day first; month first only when day first cannot be a date (`11/25/2026`). Text that is not a value, or a value outside `min` and `max` or disabled, leaves the value as it was, marks the field invalid and says why in a polite region ("Enter a date like 15 Nov 2026.", "Choose a date from 1 Jan 2026 to 31 Dec 2027."). Escape in the field puts the last value back.
+
+Keyboard (the WAI-ARIA APG date picker dialog):
+
+| Where | Keys |
+|---|---|
+| Field | Down (or Alt+Down) opens the popup; Enter commits typed text; Escape undoes typing |
+| Day grid | Left/Right a day, Up/Down a week, PageUp/PageDown a month, Shift+PageUp/PageDown a year, Home/End the start and end of the week, Enter or Space choose, Escape closes and returns focus to what opened it |
+| Month grid | Left/Right a month, Up/Down a row (3 months), PageUp/PageDown a year, Home/End the row |
+| Week grid | Up/Down (Left/Right) a week, PageUp/PageDown a month, Shift a year, Home/End the month's first and last week |
+| Month and year buttons | Open a custom listbox below them (never a native `<select>`): Up/Down, Home/End, PageUp/PageDown, Enter or Space choose, Escape returns to the button |
+| Time columns | Up/Down move, Enter or Space choose (hour then minute; the last column closes), Left/Right switch column |
+| Anywhere in the popup | Tab and Shift+Tab cycle inside it (a modal dialog); Escape closes; in a range with the start chosen, Escape drops the start first |
+
+Semantics: the popup is `role="dialog"` named "Choose date"; the grid a `table role="grid"` labelled by a polite heading that announces the month as it changes; days are cells with `aria-selected`, `aria-disabled`, `aria-current="date"` for today and a full date as the name. Focus moves into the grid (the chosen day, else today, inside min and max) on open and back to the button after a choice. Look: 36px day cells; chosen white on `secondary`, range days ink on `surface-muted`, today underlined, disabled days `ink-muted` with a line through (never opacity); 1px borders; motion is the kit's popup entrance (150ms `ease-motion-out`, instant under reduced motion).
+
+Placement: `x-anchor.bottom-start.noflip.offset.6.fixed` plus `$revealBelow`, so it opens below in tables, dialogs and sheets and is never clipped; near the end of a short page a spacer makes room instead of flipping. The popup is never wider than the screen less 16px (302px for a month, 450px with time columns, which drop below the grid when there is no room), so 390 and 320 have no sideways scroll. Cost: one small Alpine component per picker; the popup is built on first open and each month is one `innerHTML` (no Alpine per cell, events delegated). Put `defer` on pickers in long lists or wrap them in a `data-ui-defer` section.
+
 ### Modal and side sheet
 
 `x-ui.dialog.form` (Enter submits; busy save; errors stay inside; closing with edits asks "Discard changes?"; returns `false` or a string to stay open) and `x-ui.sheet` (480px or 640px from the right, full width on phones; put a `<form id>` in the body and a `type="submit" form="…"` button in the footer). Both are documented in [the components index](components.md) under Dialogs and confirmations. Never put an `x-ui.panel` inside either.
@@ -133,7 +169,7 @@ Every control is `h-9` (36px), or `h-8` with `size="sm"`, has a 1px `control` bo
 | `x-ui.number-input` | `min`, `max`, `step` (1), `format` (number, money, percent), `currency`, `decimals`, `noun`, `size`, `width`, `invalid`, `label`, `value` | `role="spinbutton"` on a text input (so money can be grouped), two 32px buttons inside the border, each divided by a 1px `control` rule. Up/Down step, Page Up/Down x10, Home/End to the bounds; the buttons are `tabindex="-1"` (the keyboard steps on the field) and `aria-disabled` at a bound. Plain digits while editing, `₦150,000` after blur; clamped and rounded to `step`. Bind on the component |
 | `x-ui.range` | `label`, `min`, `max`, `step`, `steps`, `dual`, `format`, `currency`, `unit`, `openEnded`, `value`, `minModel`, `maxModel`, `disabled`, `hideLabel`, `id` | Native ranges. Track 4px `control` (3.65:1), chosen part ink, thumb 24px (the target) with a 1px `control` edge and `shadow-thumb`; focus ring on the thumb. `<output>` shows the value; each thumb has `aria-valuetext`. `x-marketplace.range` is now this component with Livewire models |
 | `x-ui.color` | `value`, `size`, `width`, `label`, `swatchLabel` | Native swatch (28px, opens the system picker) and a hex field; #RGB expands; a bad hex is `aria-invalid` until fixed |
-| `x-ui.date`, `x-ui.time-input`, `x-ui.datetime`, `x-ui.month`, `x-ui.week` | `size`, `width`, `invalid`; `min`, `max`, `step` pass through | One look. `month` and `week` are plain text fields in Firefox and Safari (no picker), so give a format hint ("2026-W47") where they are used |
+| `x-ui.date`, `x-ui.time-input`, `x-ui.datetime`, `x-ui.month`, `x-ui.week`, `x-ui.date-range` | `size`, `width`, `invalid`, `min`, `max`, `step`, `disabledDates`, `weekStart`, `hours`, `minuteStep`, `presets` (range) | Custom pickers, not native inputs: a typed text field plus a popup below it, the same in every browser. Values as the native inputs posted (Y-m-d, H:i, Y-m, 2026-W47, Y-m-d\TH:i). See [forms.md](forms.md), Dates and times |
 | `x-ui.combobox` | `options` (value => label, or `value`, `label`, `hint`, `disabled`), `value`, `placeholder`, `allowCustom`, `empty`, `native`, `size`, `width`, `invalid`, `label` | ARIA 1.2 combobox: `role="combobox"` input, `aria-expanded`, `aria-controls`, `aria-activedescendant`; `role="listbox"` popup named by the field label. Type-ahead filter with a polite count; Down/Up, Alt+Down, Enter, Escape (twice clears), Tab keeps the choice. `native` renders `<input list>` and `<datalist>` for free text with suggestions where the browser's unstyled popup is acceptable |
 | `x-ui.checkbox indeterminate` | | The native mixed state (announced as "mixed"), an ink box with a white dash; bind `x-effect="$el.indeterminate = ..."` for a live value |
 | `x-ui.fieldset` | `legend`, `description`, `size` (field, subheading), `hideLegend`, `disabled`, `id` | No box: the legend and 16px spacing group the controls; the description is `aria-describedby` |
