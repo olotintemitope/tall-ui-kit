@@ -1,7 +1,7 @@
 {{--
     Search box with a leading icon and a clear button that appears once there is
     text. Clearing fires an input event, so wire:model.live and x-model update.
-    Props: size (default h-9 | sm h-8), width (full|lg|md|sm|xs, default md), placeholder
+    Props: size (sm h-8 | default h-9 | lg h-10), width (full|lg|md|sm|xs, default md), placeholder
     (Search), shortPlaceholder (shown instead when the full placeholder does not fit the
     box, e.g. "Search payouts" at 320px; resources/js/forms.js measures it on resize; if
     even that does not fit, "Search"). The accessible name stays the full placeholder.
@@ -11,6 +11,8 @@
 
 @php
     $model = \TallUiKit\Support\FormControl::model($attributes);
+    // Inside x-ui.field the field's <label for> names the input; the placeholder only names a bare search box.
+    $inField = filled($__env->getConsumableComponentData('name')) || filled($__env->getConsumableComponentData('id'));
 @endphp
 
 <div
@@ -28,8 +30,8 @@
         autocomplete="off"
         x-ref="input"
         x-on:input="sync()"
-        x-on:keydown.escape="if (filled) { $event.stopPropagation(); clear() }"
-        :aria-label="$attributes->get('aria-label', $placeholder)"
+        x-on:keydown.escape="if (filled) { $event.preventDefault(); $event.stopPropagation(); clear() }"
+        :aria-label="$attributes->get('aria-label', $inField ? null : $placeholder)"
         {{ $attributes->except(['class', 'style']) }}
     >
         <x-slot:prefix plain><x-ui.icon name="search" class="size-4" /></x-slot:prefix>

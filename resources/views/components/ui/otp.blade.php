@@ -6,11 +6,17 @@
     the whole code spreads across the boxes. When every box is filled it dispatches
     `otp-complete`. Setting the bound value to '' from the server clears the boxes and
     focuses the first. Boxes are 48px; disabled boxes are dashed on surface-subtle.
-    Props: length (6), label, id, error (message; marks every box aria-invalid).
+    Props: length (6), label, id (field-code; a second code on the same page without its
+    own id gets field-code-2, so ids never repeat), error (message; marks every box aria-invalid).
 --}}
 @props(['length' => 6, 'label' => 'Verification code', 'id' => 'field-code', 'error' => null])
 
 @php
+    $otpCount = (int) request()->attributes->get('ui.otp.count', 0) + 1;
+    request()->attributes->set('ui.otp.count', $otpCount);
+    if ($id === 'field-code' && $otpCount > 1) {
+        $id .= '-'.$otpCount;
+    }
     $errorId = $id.'-error';
 @endphp
 

@@ -1,6 +1,6 @@
 {{--
     One label and value pair of x-ui.card.detail: label in meta, value in body (or
-    numeric, ink, for amounts, counts and ids). Props: label, numeric. Slot: value.
+    numeric, ink, for amounts, counts and ids). Props: label, numeric. Slot: the value (the default slot).
 --}}
 @props(['label', 'numeric' => false])
 

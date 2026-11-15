@@ -66,6 +66,13 @@ document.addEventListener('alpine:init', () => {
 
             this.onCancel = (event) => {
                 event.preventDefault();
+                // An alert dialog: Escape acknowledges, exactly like its button.
+                const acknowledge = dialog.querySelector('[data-dialog-acknowledge]');
+                if (acknowledge) {
+                    acknowledge.click();
+
+                    return;
+                }
                 this.close();
             };
             this.onClose = () => {
@@ -136,6 +143,8 @@ document.addEventListener('alpine:init', () => {
             if (options.initialFocus === 'cancel') {
                 target = dialog.querySelector('[data-dialog-cancel]');
             }
+            // An explicit [autofocus] wins over the first focusable (e.g. Close in the lightbox, not a new-tab link).
+            target ??= [...scope.querySelectorAll('[autofocus]')].find(visible) ?? null;
             target ??= [...scope.querySelectorAll('[data-dialog-body] ' + FIELD.split(', ').join(', [data-dialog-body] '))].find(visible);
             target ??= options.initialFocus === 'title' ? dialog.querySelector('[data-dialog-title]') : null;
             target ??= [...dialog.querySelectorAll(FOCUSABLE)].find((el) => visible(el) && !el.hasAttribute('data-dialog-close'));

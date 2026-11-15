@@ -37,7 +37,8 @@
         type="button"
         x-show="$store.toasts.hiddenCount > 0"
         x-cloak
-        x-on:click="$store.toasts.expanded = true"
+        x-on:click="$store.toasts.expanded = true; $nextTick(() => $root.querySelector('[data-toast] button')?.focus())"
+        x-bind:aria-expanded="$store.toasts.expanded ? 'true' : 'false'"
         aria-expanded="false"
         class="pointer-events-auto self-end rounded-md border border-line bg-popover px-2.5 py-1 font-body text-meta text-ink shadow-popover hover:bg-surface-subtle focus-ring"
         x-text="$store.toasts.hiddenCount + ' more'"

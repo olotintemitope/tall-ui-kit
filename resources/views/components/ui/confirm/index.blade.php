@@ -8,9 +8,10 @@
     permissions. The backdrop does not close it.
     Props: name, title, description (the consequence), confirmLabel (a verb), action,
     params (arguments for the action), variant (default | destructive), initialFocus
-    (first | cancel). Slot: extra body content (x-ui.confirm.destructive and .reason use it).
+    (first | cancel), unavailableReason (the id of the text that says why the confirm
+    button is unavailable, linked with aria-describedby while it is). Slot: extra body content (x-ui.confirm.destructive and .reason use it).
 --}}
-@props(['name', 'title', 'description' => null, 'confirmLabel' => 'Confirm', 'action' => null, 'params' => [], 'variant' => 'default', 'initialFocus' => null, 'canConfirm' => 'true'])
+@props(['name', 'title', 'description' => null, 'confirmLabel' => 'Confirm', 'action' => null, 'params' => [], 'variant' => 'default', 'initialFocus' => null, 'canConfirm' => 'true', 'unavailableReason' => null])
 
 @php
     $run = $action
@@ -38,6 +39,6 @@
 
     <x-slot:footer>
         <x-ui.button variant="outline" size="sm" x-on:click="close()" x-bind:aria-disabled="busy ? 'true' : null" data-dialog-cancel>Cancel</x-ui.button>
-        <x-ui.dialog.action :variant="$destructive ? 'destructive' : 'default'" x-bind:aria-disabled="busy || ! ({{ $canConfirm }}) ? 'true' : null" x-on:click="if ({{ $canConfirm }}) {{ $run }}" data-confirm-action>{{ $confirmLabel }}</x-ui.dialog.action>
+        <x-ui.dialog.action :variant="$destructive ? 'destructive' : 'default'" x-bind:aria-disabled="busy || ! ({{ $canConfirm }}) ? 'true' : null" :x-bind:aria-describedby="$unavailableReason ? '! ('.$canConfirm.') ? '.\Illuminate\Support\Js::from($unavailableReason).' : null' : null" x-on:click="if ({{ $canConfirm }}) {{ $run }}" data-confirm-action>{{ $confirmLabel }}</x-ui.dialog.action>
     </x-slot:footer>
 </x-ui.dialog.base>

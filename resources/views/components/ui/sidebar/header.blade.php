@@ -31,13 +31,13 @@
         <button
             type="button"
             x-on:click="toggle()"
+            {{-- The label carries the state (Expand or Collapse), so there is no aria-expanded as well. --}}
             x-bind:aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-            x-bind:aria-expanded="collapsed ? 'false' : 'true'"
             aria-label="Collapse sidebar"
             data-sidebar-toggle
             @class(['flex size-8 items-center justify-center rounded-md transition-colors duration-100 focus-ring group-data-[sidebar-root=drawer]/sidebar:hidden', $tone['control']])
         >
-            <x-ui.icon name="panel-left" :stroke-width="1.75" class="size-4" />
+            <x-ui.icon name="panel-left" class="size-4" />
         </button>
     @endif
     <button type="button" x-on:click="closeDrawer()" aria-label="Close menu" @class(['hidden size-8 items-center justify-center rounded-md transition-colors duration-100 focus-ring group-data-[sidebar-root=drawer]/sidebar:flex', $tone['control']])>
@@ -55,7 +55,7 @@
             @class(['flex min-h-8 w-full items-center gap-2 rounded-md border px-2.5 type-body transition-colors duration-100 focus-ring rail:justify-center rail:px-0', $tone['search']])
             data-sidebar-search
         >
-            <x-ui.icon name="search" :stroke-width="1.75" class="size-4 shrink-0" />
+            <x-ui.icon name="search" class="size-4 shrink-0" />
             <span class="flex-1 text-left rail:hidden">{{ $searchLabel }}</span>
             <span class="hidden sm:flex rail:hidden!">
                 <x-ui.kbd :tone="$tone['kbd']" x-data x-text="/Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘K' : 'Ctrl K'">⌘K</x-ui.kbd>

@@ -228,6 +228,37 @@ function focusOut(event) {
     if (event.target === keyboard.handle && event.relatedTarget !== keyboard.handle) drop(false);
 }
 
+/* ---------- Move buttons: the single-pointer alternative to dragging (WCAG 2.5.7) ---------- */
+
+function moveClick(event) {
+    const button = event.target.closest?.('[data-sortable-move]');
+    if (!button || button.disabled || keyboard || drag) return;
+    const list = button.closest('[data-sortable]');
+    const item = button.closest('[data-sortable-item]');
+    if (!list || !item || list.hasAttribute('data-sortable-disabled')) return;
+    const all = items(list);
+    const from = all.indexOf(item);
+    const to = button.dataset.sortableMove === 'up' ? from - 1 : from + 1;
+    if (to < 0 || to >= all.length) {
+        announce(list, `${labelOf(item)} is at position ${from + 1} of ${all.length}.`);
+
+        return;
+    }
+    moveTo(list, item, to);
+    button.focus({ preventScroll: true });
+    item.scrollIntoView({ block: 'nearest' });
+    announce(list, `${labelOf(item)} moved to position ${to + 1} of ${all.length}.`);
+    commit(list, item, from, to);
+}
+
+/* Rows written in the slot carry no `help`: point their handles at the list's instructions. */
+function describeHandle(event) {
+    const handle = event.target.closest?.('[data-sortable-handle]');
+    if (!handle || handle.hasAttribute('aria-describedby')) return;
+    const help = handle.closest('[data-sortable-root]')?.querySelector(':scope > [id$="-help"]');
+    if (help) handle.setAttribute('aria-describedby', help.id);
+}
+
 export function start() {
     if (window.uiSortable) return;
     window.uiSortable = { active: () => Boolean(drag || keyboard) };
@@ -237,4 +268,6 @@ export function start() {
     document.addEventListener('pointercancel', (e) => drag && e.pointerId === drag.pointerId && finishPointer(true));
     document.addEventListener('keydown', keyDown);
     document.addEventListener('focusout', focusOut);
+    document.addEventListener('click', moveClick);
+    document.addEventListener('focusin', describeHandle);
 }

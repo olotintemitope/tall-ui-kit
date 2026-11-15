@@ -31,17 +31,17 @@
                 id="{{ $controlId }}"
                 x-bind:aria-checked="on ? 'true' : 'false'"
                 aria-checked="{{ $checked ? 'true' : 'false' }}"
-                x-on:click="on = ! on"
+                x-on:click="on = ! on; $nextTick(() => { $el.dispatchEvent(new Event('input', { bubbles: true })); $el.dispatchEvent(new Event('change', { bubbles: true })) })"
                 data-ui="switch"
                 @if ($isInvalid) aria-invalid="true" @endif
                 @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif
+                @if ($label && $description) aria-labelledby="{{ $controlId }}-label" @endif
                 {{ $attributes->except(array_merge(array_keys($binding->getAttributes()), ['class', 'id', 'name']))->class([
                     'relative inline-flex shrink-0 items-center rounded-full border transition-colors duration-150 focus-ring',
                     'disabled:cursor-not-allowed disabled:border-dashed disabled:border-control! disabled:bg-surface-subtle!',
                     $small ? 'h-4 w-7' : 'h-5 w-9',
-                    'border-danger' => $isInvalid,
                 ]) }}
-                x-bind:class="on ? 'bg-secondary border-secondary' : 'bg-surface-muted border-control'"
+                x-bind:class="on ? 'bg-secondary border-secondary' : 'bg-surface-muted {{ $isInvalid ? 'border-danger' : 'border-control group-hover:not-disabled:border-control-hover' }}'"
             >
                 <span
                     @class(['pointer-events-none block rounded-full shadow-thumb transition-transform duration-150 motion-reduce:transition-none forced-colors:bg-[CanvasText]', $small ? 'size-3' : 'size-4'])
@@ -53,7 +53,7 @@
         @if ($hasText)
             <span class="flex min-w-0 flex-col group-has-disabled:[&>span]:text-ink-muted">
                 @if ($label)
-                    <span class="type-body-strong select-none">{{ $label }}</span>
+                    <span id="{{ $controlId }}-label" class="type-body-strong select-none">{{ $label }}</span>
                 @endif
                 @if ($description)
                     <span id="{{ $descriptionId }}" class="type-meta">{{ $description }}</span>

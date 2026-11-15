@@ -459,8 +459,8 @@ document.addEventListener('alpine:init', () => {
                 parts.push(`<div class="ui-cal-days"><div class="ui-cal-head">
                     <button type="button" class="ui-cal-icon focus-ring" data-nav="-1" aria-label="Previous ${unit}">${ICONS.prev}</button>
                     <div class="ui-cal-jumps">
-                        ${mode === 'month' ? '' : `<button type="button" class="ui-cal-jump focus-ring" data-jump="month" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.id('list')}" aria-label="Month"><span data-label></span>${ICONS.down}</button>`}
-                        <button type="button" class="ui-cal-jump focus-ring" data-jump="year" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.id('list')}" aria-label="Year"><span data-label></span>${ICONS.down}</button>
+                        ${mode === 'month' ? '' : `<button type="button" class="ui-cal-jump focus-ring" data-jump="month" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.id('list')}"><span data-label></span><span class="sr-only">, month</span>${ICONS.down}</button>`}
+                        <button type="button" class="ui-cal-jump focus-ring" data-jump="year" aria-haspopup="listbox" aria-expanded="false" aria-controls="${this.id('list')}"><span data-label></span><span class="sr-only">, year</span>${ICONS.down}</button>
                     </div>
                     <button type="button" class="ui-cal-icon focus-ring" data-nav="1" aria-label="Next ${unit}">${ICONS.next}</button>
                 </div>

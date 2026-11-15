@@ -315,5 +315,13 @@ export function mount(component, o) {
         },
     };
     if (o.mode === 'check') syncChecks();
-    if (!tree.querySelector('[role=treeitem][tabindex="0"]')) items()[0]?.setAttribute('tabindex', '0');
+    // One tab stop that can be reached: if it sits under a collapsed parent (hidden),
+    // hand it to the nearest visible ancestor row, else the first row.
+    const stop = tree.querySelector('[role=treeitem][tabindex="0"]');
+    if (!stop || stop.getClientRects().length === 0) {
+        let target = stop?.parentElement?.closest('[role=treeitem]');
+        while (target && target.getClientRects().length === 0) target = target.parentElement?.closest('[role=treeitem]');
+        stop?.setAttribute('tabindex', '-1');
+        (target ?? items()[0])?.setAttribute('tabindex', '0');
+    }
 }

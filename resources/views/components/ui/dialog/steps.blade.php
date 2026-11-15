@@ -8,7 +8,7 @@
 --}}
 @props(['name', 'title', 'description' => null, 'steps' => 2, 'size' => 'md', 'action' => null, 'submitLabel' => 'Finish'])
 
-<x-ui.dialog.base :name="$name" :title="$title" :description="$description" :size="$size" :dismissible="false" :steps="$steps" {{ $attributes }}>
+<x-ui.dialog.base :name="$name" :title="$title" :description="$description" :size="$size" :dismissible="false" :steps="$steps" guard="dirty" {{ $attributes }}>
     <x-slot:header>
         <p class="type-caption mt-1" aria-live="polite" data-dialog-progress>Step <span x-text="step">1</span> of {{ $steps }}</p>
     </x-slot:header>
@@ -25,4 +25,17 @@
             <x-ui.dialog.action x-on:click="{{ $action ? 'run('.\Illuminate\Support\Js::from($action).')' : '$dispatch(\'dialog-submitted\', name); close(true)' }}">{{ $submitLabel }}</x-ui.dialog.action>
         </span>
     </x-slot:footer>
+
+    <x-slot:after>
+        <dialog x-ref="discard" wire:ignore.self role="alertdialog" aria-labelledby="dialog-{{ $name }}-discard-title" aria-describedby="dialog-{{ $name }}-discard-description" x-on:cancel.prevent="keepEditing()" class="ui-dialog mx-auto mt-[16vh] h-fit w-[calc(100%-2rem)] max-w-[400px] rounded-lg border border-panel-border bg-popover p-0 shadow-dialog" data-dialog-discard>
+            <div class="px-5 pt-5 pb-4">
+                <h2 id="dialog-{{ $name }}-discard-title" class="type-heading">Discard changes?</h2>
+                <p id="dialog-{{ $name }}-discard-description" class="type-body mt-1.5">Your edits in "{{ $title }}" will be lost.</p>
+            </div>
+            <div class="flex justify-end gap-2 border-t border-line px-5 py-3" data-dialog-footer>
+                <x-ui.button variant="outline" size="sm" x-on:click="keepEditing()" data-dialog-cancel>Keep editing</x-ui.button>
+                <x-ui.button variant="destructive" size="sm" x-on:click="discard()">Discard</x-ui.button>
+            </div>
+        </dialog>
+    </x-slot:after>
 </x-ui.dialog.base>

@@ -32,7 +32,12 @@
     $lower = 'Minimum '.\Illuminate\Support\Str::lower($label);
     $upper = 'Maximum '.\Illuminate\Support\Str::lower($label);
     $fmt = fn ($v) => $v === null ? '' : ($format === 'money' ? \TallUiKit\Support\Format::money($v, $currency) : number_format((float) $v, floor((float) $v) == (float) $v ? 0 : 2));
-    $initialText = $dual ? $fmt($steps[0] ?? $min).' to '.$fmt($steps[$last] ?? $max) : $fmt(is_array($value) ? null : ($value ?? ($steps[$last] ?? $max)));
+    // First paint matches what uiRange draws: the bound value when given, and "+" on an open-ended top.
+    $top = $steps[$last] ?? $max;
+    $plus = fn ($v) => $openEnded && $format === 'number' && (float) $v >= (float) $top ? '+' : '';
+    $pair = is_array($value) && count($value) === 2 ? array_values($value) : [$steps[0] ?? $min, $top];
+    $single = is_array($value) ? null : ($value ?? $top);
+    $initialText = $dual ? $fmt($pair[0]).' to '.$fmt($pair[1]).$plus($pair[1]) : $fmt($single).($single === null ? '' : $plus($single));
 @endphp
 
 <div

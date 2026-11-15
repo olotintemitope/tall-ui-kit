@@ -28,7 +28,7 @@
             @if ($full)
                 <x-ui.button variant="outline" size="sm" :href="$full" target="_blank" rel="noopener">Open full size<span class="sr-only"> (opens in new tab)</span></x-ui.button>
             @endif
-            <x-ui.button size="sm" x-on:click="close()">Close</x-ui.button>
+            <x-ui.button size="sm" x-on:click="close()" autofocus>Close</x-ui.button>
         </x-slot:footer>
     </x-ui.dialog>
 </div>

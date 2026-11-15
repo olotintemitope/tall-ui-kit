@@ -46,7 +46,7 @@
     $controlId = FormControl::id($attributes->get('id', $id), $fieldName) ?? 'tags-'.substr(md5(json_encode([$label, $suggestions, $placeholder])), 0, 6);
     $message = FormControl::error($errors ?? null, $fieldName, $error);
     $isInvalid = $invalid ?? (bool) $message;
-    $list = collect($suggestions)->map(fn ($s) => is_array($s) ? ['value' => (string) ($s['value'] ?? $s[0]), 'hint' => $s['hint'] ?? null] : ['value' => (string) $s, 'hint' => null])->values();
+    $list = collect($suggestions)->map(fn ($s) => is_array($s) ? ['value' => (string) ($s['value'] ?? $s[0]), 'hint' => $s['hint'] ?? $s[1] ?? null] : ['value' => (string) $s, 'hint' => null])->values();
     $tags = array_values(array_map('strval', (array) $value));
     $hasList = $list->isNotEmpty();
     $describedBy = trim(FormControl::describedBy($controlId, filled($hint) && ! $message, (bool) $message).' '.$controlId.'-status'.($max ? ' '.$controlId.'-count' : ''));
@@ -68,9 +68,10 @@
 >
     <div @class([
         'flex flex-wrap items-center gap-1 rounded-md border bg-surface px-1 py-1 transition-[border-color,box-shadow] duration-100',
-        $size === 'sm' ? 'min-h-8' : 'min-h-9',
+        FormControl::height($size, true),
         'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
+        'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:hover:border-control',
     ]) x-on:click.self="$refs.input.focus()" data-control-box>
         {{-- Server-rendered chips for the first paint; Alpine's list replaces them on init. --}}
         @if ($tags)
@@ -132,6 +133,8 @@
             id="{{ $controlId }}-listbox"
             role="listbox"
             @if ($label) aria-label="{{ $label }} suggestions" @else aria-labelledby="{{ $controlId }}-label" @endif
+            {{-- Outside x-ui.field there is no label element: name the list from the input instead. --}}
+            x-init="if (! $el.hasAttribute('aria-label') && ! document.getElementById($el.getAttribute('aria-labelledby'))) { const name = ($refs.input.labels?.[0]?.textContent ?? $refs.input.getAttribute('aria-label') ?? '').replace(/\s*\*\s*$/, '').trim(); $el.removeAttribute('aria-labelledby'); if (name) $el.setAttribute('aria-label', name) }"
             x-show="open"
             x-cloak
             x-effect="open && $revealBelow($el, $refs.input)"

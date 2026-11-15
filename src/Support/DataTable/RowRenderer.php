@@ -151,7 +151,8 @@ final class RowRenderer
             $active = $table->sort === $column->key;
             $classes = trim('type-label '.($column->width ?? ''));
             $out .= '<th scope="col" class="'.e($classes).'" data-cell="'.e(self::cellClasses($column)).'" wire:key="'.e($table->name).'-th-'.e($column->key).'"'
-                .($column->isSortable() ? ' aria-sort="'.($active ? ($table->direction === 'asc' ? 'ascending' : 'descending') : 'none').'"' : '')
+                // aria-sort only on the sorted column (ARIA: omit it elsewhere rather than "none").
+                .($column->isSortable() && $active ? ' aria-sort="'.($table->direction === 'asc' ? 'ascending' : 'descending').'"' : '')
                 .($column->numeric ? ' data-n' : '')
                 .($stack ? ' role="columnheader"' : '').'>';
 

@@ -96,6 +96,8 @@
                 x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
                 x-trap.noscroll.inert="sheet"
+                {{-- First focus goes to the first filter control, never the close button (the kit's dialog rule). --}}
+                x-effect="sheet && setTimeout(() => [...$el.querySelectorAll('input, button, [tabindex]:not([tabindex=\'-1\'])')].find((node) => ! node.hasAttribute('data-sheet-close') && node.getClientRects().length)?.focus(), 0)"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="{{ $table->name }}-sheet-title"
@@ -103,7 +105,7 @@
             >
                 <div class="flex items-center justify-between border-b border-line px-4 py-3">
                     <h2 id="{{ $table->name }}-sheet-title" class="type-heading">{{ $table->filters === [] ? 'View' : 'Filters' }}</h2>
-                    <button type="button" x-on:click="sheet = false" class="flex size-8 items-center justify-center rounded-md text-ink-muted hover:bg-surface-subtle hover:text-ink focus-ring" aria-label="Close">
+                    <button type="button" x-on:click="sheet = false" class="flex size-8 items-center justify-center rounded-md text-ink-muted hover:bg-surface-subtle hover:text-ink focus-ring" aria-label="Close" data-sheet-close>
                         <x-ui.icon name="x" class="size-4" />
                     </button>
                 </div>

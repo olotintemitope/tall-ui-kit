@@ -6,16 +6,17 @@
     without wire:model), variant (list | cards: bordered plan-style choices, 1px `control`
     border (3.65:1); selected gets a 1px `primary-text` border (5.21:1) and a primary/5
     tint, and its radio fills ink (15.9:1)), orientation (vertical|horizontal, list only),
-    required, invalid. wire:model / x-model are applied to every radio. A checked radio
+    required, invalid, error (an explicit message, as on x-ui.field; otherwise
+    $errors->first(name)). wire:model / x-model are applied to every radio. A checked radio
     is an ink fill with a white dot, never a thick border.
 --}}
-@props(['name', 'label' => null, 'hint' => null, 'options' => [], 'selected' => null, 'variant' => 'list', 'orientation' => 'vertical', 'required' => false, 'invalid' => null])
+@props(['name', 'label' => null, 'hint' => null, 'options' => [], 'selected' => null, 'variant' => 'list', 'orientation' => 'vertical', 'required' => false, 'invalid' => null, 'error' => null])
 
 @php
     use TallUiKit\Support\FormControl;
 
     $groupId = FormControl::id($attributes->get('id'), $name);
-    $message = FormControl::error($errors ?? null, $name);
+    $message = FormControl::error($errors ?? null, $name, $error);
     $isInvalid = $invalid ?? (bool) $message;
     $binding = $attributes->filter(fn ($value, $key) => str_starts_with($key, 'wire:model') || $key === 'x-model' || str_starts_with($key, 'x-model.'));
     $cards = $variant === 'cards';
@@ -61,7 +62,7 @@
                         data-ui="radio"
                         @checked($selected !== null && (string) $selected === $option['value'])
                         @disabled($option['disabled'])
-                        @if ($option['description']) aria-describedby="{{ $optionId }}-description" @endif
+                        @if ($option['description']) aria-labelledby="{{ $optionId }}-label" aria-describedby="{{ $optionId }}-description" @endif
                         {{ $binding }}
                         @class([
                             'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto rounded-full border bg-surface transition-colors duration-100',
@@ -76,7 +77,7 @@
                     <span class="pointer-events-none absolute size-1.5 rounded-full bg-on-secondary opacity-0 peer-checked:opacity-100 forced-colors:hidden" aria-hidden="true"></span>
                 </span>
                 <span class="flex min-w-0 flex-col group-has-disabled:[&>span]:text-ink-muted">
-                    <span class="type-body-strong select-none">{{ $option['label'] }}</span>
+                    <span id="{{ $optionId }}-label" class="type-body-strong select-none">{{ $option['label'] }}</span>
                     @if ($option['description'])
                         <span id="{{ $optionId }}-description" class="type-meta">{{ $option['description'] }}</span>
                     @endif

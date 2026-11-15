@@ -19,7 +19,8 @@
 @php
     $total = max(1, (int) $total);
     $current = max(0, min($total, (int) $current));
-    $text = 'Step '.max(1, $current).' of '.$total;
+    // Before the first step the value is 0, so the text says so too.
+    $text = $current === 0 ? 'Not started, '.$total.' steps' : 'Step '.$current.' of '.$total;
     $tone = in_array($tone, ['default', 'success', 'warning', 'danger'], true) ? $tone : 'default';
     $labels = array_values($labels);
 @endphp

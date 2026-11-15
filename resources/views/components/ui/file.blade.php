@@ -85,7 +85,7 @@
         </p>
         <p id="{{ $areaHintId }}" class="type-caption pointer-events-none">{{ $hint ?? ($multiple ? 'Any number of files.' : 'One file.') }}</p>
         <div x-show="progress !== null" x-cloak class="mt-2 h-1 w-full overflow-hidden rounded-full bg-surface-muted" role="progressbar" aria-label="Upload progress" x-bind:aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100">
-            <div class="h-full bg-secondary transition-[width] duration-150" x-bind:style="`width: ${progress}%`"></div>
+            <div class="h-full origin-left bg-secondary transition-transform duration-150 motion-reduce:transition-none" x-bind:style="`transform: scaleX(${progress / 100})`"></div>
         </div>
     </div>
 
@@ -109,7 +109,7 @@
     @else
         <ul x-show="files.length" x-cloak class="mt-2 divide-y divide-line rounded-md border border-line" aria-label="Chosen files">
             <template x-for="file in files" :key="file.name">
-                <li class="flex items-center gap-2 px-3 h-9">
+                <li class="flex items-center gap-2 px-3 min-h-9 py-1.5">
                     <x-ui.icon name="file" class="size-4 text-ink-muted" />
                     <span class="type-body wrap-anywhere flex-1 min-w-0" x-text="file.name"></span>
                     <span class="type-numeric text-ink-muted" x-text="size(file.size)"></span>
@@ -118,7 +118,8 @@
         </ul>
     @endisset
 
-    @if ($message)
-        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-danger-text! mt-2">{{ $message }}</p>
+    {{-- Inside x-ui.field the field prints the message (with this id); printing it here too would repeat it. --}}
+    @if ($message && $__env->getConsumableComponentData('label') === null)
+        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-danger-text! mt-1">{{ $message }}</p>
     @endif
 </div>

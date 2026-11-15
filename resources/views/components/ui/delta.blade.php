@@ -1,8 +1,8 @@
 {{--
     Change against the previous period, e.g. "+12.4% vs prior 30d". The words are
     in the meta role; only the percentage is in the numeric role. The lead (the
-    percentage, "New" or "No change") is emerald-700 when the move is good, red-700
-    when it is bad, ink-muted when flat. No chip, no icon. "New" when the prior
+    percentage, "New" or "No change") is `success-text` when the move is good,
+    `danger-text` when it is bad, ink-muted when flat. No chip, no icon. "New" when the prior
     period was zero. Under 10% keeps one decimal.
     Props: current, previous, period (e.g. "30d", printed as "vs prior 30d"), upIsGood.
 --}}

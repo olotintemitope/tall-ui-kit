@@ -53,7 +53,8 @@
     $fmt = function (float $v) use ($format, $currency, $decimals, $unit): string {
         $text = match ($format) {
             'money' => Format::money($v, $currency),
-            'percent' => rtrim(rtrim(number_format($v, $decimals ?? 0), '0'), '.').'%',
+            // Trim trailing zeros of the decimals only: 70 stays 70%, 12.50 becomes 12.5%.
+            'percent' => (str_contains($n = number_format($v, $decimals ?? 0), '.') ? rtrim(rtrim($n, '0'), '.') : $n).'%',
             default => number_format($v, $decimals ?? (floor($v) == $v ? 0 : 2)),
         };
 

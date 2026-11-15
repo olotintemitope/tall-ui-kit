@@ -34,6 +34,7 @@
         x-on:mouseleave="tip = false"
         x-on:focus="tip = railed($el)"
         x-on:blur="tip = false"
+        x-on:keydown.escape="tip = false"
         data-nav-item
         @class([
             'group/nav flex min-h-8 py-1.5 w-full items-center gap-2.5 rounded-md px-2.5 text-left type-body transition-colors duration-100 focus-ring rail:justify-center rail:px-0',
@@ -42,7 +43,7 @@
         ])
     >
         @if ($icon)
-            <x-ui.icon :name="$icon" :stroke-width="1.75" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0', $tone['iconActive'] => $active, $tone['icon'] => ! $active])" />
+            <x-ui.icon :name="$icon" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0', $tone['iconActive'] => $active, $tone['icon'] => ! $active])" />
         @endif
         <span class="flex-1 wrap-anywhere rail:hidden">{{ $label }}</span>
         @if ($count !== null)

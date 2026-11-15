@@ -56,8 +56,8 @@
         },
         jump(last) { this.focusFirst(this.menuOf(document.activeElement), last) },
     }"
-    x-init="$nextTick(() => { const button = $refs.trigger.querySelector('button, a, [tabindex]'); if (button) { button.setAttribute('aria-haspopup', 'menu'); $watch('open', (value) => button.setAttribute('aria-expanded', value ? 'true' : 'false')); button.setAttribute('aria-expanded', 'false') } })"
-    x-on:keydown.escape.prevent.stop="close()"
+    x-init="$nextTick(() => { const button = $refs.trigger.querySelector('button, a, [tabindex]'); if (button) { button.id ||= $id('menu-button'); button.setAttribute('aria-haspopup', 'menu'); button.setAttribute('aria-controls', $refs.panel.id); $refs.panel.setAttribute('aria-labelledby', button.id); $watch('open', (value) => button.setAttribute('aria-expanded', value ? 'true' : 'false')); button.setAttribute('aria-expanded', 'false') } })"
+    x-on:keydown.escape="if (open) { $event.preventDefault(); $event.stopPropagation(); close() }"
     x-on:focusout="if (open && ! $el.contains($event.relatedTarget) && ! ($event.relatedTarget === null && $event.target.getClientRects().length === 0)) close(false)"
     {{ $attributes->class(['relative']) }}
 >
@@ -75,6 +75,7 @@
 
     <div
         x-ref="panel"
+        x-bind:id="$id('menu')"
         x-show="open"
         x-cloak
         x-anchor.{{ $placement }}{{ $flip }}.offset.6="$refs.trigger.firstElementChild"

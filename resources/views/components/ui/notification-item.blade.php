@@ -33,12 +33,13 @@
     <div class="min-w-0 flex-1">
         @php $titleClass = 'font-body text-body-strong text-ink '.($read ? 'font-medium' : 'font-semibold'); @endphp
         @if ($open)
-            <a
-                @if ($url) href="{{ $url }}" @else href="#" role="button" @endif
+            {{-- A real <button> when there is no URL, so Space opens it as well as Enter. --}}
+            <{{ $url ? 'a' : 'button' }}
+                @if ($url) href="{{ $url }}" @else type="button" @endif
                 wire:click.prevent="{{ $open }}({{ $js }})"
-                class="{{ $titleClass }} rounded-sm after:absolute after:inset-0 after:content-[''] focus-ring"
+                class="{{ $titleClass }} rounded-sm text-left after:absolute after:inset-0 after:content-[''] focus-ring"
                 data-notification-open
-            >@unless ($read)<span class="sr-only">Unread: </span>@endunless{{ $title }}</a>
+            >@unless ($read)<span class="sr-only">Unread: </span>@endunless{{ $title }}</{{ $url ? 'a' : 'button' }}>
         @else
             <p class="{{ $titleClass }}">@unless ($read)<span class="sr-only">Unread: </span>@endunless{{ $title }}</p>
         @endif

@@ -55,11 +55,11 @@
         @if ($paginator->hasPages())
             <div class="flex min-w-0 flex-wrap items-center gap-0.5">
                 @if ($paginator->onFirstPage())
-                    <span class="{{ $nav }} text-ink-muted cursor-not-allowed" aria-disabled="true">
+                    <span class="{{ $nav }} text-ink-muted cursor-not-allowed" role="link" aria-disabled="true" aria-label="Previous page">
                         <x-ui.icon name="chevron-left" class="size-4" /><span class="hidden sm:inline">Previous</span>
                     </span>
                 @elseif ($livewire)
-                    <button type="button" wire:click="previousPage('{{ $pageName }}')" x-on:click="{{ $scroll }}" wire:loading.attr="disabled" class="{{ $nav }} text-ink-body hover:bg-surface-subtle hover:text-ink" aria-label="Previous page">
+                    <button type="button" wire:click="previousPage('{{ $pageName }}')" x-on:click="{{ $scroll }}" wire:loading.attr="aria-busy" wire:loading.class="pointer-events-none" class="{{ $nav }} text-ink-body hover:bg-surface-subtle hover:text-ink" aria-label="Previous page">
                         <x-ui.icon name="chevron-left" class="size-4" /><span class="hidden sm:inline">Previous</span>
                     </button>
                 @else
@@ -89,11 +89,11 @@
                 @endif
 
                 @if (! $paginator->hasMorePages())
-                    <span class="{{ $nav }} text-ink-muted cursor-not-allowed" aria-disabled="true">
+                    <span class="{{ $nav }} text-ink-muted cursor-not-allowed" role="link" aria-disabled="true" aria-label="Next page">
                         <span class="hidden sm:inline">Next</span><x-ui.icon name="chevron-right" class="size-4" />
                     </span>
                 @elseif ($livewire)
-                    <button type="button" wire:click="nextPage('{{ $pageName }}')" x-on:click="{{ $scroll }}" wire:loading.attr="disabled" class="{{ $nav }} text-ink-body hover:bg-surface-subtle hover:text-ink" aria-label="Next page">
+                    <button type="button" wire:click="nextPage('{{ $pageName }}')" x-on:click="{{ $scroll }}" wire:loading.attr="aria-busy" wire:loading.class="pointer-events-none" class="{{ $nav }} text-ink-body hover:bg-surface-subtle hover:text-ink" aria-label="Next page">
                         <span class="hidden sm:inline">Next</span><x-ui.icon name="chevron-right" class="size-4" />
                     </button>
                 @else

@@ -1,7 +1,7 @@
 {{--
     A plain row of x-ui.card.list: title (body-strong), an optional meta line and an
     optional value on the right (numeric; pass money through x-ui.money).
-    Props: title, meta. Slot: value.
+    Props: title, meta. Slot: the value (the default slot).
 --}}
 @props(['title', 'meta' => null])
 

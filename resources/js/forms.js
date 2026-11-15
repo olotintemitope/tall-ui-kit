@@ -111,12 +111,17 @@ document.addEventListener('alpine:init', () => {
             });
         },
 
+        // A disabled or read-only field counts as at both ends, so the +/- buttons do nothing.
+        get locked() {
+            return Boolean(this.$refs.input?.disabled || this.$refs.input?.readOnly);
+        },
+
         get atMin() {
-            return this.min !== null && this.value !== null && Number(this.value) <= this.min;
+            return this.locked || (this.min !== null && this.value !== null && Number(this.value) <= this.min);
         },
 
         get atMax() {
-            return this.max !== null && this.value !== null && Number(this.value) >= this.max;
+            return this.locked || (this.max !== null && this.value !== null && Number(this.value) >= this.max);
         },
 
         get valueText() {
@@ -168,10 +173,12 @@ document.addEventListener('alpine:init', () => {
                 event.preventDefault();
                 this.value = this.min;
                 this.paint();
+                this.$refs.input?.dispatchEvent(new Event('change', { bubbles: true }));
             } else if (event.key === 'End' && this.max !== null) {
                 event.preventDefault();
                 this.value = this.max;
                 this.paint();
+                this.$refs.input?.dispatchEvent(new Event('change', { bubbles: true }));
             }
         },
     }));
@@ -397,8 +404,11 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
             const n = this.results.length;
-            if (n === 0) return;
-            this.active = (this.active + step + n) % n;
+            if (n === 0 || this.results.every((option) => option.disabled)) return;
+            // Skip disabled options, as x-ui.select does.
+            do {
+                this.active = (this.active + step + n) % n;
+            } while (this.results[this.active]?.disabled);
             this.$nextTick(() => this.scrollActive());
         },
 
@@ -428,11 +438,15 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // preventDefault as well: a native <dialog> closes on an uncancelled Escape even
+        // when propagation stops, so the list (or the text) goes first, then the dialog.
         escape(event) {
             if (this.open) {
+                event.preventDefault();
                 event.stopPropagation();
                 this.close();
             } else if (this.query !== '') {
+                event.preventDefault();
                 event.stopPropagation();
                 this.query = '';
                 this.value = null;

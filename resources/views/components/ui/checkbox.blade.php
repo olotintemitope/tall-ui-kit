@@ -1,19 +1,21 @@
 {{--
     Checkbox row: the box on the left, a label (body-strong) and optional description
-    (meta) on the right; the whole row is the click target. Props: label, description,
-    invalid, indeterminate (sets the native mixed state on load: an ink box with a white
+    (meta) on the right; the whole row is the click target. Props: label, description
+    (`hint` is an alias, as on x-ui.field), error (an explicit message; otherwise the
+    error for the name or wire:model), invalid, indeterminate (sets the native mixed state on load: an ink box with a white
     dash, announced as "mixed"; for a live value bind
     x-effect="$el.indeterminate = someCondition" on the component). Attributes (wire:model, x-model, value, checked, disabled, name) go to the
     <input>; errors are looked up by name or wire:model.
 --}}
-@props(['label' => null, 'description' => null, 'invalid' => null, 'indeterminate' => false])
+@props(['label' => null, 'description' => null, 'invalid' => null, 'indeterminate' => false, 'hint' => null, 'error' => null])
 
 @php
     use TallUiKit\Support\FormControl;
 
     $fieldName = $attributes->get('name') ?? FormControl::model($attributes);
     $controlId = FormControl::id($attributes->get('id'), $fieldName.($attributes->has('value') ? '-'.$attributes->get('value') : '')) ?? 'checkbox-'.uniqid();
-    $message = FormControl::error($errors ?? null, $fieldName);
+    $description ??= $hint;
+    $message = FormControl::error($errors ?? null, $fieldName, $error);
     $isInvalid = $invalid ?? (bool) $message;
     $descriptionId = $description ? $controlId.'-description' : null;
 @endphp
@@ -25,6 +27,8 @@
                 'type' => 'checkbox',
                 'id' => $controlId,
                 'aria-invalid' => $isInvalid ? 'true' : null,
+                // Named by the label alone, so the description is read once (as the description).
+                'aria-labelledby' => $label && $description ? $controlId.'-label' : null,
                 'aria-describedby' => FormControl::describedBy($controlId, false, (bool) $message, $descriptionId),
                 'data-ui' => 'checkbox',
                 'x-init' => $indeterminate ? '$el.indeterminate = true' : null,
@@ -45,7 +49,7 @@
         @if ($label || $description)
             <span class="flex min-w-0 flex-col group-has-disabled:[&>span]:text-ink-muted">
                 @if ($label)
-                    <span class="type-body-strong select-none">{{ $label }}</span>
+                    <span id="{{ $controlId }}-label" class="type-body-strong select-none">{{ $label }}</span>
                 @endif
                 @if ($description)
                     <span id="{{ $descriptionId }}" class="type-meta">{{ $description }}</span>

@@ -139,7 +139,7 @@
                 data-tab="{{ $item['key'] }}"
                 x-bind:id="$id('tabs', @js($item['key']))"
                 x-bind:aria-selected="tab === @js($item['key']) ? 'true' : 'false'"
-                x-bind:tabindex="tab === @js($item['key']) ? 0 : -1"
+                x-bind:tabindex="(tab === @js($item['key']) || (! @js($enabled->pluck('key')->values()->all()).includes(tab) && @js($item['key']) === @js($enabled->first()['key'] ?? null))) ? 0 : -1"
                 x-bind:aria-controls="hasPanel(@js($item['key'])) ? $id('tabs', @js($item['key']) + '-panel') : null"
                 x-on:click="tab = @js($item['key'])"
                 aria-selected="{{ $selected ? 'true' : 'false' }}"

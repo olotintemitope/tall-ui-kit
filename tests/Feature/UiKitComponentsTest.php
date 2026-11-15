@@ -205,7 +205,9 @@ it('renders a dropdown with menu roles and keyboard handlers', function () {
         ->assertSee('role="menuitem"', false)
         ->assertSee('role="separator"', false)
         ->assertSee('x-on:keydown.down.prevent', false)
-        ->assertSee('x-on:keydown.escape.prevent.stop', false)
+        // Escape is handled only while the menu is open, so a closed menu inside a dialog lets the dialog close.
+        ->assertSee('x-on:keydown.escape="if (open) { $event.preventDefault(); $event.stopPropagation(); close() }"', false)
+        ->assertSee("button.setAttribute('aria-controls', \$refs.panel.id)", false)
         ->assertSee('x-anchor.bottom-end', false);
 });
 

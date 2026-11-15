@@ -61,7 +61,7 @@
         ]) }}
     >
         @if ($icon)
-            <x-ui.icon :name="$icon" :stroke-width="1.75" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0 transition-colors duration-100', $tone['iconActive'] => $active, $tone['iconDisabled'] => $disabled, $tone['icon'] => ! $active && ! $disabled])" />
+            <x-ui.icon :name="$icon" data-nav-icon :class="\Illuminate\Support\Arr::toCssClasses(['size-4 shrink-0 transition-colors duration-100', $tone['iconActive'] => $active, $tone['iconDisabled'] => $disabled, $tone['icon'] => ! $active && ! $disabled])" />
         @endif
         <span @class(['flex-1 wrap-anywhere rail:hidden', 'underline decoration-dashed underline-offset-4' => $disabled])>{{ $text }}@if ($external)<span class="sr-only"> (opens in new tab)</span><x-ui.icon name="arrow-up-right" class="ml-0.5 inline-block size-3.5 align-[-2px]" />@endif</span>
         @if ($new)

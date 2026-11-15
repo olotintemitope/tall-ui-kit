@@ -19,7 +19,8 @@
     x-on:keydown.up.prevent="menuMove(-1)"
     x-on:keydown.home.prevent="menuItems()[0]?.focus()"
     x-on:keydown.end.prevent="menuItems().at(-1)?.focus()"
-    x-on:keydown.tab="closeMenu(false)"
+    {{-- Tab returns to the trigger first, so the browser moves on from the row, not from the menu at the end of the table. --}}
+    x-on:keydown.tab="closeMenu(true)"
     x-transition:enter="transition ease-out duration-100 motion-reduce:transition-none"
     x-transition:enter-start="opacity-0"
     x-transition:enter-end="opacity-100"

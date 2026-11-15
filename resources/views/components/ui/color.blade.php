@@ -7,7 +7,7 @@
     Props: value (#212322), size, width (sm), label (accessible name of the hex field
     outside x-ui.field), swatchLabel ("Pick a colour").
 --}}
-@props(['value' => '#212322', 'size' => 'default', 'width' => null, 'label' => null, 'swatchLabel' => 'Pick a colour'])
+@props(['value' => '#212322', 'size' => 'default', 'width' => null, 'label' => null, 'swatchLabel' => 'Pick a colour', 'invalid' => null])
 @aware(['name' => null, 'id' => null, 'hint' => null, 'error' => null, 'width' => null])
 
 @php
@@ -16,6 +16,7 @@
     $fieldName = $name ?? FormControl::model($attributes);
     $controlId = FormControl::id($attributes->get('id', $id), $fieldName) ?? 'color-'.uniqid();
     $message = FormControl::error($errors ?? null, $fieldName, $error);
+    $isInvalid = $invalid ?? (bool) $message;
 @endphp
 
 <div
@@ -25,9 +26,10 @@
     {{ $attributes->only('class')->class([
         'flex items-center gap-2 overflow-hidden rounded-md border bg-surface pl-1 transition-[border-color,box-shadow] duration-100',
         FormControl::width($width, 'sm'),
-        $size === 'sm' ? 'h-8' : 'h-9',
-        'border-danger' => $message,
-        'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $message,
+        FormControl::height($size),
+        'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
+        'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
+        'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:hover:border-control',
     ]) }}
     data-control-box
     data-color
@@ -39,7 +41,8 @@
         x-bind:value="hex"
         x-on:change="typed($event.target.value)"
         x-on:keydown.enter.prevent="typed($event.target.value)"
-        x-bind:aria-invalid="invalid ? 'true' : null"
+        x-bind:aria-invalid="(invalid || @js($isInvalid)) ? 'true' : null"
+        @if ($isInvalid) aria-invalid="true" @endif
         @if ($label) aria-label="{{ $label }}" @endif
         @if ($d = FormControl::describedBy($controlId, filled($hint) && ! $message, (bool) $message)) aria-describedby="{{ $d }}" @endif
         spellcheck="false"
@@ -47,6 +50,7 @@
         autocomplete="off"
         maxlength="7"
         data-ui="input"
-        class="min-w-0 flex-1 bg-transparent pr-3 font-mono text-meta text-ink uppercase outline-none"
+        class="min-w-0 flex-1 bg-transparent pr-3 font-mono text-meta text-ink uppercase outline-none disabled:cursor-not-allowed disabled:text-ink-muted"
     />
+    <span class="sr-only" aria-live="polite" x-text="invalid ? 'Not a colour: use # and six hex digits.' : ''"></span>
 </div>

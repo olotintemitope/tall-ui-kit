@@ -1,7 +1,7 @@
 {{--
     Running text in one type role. Props: as (p), role (body|body-strong|meta|caption),
-    tone (default: the role's own colour | muted ink-muted 5.86:1 | danger red-700
-    6.47:1 | success emerald-700 5.48:1).
+    tone (default: the role's own colour | muted ink-muted 5.86:1 | danger `danger-text`
+    6.42:1 | success `success-text` 5.36:1).
     Text is never cut off (docs/ui-kit.md): it wraps, and long unbroken strings (emails,
     references) break anywhere. There is no one-line or line-clamp option.
 --}}

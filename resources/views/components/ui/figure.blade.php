@@ -45,7 +45,7 @@
             >
         </picture>
     </div>
-    @if ($caption || isset($captionSlot))
+    @if ($caption)
         <figcaption class="type-caption">{{ $caption }}</figcaption>
     @endif
 </figure>

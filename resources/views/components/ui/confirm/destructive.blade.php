@@ -18,10 +18,11 @@
     :params="$params"
     variant="destructive"
     :can-confirm="$confirmText ? 'typed === '.\Illuminate\Support\Js::from($confirmText) : 'true'"
+    :unavailable-reason="$confirmText ? $fieldId.'-hint' : null"
     {{ $attributes }}
 >
     @if ($confirmText)
-        <x-ui.field :label="'Type '.$confirmText.' to confirm'" :id="$fieldId">
+        <x-ui.field :label="'Type '.$confirmText.' to confirm'" :id="$fieldId" :hint="$confirmLabel.' stays unavailable until the text matches.'">
             <x-ui.input :id="$fieldId" x-model="typed" autocomplete="off" spellcheck="false" width="full" data-confirm-type />
         </x-ui.field>
     @endif

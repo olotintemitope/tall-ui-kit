@@ -52,6 +52,9 @@
     $binding = $attributes->filter(fn ($v, $key) => str_starts_with($key, 'wire:model') || str_starts_with($key, 'x-model'));
     $selectOptions = $normalised->map(fn (array $o): array => ['value' => $o['value'], 'label' => $o['label'], 'disabled' => $o['disabled']])->all();
     $selectSize = $small ? 'sm' : 'default';
+    // When the bound value matches no enabled option, the first enabled one keeps the tab stop.
+    $enabledValues = $enabled->pluck('value')->values()->all();
+    $firstEnabled = $enabledValues[0] ?? null;
 @endphp
 
 @if ($responsive)
@@ -97,7 +100,7 @@
                     data-value="{{ $option['value'] }}"
                     aria-label="{{ $option['label'] }}"
                     x-bind:aria-checked="String(value) === @js($option['value']) ? 'true' : 'false'"
-                    x-bind:tabindex="String(value) === @js($option['value']) ? 0 : -1"
+                    x-bind:tabindex="(String(value) === @js($option['value']) || (! @js($enabledValues).includes(String(value)) && @js($option['value']) === @js($firstEnabled))) ? 0 : -1"
                     x-bind:data-segmented-indicator="String(value) === @js($option['value']) ? '' : null"
                     x-on:click="value = @js($option['value'])"
                     aria-checked="{{ $initial === $option['value'] ? 'true' : 'false' }}"
@@ -118,7 +121,7 @@
                 role="radio"
                 data-value="{{ $option['value'] }}"
                 x-bind:aria-checked="String(value) === @js($option['value']) ? 'true' : 'false'"
-                x-bind:tabindex="String(value) === @js($option['value']) ? 0 : -1"
+                x-bind:tabindex="(String(value) === @js($option['value']) || (! @js($enabledValues).includes(String(value)) && @js($option['value']) === @js($firstEnabled))) ? 0 : -1"
                 x-bind:data-segmented-indicator="String(value) === @js($option['value']) ? '' : null"
                 x-on:click="value = @js($option['value'])"
                 aria-checked="{{ $initial === $option['value'] ? 'true' : 'false' }}"
