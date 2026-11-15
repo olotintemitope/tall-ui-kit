@@ -20,7 +20,7 @@ Vite resolves `gsap` from your app's `node_modules`: `npm install gsap` (3.15 or
 | `kit.js` | `privacy` store (x-ui.money masking, H shortcut), `dismissible` data, the `uiChart` component (`charts.js`) |
 | `toasts.js` | `toasts` store, `$toast` magic, the `toast` browser event (Livewire `$this->dispatch('toast', ...)`); imports `toaster-layer.js` (toasts above modals) |
 | `dialogs.js` | `uiDialog` (native `<dialog>`: open, close, busy, dirty guard, `open-dialog`/`open-confirm` events); imports `placement.js` |
-| `ui.js` | focus helpers (`window.uiFocus`), `focusMode` and `progress` stores, `commandPalette`, `uiForm` (focus on the first error), `uiCopy`; imports `anchor.js` (lazy `x-anchor`), `defer.js` (`data-ui-defer`), `select.js` (`uiSelect`), `forms.js` (HTML5 controls, media, form layouts), `checklist.js` (`uiChecklist`, the step-done morph hook) |
+| `ui.js` | focus helpers (`window.uiFocus`), `focusMode` and `progress` stores, `commandPalette`, `uiForm` (focus on the first error), `uiCopy`; imports `anchor.js` (lazy `x-anchor`), `defer.js` (`data-ui-defer`), `select.js` (`uiSelect`), `forms.js` (HTML5 controls, media, form layouts), `checklist.js` (`uiChecklist`, the step-done morph hook), `navigate.js` (`wire:navigate` support: `<html>` state, the persisted sidebar's current item, history scroll, another area in full; `window.uiNavigate`) |
 | `motion.js` | `window.uiMotion`: sliding tab and segmented indicator, count-ups, row flash, crossfade |
 | `placement.js` | `$revealBelow`: keeps popups below their trigger by scrolling, never flipping |
 | `storage.js` | `storageKey(name)`: the prefixed storage key |
