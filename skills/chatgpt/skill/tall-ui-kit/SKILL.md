@@ -28,6 +28,7 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 - **Toasts sit above modals** automatically; place `x-ui.toaster` once in the layout. Toasts never take focus.
 - **Forms are elevated:** tinted page (`x-ui.form-page` or a `page-muted` surface) with white `x-ui.panel`s. Data pages are flat white with 1px rules. Never a panel on plain white or inside a dialog; never nest cards.
 - **URLs use UUIDs, people see short references.** Build web links with `route('name', $model)` bound by `{model:uuid}`; show records by a short reference (`TXN-9F3C21AB`) in the numeric/mono role. Never put numeric ids in web URLs.
+- **Motion comes from the kit.** Put `wire:transition.navigate` on the layout's `<main>` only (the main region cross-fades on `wire:navigate`, the shell holds still); charts draw in once by themselves (`motion="none"` opts out). Never add page, chart or idle animations of your own; only transform and opacity animate, and reduced motion is instant ([references/motion.md](references/motion.md)).
 - **Livewire performance:** public properties hold ids and scalars; `wire:key` on every looped row; `wire:model.live.debounce.300ms` only where results update live; no `wire:poll` without a reason (30s+, `.visible`); no Alpine component per item in long lists.
 
 ## Building a page

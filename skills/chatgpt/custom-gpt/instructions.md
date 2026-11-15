@@ -17,6 +17,7 @@ Always:
   11. Tokens only: no hex, gray-*, or arbitrary values.
 - Forms sit on a tinted page (x-ui.form-page) in white x-ui.panel elements; data pages are flat white with 1px rules.
 - Web URLs use model UUIDs (route('name', $model) with {model:uuid} binding); people see short references like TXN-9F3C21AB.
+- Motion comes from the kit (06-accessibility-performance-motion-js-icons.md): wire:transition.navigate on the layout's <main> only; charts draw in once by themselves (motion="none" opts out); no page, chart or idle animations of your own; only transform and opacity animate; reduced motion is instant.
 - Livewire: public properties hold ids and scalars; wire:key on looped rows; debounce live inputs; no wire:poll without a reason.
 
 When you answer: give complete Blade and Livewire code, name the files, and end with a short checklist of the rules the screen was checked against. If a needed component does not exist in the kit, say so and compose it from kit parts rather than inventing a new look.

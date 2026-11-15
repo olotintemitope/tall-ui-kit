@@ -53,6 +53,7 @@ Banned: pie, donut, gauge, radar, area or gradient fills, 3D, shadows, glow, smo
 - Plot: horizontal gridlines only (`chart-grid`), x axis line `chart-axis`, ticks in the caption size coloured `chart-tick`; ISO days print as "14 Nov", other labels as given. `yFormat` number (default), compact or percent.
 - Tooltip: HTML, white, 1px `panel-border`, `rounded-md`, `shadow-popover`; the date in meta, each value in numeric with a square swatch and, with several series, its name in meta. Built with `textContent` only.
 - Empty (all zero): the plot stays (a flat line, or empty bars on a 0 to 1 axis) with the `empty` message as a caption over it, so the frame matches its neighbours. Horizontal bars show the message as one meta line.
+- Entrance: line, bar and stacked-bar plots draw in once, the first time they come into view (see Motion); `motion="none"` or `data-motion-static` shows them at once. The empty plot never animates, and a morph never replays it.
 - Loading (`loading`): a skeleton the same height as the plot (and the figure when there is a summary), announced once.
 - Error (`error="..."`): an inline `x-ui.alert tone="danger"` in place of the plot.
 - Privacy: money charts (`money`, `currency`) hide the y-axis ticks (keeping the column's width, through `html[data-privacy=hidden]`, so nothing flashes before Alpine starts), show "•••••" in the tooltip, blur the summary, legend totals and table cells (`x-ui.money`), and drop the amount from the accessible name ("total hidden").
