@@ -93,6 +93,7 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | Extra detail on demand | `x-ui.popover`; hint text: `x-ui.tooltip` |
 | Modal work | `x-ui.dialog`, `x-ui.dialog.form`, `x-ui.dialog.steps`, `x-ui.sheet` |
 | Feedback | `x-ui.alert` inline, toasts for results, `x-ui.error-summary` in forms |
+| Onboarding, setup, verification or launch steps | `x-ui.checklist` with `items` as data (label, hint, done, optional, href or action, actionLabel); `name` + `persist` (local, or server via the bound `ChecklistStore` and `WithChecklist`); `collapsible`, `dismissible` ([references/feedback.md](references/feedback.md) "Checklist") |
 | Charts | `x-ui.chart` / `x-ui.card.chart`: line, bar, stacked-bar, bar-horizontal, sparkline only; up to 3 series |
 | Money and numbers | `x-ui.money` (privacy-aware), `x-ui.number`, `x-ui.delta`; `TallUiKit\Support\Format` in PHP |
 | Icons | `x-ui.icon name="..."` (Lucide names); icon-only buttons need `aria-label` |

@@ -50,4 +50,5 @@ Focus never falls to `<body>`, and the 2px `focus` ring (2px offset, `:focus-vis
 | Navigation | Shells | After `wire:navigate`, the page `h1` (`tabindex="-1"`) or `#main`; every shell has a "Skip to content" link to `#main` |
 | Toasts | `x-ui.toaster` | Never take focus; Alt+T (Option+T) moves to the newest toast's dismiss button; when it closes, focus returns where it was |
 | Disclosure | Accordions, "Show all" | Focus stays on the button that toggled |
+| Checklist | `x-ui.checklist` | Collapse keeps focus on its button; a step that turns done keeps focus in its row (the row takes it if its action is gone) and a polite status names the step; Dismiss moves focus to the next control on the page, else the page heading |
 | Ring visibility | Scroll containers, sticky bars | Tabs use an inset ring; `html` scroll padding keeps focused fields clear of the top bar and the sticky form actions |

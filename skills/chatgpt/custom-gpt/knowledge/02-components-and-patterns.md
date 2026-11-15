@@ -53,6 +53,7 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.filter-token` | `label`, `removeLabel`. See Filter tokens |
 | `x-ui.spinner`, `x-ui.loading-inline`, `x-ui.loading-overlay`, `x-ui.progress-bar`, `x-ui.load-more` | See [Loading](feedback.md) |
 | `x-ui.empty-state` | `title`, `description`, `actionLabel`, `actionHref`, slot `action` |
+| `x-ui.checklist`, `.item` | Steps of any onboarding, setup, verification or launch flow: `title`, `description`, `items` (`label`, `hint`, `done`, `optional`, `href` or `action`, `actionLabel`, `key`), `name`, `collapsible`, `collapsed`, `dismissible`, `dismissed`, `persist` (local, server, none), `loading`, `completeText`, `dismissLabel`, `headingLevel`. See `docs/components/feedback.md` "Checklist" |
 | `x-ui.skeleton`, `.line`, `.text`, `.avatar`, `.stat`, `.stats`, `.table`, `.card`, `.chart`, `.grid`, `.list` | `count`, `rows`; `.stat` is one `x-ui.stat` cell (a dt/dd pair, since it sits in the strip's `<dl>`), `.stats` a whole strip; `.grid` bordered card blocks (`count`, `columns` 2 to 4 from lg, `label`), `.list` avatar, title and value rows (`rows`, `label`, `flush`); both are one `role="status"` with the blocks hidden |
 | `x-ui.avatar` | `name`, `initials`, `size` xs, sm, default, lg; `tone` light, dark; `src` (a photo: fixed size, `object-cover`, lazy, `decoding="async"`, alt text from `name`; the initials show if it fails to load), `alt` ("" when the name is printed beside it) |
 | `x-ui.kbd` | `tone` light, dark |

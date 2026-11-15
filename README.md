@@ -19,7 +19,7 @@ The repository is private, so add it as a VCS repository (your Composer needs a 
 ```
 
 ```bash
-composer require olotintemitope/tall-ui-kit:^0.1
+composer require olotintemitope/tall-ui-kit:^0.3
 npm install gsap
 php artisan vendor:publish --tag=tall-ui-kit-config   # optional
 ```
