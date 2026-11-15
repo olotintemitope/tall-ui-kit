@@ -940,6 +940,23 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
     from { opacity: 0; }
 }
 
+/*
+ * Checklist step done (x-ui.checklist; resources/js/checklist.js marks the row
+ * [data-checklist-flip] when a Livewire update turns it done). The check scales in
+ * from 0.6 and fades in, --motion-sm ease-motion-out, transform and opacity only.
+ * The progress bar's fill follows through .ui-progress's width transition. Never on
+ * first render, print, reduced motion or the gallery's reduced preview.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+    html:not([data-motion-preview='reduced']) [data-checklist-flip] [data-checklist-check] {
+        animation: motion-check-in var(--motion-sm) var(--motion-ease-out) backwards;
+    }
+}
+
+@keyframes motion-check-in {
+    from { opacity: 0; transform: scale(0.6); }
+}
+
 @layer components {
     /*
      * Native <dialog> (x-ui.dialog, x-ui.confirm, x-ui.alert-dialog, x-ui.sheet).

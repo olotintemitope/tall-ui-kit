@@ -133,6 +133,17 @@ class KitContrast
             ['Series 2, sparklines', 'chart-2', 'white', 'ui', 3.0, 5.85],
             ['Series 3 (dashed on lines)', 'chart-3', 'white', 'ui', 3.0, 3.16],
             ['Horizontal bar on its track', 'chart-2', 'surface-muted', 'ui', 3.0, 5.05],
+
+            // Checklist (x-ui.checklist): the next step sits on a surface-subtle tint
+            ['Checklist done step label', 'ink-muted', 'white', 'text', 4.5, 5.85],
+            ['Checklist next step label', 'ink', 'surface-subtle', 'text', 4.5, 14.63],
+            ['Checklist next step hint', 'ink-muted', 'surface-subtle', 'text', 4.5, 5.42],
+            ['Checklist next step action', 'primary-text', 'surface-subtle', 'text', 4.5, 4.82],
+            ['Checklist done check', 'ink', 'white', 'ui', 3.0, 15.81],
+            ['Checklist step not done (circle)', 'control', 'white', 'ui', 3.0, 3.65],
+            ['Checklist next step not done (circle on the tint)', 'control', 'surface-subtle', 'ui', 3.0, 3.38],
+            ['Checklist progress fill on its track', 'chart-1', 'surface-muted', 'ui', 3.0, 13.63],
+            ['Checklist focus outline on the next-step tint', 'focus', 'surface-subtle', 'ui', 3.0, 3.81],
         ];
     }
 

@@ -25,6 +25,7 @@ it('renders each gallery page in both themes', function (string $uri, string $he
     ['/data', 'Data display'],
     ['/charts', 'Charts'],
     ['/tables', 'Tables'],
+    ['/checklist', 'Checklist'],
     ['/sidebar', 'Sidebar'],
 ]);
 

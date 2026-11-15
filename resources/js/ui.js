@@ -3,6 +3,7 @@ import { storageKey } from './storage';
 import './defer';
 import './select';
 import './forms';
+import './checklist';
 
 /*
  * x-ui behaviours that are too long for an inline x-data. Registered on

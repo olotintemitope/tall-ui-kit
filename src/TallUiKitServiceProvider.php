@@ -17,6 +17,9 @@ class TallUiKitServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/tall-ui-kit.php', 'tall-ui-kit');
+
+        // x-ui.checklist persist="server": session by default; an app's own binding wins.
+        $this->app->bindIf(Support\Checklist\ChecklistStore::class, Support\Checklist\SessionChecklistStore::class);
     }
 
     public function boot(): void
