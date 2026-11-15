@@ -22,6 +22,8 @@ class TallUiKitServiceProvider extends ServiceProvider
         $this->app->bindIf(Support\Checklist\ChecklistStore::class, Support\Checklist\SessionChecklistStore::class);
         // x-ui.banner persist="server": the checklist's store by default, so one per-user binding covers both.
         $this->app->bindIf(Support\Dismiss\DismissStore::class, fn ($app) => $app->make(Support\Checklist\ChecklistStore::class));
+        // x-ui.theme-toggle with color_scheme.persist = 'server': session by default; an app's own binding wins.
+        $this->app->bindIf(Support\ColorScheme\ColorSchemeStore::class, Support\ColorScheme\SessionColorSchemeStore::class);
     }
 
     public function boot(): void

@@ -10,14 +10,33 @@ return [
     'storage_prefix' => env('TALL_UI_STORAGE_PREFIX', 'tallui_'),
 
     /*
-    | Brand slots for x-ui.sidebar.header. With no logo the name prints as text. The
-    | header's `logo` slot overrides both. logo_light sits on light sidebars,
-    | logo_dark on the dark one.
+    | Brand slots for x-ui.sidebar.header and x-ui.logo. With no logo the name prints
+    | as text. The header's `logo` slot overrides both. logo_light sits on light
+    | grounds; logo_dark on dark ones: the dark sidebar, and everything in the dark
+    | colour scheme (x-ui.logo and light sidebars swap to it there).
     */
     'brand' => [
         'name' => env('APP_NAME', 'App'),
         'logo_light' => null,
         'logo_dark' => null,
+    ],
+
+    /*
+    | Colour scheme (docs/theming.md "Dark mode"). x-ui.head prints
+    | html[data-color-scheme] before first paint: the stored choice, else `default`.
+    | "system" follows the operating system (prefers-color-scheme).
+    |   default  light | dark | system
+    |   schemes  the choices x-ui.theme-toggle offers; ['light'] keeps the app light
+    |            (stored choices are ignored and the toggle renders nothing)
+    |   persist  local: localStorage only. server: also the bound ColorSchemeStore,
+    |            through WithColorScheme on the Livewire component around the toggle;
+    |            x-ui.head then prints the stored value, so it follows the user
+    |            across devices (localStorage stays the fallback).
+    */
+    'color_scheme' => [
+        'default' => env('TALL_UI_COLOR_SCHEME', 'system'),
+        'schemes' => ['light', 'dark', 'system'],
+        'persist' => 'local',
     ],
 
     /*

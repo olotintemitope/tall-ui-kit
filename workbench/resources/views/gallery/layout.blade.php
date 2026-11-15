@@ -1,4 +1,4 @@
-{{-- Workbench gallery shell: theme switch (?theme=), page tabs, the kit's toaster. --}}
+{{-- Workbench gallery shell: theme switch (?theme=), mode toggle (x-ui.theme-toggle; ?scheme= sets it from the server), page tabs, the kit's toaster. --}}
 @php
     if (in_array(request('theme'), ['neutral', 'newbanger'], true)) {
         session(['gallery-theme' => request('theme')]);
@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Gallery' }} · TALL UI kit</title>
-    <x-ui.head />
+    <x-ui.head :scheme="in_array(request('scheme'), ['light', 'dark', 'system'], true) ? request('scheme') : null" />
     @if ($theme === 'newbanger')
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
@@ -33,17 +33,20 @@
     <script type="module" src="{{ route('kit-assets', 'gallery.js') }}"></script>
     @livewireStyles
 </head>
-<body class="min-h-screen bg-white font-body text-ink" data-theme="{{ $theme }}">
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus-ring">Skip to content</a>
+<body class="min-h-screen bg-surface font-body text-ink" data-theme="{{ $theme }}">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-3 focus:py-2 focus-ring">Skip to content</a>
     <x-ui.progress-bar />
     <header class="border-b border-line">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 pt-4 sm:px-6">
             <p class="type-heading">TALL UI kit</p>
-            <nav aria-label="Theme" class="flex items-center gap-2">
-                <span class="type-meta">Theme</span>
-                <x-ui.button size="sm" :variant="$theme === 'neutral' ? 'outline' : 'ghost'" :href="request()->url().'?theme=neutral'" :aria-current="$theme === 'neutral' ? 'true' : null">Neutral</x-ui.button>
-                <x-ui.button size="sm" :variant="$theme === 'newbanger' ? 'outline' : 'ghost'" :href="request()->url().'?theme=newbanger'" :aria-current="$theme === 'newbanger' ? 'true' : null">NewBanger</x-ui.button>
-            </nav>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <nav aria-label="Theme" class="flex items-center gap-2">
+                    <span class="type-meta">Theme</span>
+                    <x-ui.button size="sm" :variant="$theme === 'neutral' ? 'outline' : 'ghost'" :href="request()->url().'?theme=neutral'" :aria-current="$theme === 'neutral' ? 'true' : null">Neutral</x-ui.button>
+                    <x-ui.button size="sm" :variant="$theme === 'newbanger' ? 'outline' : 'ghost'" :href="request()->url().'?theme=newbanger'" :aria-current="$theme === 'newbanger' ? 'true' : null">NewBanger</x-ui.button>
+                </nav>
+                <x-ui.theme-toggle size="sm" label="Mode" />
+            </div>
         </div>
         <div class="mx-auto max-w-6xl px-4 sm:px-6">
             <x-ui.tabs :tabs="$pages" label="Gallery pages" />

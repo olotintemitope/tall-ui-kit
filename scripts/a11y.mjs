@@ -1,9 +1,11 @@
 /*
- * axe-core audit of the workbench gallery in headless Chromium, in both themes.
+ * axe-core audit of the workbench gallery in headless Chromium, in both themes and
+ * both colour schemes (the scheme is stored before load, as x-ui.theme-toggle would).
  *
  *   composer serve            # or: vendor/bin/testbench serve --port=8077
  *   BASE=http://127.0.0.1:8077 npm run a11y
- *   node scripts/a11y.mjs --pages=/,/forms --widths=1440,390
+ *   node scripts/a11y.mjs --pages=/,/forms --widths=1440,390 --schemes=dark
+ *   node scripts/a11y.mjs --shots=/abs/dir   # also a full-page screenshot per page
  *
  * Rules: WCAG 2.0/2.1/2.2 A and AA plus best-practice (the kit's target). Opens the
  * menus and a dialog on /overlays so their content is checked too. Exits 1 when any
@@ -21,21 +23,29 @@ const base = process.env.BASE ?? 'http://127.0.0.1:8077';
 const pages = arg('pages', '/,/forms,/overlays,/data,/charts,/tables,/workflow,/checklist,/dates,/sidebar').split(',');
 const widths = arg('widths', '1440,390').split(',').map(Number);
 const themes = arg('themes', 'neutral,newbanger').split(',');
+const schemes = arg('schemes', 'light,dark').split(',');
+const shots = arg('shots', null);
 
 const browser = await chromium.launch();
 let total = 0;
 
 for (const theme of themes) {
+  for (const scheme of schemes) {
     for (const width of widths) {
         const context = await browser.newContext({ viewport: { width, height: 900 } });
+        await context.addInitScript((value) => {
+            try { localStorage.setItem('tallui_color_scheme', value); } catch {}
+        }, scheme);
         const page = await context.newPage();
         const errors = [];
         page.on('pageerror', (e) => errors.push(e.message));
+        page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 
         for (const path of pages) {
             await page.goto(`${base}${path}?theme=${theme}`, { waitUntil: 'networkidle' });
             await page.evaluate(() => window.uiDefer?.flush?.());
             await page.waitForTimeout(300);
+            if (shots) await page.screenshot({ path: `${shots}/kit-dark-${theme}-${scheme}-${width}-${path === '/' ? 'index' : path.slice(1)}.png`, fullPage: true });
 
             const states = [['page', null]];
             if (path === '/overlays') {
@@ -63,7 +73,7 @@ for (const theme of themes) {
                 const violations = result.violations;
                 total += violations.length;
                 const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
-                console.log(`${theme.padEnd(9)} ${String(width).padStart(4)} ${path.padEnd(10)} ${state.padEnd(12)} violations: ${violations.length}  passes: ${result.passes.length}${overflow ? '  PAGE SCROLLS SIDEWAYS' : ''}`);
+                console.log(`${theme.padEnd(9)} ${scheme.padEnd(5)} ${String(width).padStart(4)} ${path.padEnd(10)} ${state.padEnd(12)} violations: ${violations.length}  passes: ${result.passes.length}${overflow ? '  PAGE SCROLLS SIDEWAYS' : ''}`);
                 for (const v of violations) {
                     console.log(`    ${v.id} (${v.impact}): ${v.help}`);
                     for (const node of v.nodes.slice(0, 4)) console.log(`      ${node.target.join(' ')}  ${node.failureSummary?.split('\n')[1]?.trim() ?? ''}`);
@@ -71,9 +81,13 @@ for (const theme of themes) {
             }
         }
 
-        if (errors.length) console.log(`  page errors: ${[...new Set(errors)].join(' | ')}`);
+        if (errors.length) {
+            total += errors.length;
+            console.log(`  console and page errors: ${[...new Set(errors)].join(' | ')}`);
+        }
         await context.close();
     }
+  }
 }
 
 await browser.close();

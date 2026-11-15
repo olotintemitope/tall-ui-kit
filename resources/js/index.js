@@ -8,6 +8,7 @@
  * GSAP stays lazy: motion.js loads it with import() the first time an indicator
  * slides or a figure counts up, into its own chunks.
  */
+import './color-scheme';
 import './kit';
 import './toasts';
 import './dialogs';
