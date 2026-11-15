@@ -1,0 +1,6 @@
+interface:
+  display_name: "TALL UI kit"
+  short_description: "Build Livewire pages with the private x-ui Blade kit and its rules"
+  default_prompt: "Build this Livewire page with the TALL UI kit, following its rules."
+policy:
+  allow_implicit_invocation: true
