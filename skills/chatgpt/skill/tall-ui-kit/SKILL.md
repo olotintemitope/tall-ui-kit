@@ -95,6 +95,15 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | Modal work | `x-ui.dialog`, `x-ui.dialog.form`, `x-ui.dialog.steps`, `x-ui.sheet` |
 | Feedback | `x-ui.alert` inline, toasts for results, `x-ui.error-summary` in forms |
 | Onboarding, setup, verification or launch steps | `x-ui.checklist` with `items` as data (label, hint, done, optional, href or action, actionLabel); `name` + `persist` (local, or server via the bound `ChecklistStore` and `WithChecklist`); `collapsible`, `dismissible` ([references/feedback.md](references/feedback.md) "Checklist") |
+| Steps by name (onboarding, a wizard header, a verification flow) | `x-ui.stepper` (`steps`, `current`, states complete, current, upcoming, error; `clickable`, `action`; horizontal wraps to vertical); a compact "Step 3 of 5": `x-ui.progress-steps` |
+| Activity feed | `x-ui.timeline` (`items` with time, actor, text, status, body; `groupByDay`, `limit` for "Show more") |
+| Several short values in one field | `x-ui.tag-input` with `wire:model` on an array (`suggestions`, `max`, `pattern`) |
+| People on a record | `x-ui.avatar-group` (`people`, `max`; the name lists everyone) |
+| Let users reorder | `x-ui.sortable` (`items`, `action`: one Livewire call with the new keys; drag, touch and keyboard) |
+| A custom range, money or two thumbs | `x-ui.slider` (`dual`, `format`); a plain native range: `x-ui.range` |
+| A page-wide announcement | `x-ui.banner` (`tone`, `dismissible`, `name` + `persist` via `DismissStore` / `WithDismissals`); never a toast for this |
+| Nested folders or categories | `x-ui.tree` (`nodes`, `selectable` or `checkable`, `lazy` children through a renderless Livewire method) |
+| Progress | `x-ui.progress` (`size`, `tone`, `format` percent, count or bytes, `buffer`), `x-ui.progress-ring` (where a bar does not fit; never a KPI), `x-ui.upload-progress` (+ `.list` for Livewire uploads) |
 | Charts | `x-ui.chart` / `x-ui.card.chart`: line, bar, stacked-bar, bar-horizontal, sparkline only; up to 3 series |
 | Money and numbers | `x-ui.money` (privacy-aware), `x-ui.number`, `x-ui.delta`; `TallUiKit\Support\Format` in PHP |
 | Icons | `x-ui.icon name="..."` (Lucide names); icon-only buttons need `aria-label` |
@@ -107,6 +116,7 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 - [references/forms.md](references/forms.md) and [references/html-elements.md](references/html-elements.md): form layouts, native inputs, media, embeds.
 - [references/data-table.md](references/data-table.md): `WithDataTable`, `Column`, `Filter`, `Action`, layouts, focus, performance.
 - [references/overlays.md](references/overlays.md), [references/feedback.md](references/feedback.md), [references/navigation.md](references/navigation.md), [references/data-display.md](references/data-display.md): dialogs, loading, toasts, notifications, tabs, sidebar, cards, charts.
+- [references/workflow.md](references/workflow.md): stepper, timeline, tag input, avatar group, sortable, slider, banner (DismissStore), tree, and the progress family.
 - [references/accessibility.md](references/accessibility.md), [references/performance.md](references/performance.md), [references/motion.md](references/motion.md), [references/theming.md](references/theming.md), [references/javascript.md](references/javascript.md).
 - [references/patterns.md](references/patterns.md): page recipes.
 

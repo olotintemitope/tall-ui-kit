@@ -77,7 +77,7 @@ The kit ships the notification components only; the inbox (data, polling, markin
 
 **Accessibility.** A `<section>` named by its title; the list is `aria-describedby` the progress line; each step starts with a hidden "Done:" or "Not done:"; the action is described by its step's label. After a Livewire update turns a step done, a polite status names it ("Invite your team: done.", plus the complete line when the last required step lands), focus stays in that row (the row takes focus if its action, now gone, had it), and nothing jumps to the next step. After Dismiss, focus moves to the next control on the page, else the page heading, never `<body>`.
 
-**Motion.** Only when a step turns done after a morph: the check scales in from 0.6 and fades in (`--motion-sm`, `ease-motion-out`, transform and opacity), and the bar's fill follows `x-ui.progress`'s width transition (`--motion-md`, its stable id keeps the element through the morph). Never on first render; instant under reduced motion and the gallery's reduced preview.
+**Motion.** Only when a step turns done after a morph: the check scales in from 0.6 and fades in (`--motion-sm`, `ease-motion-out`, transform and opacity), and the bar's fill follows `x-ui.progress`'s scaleX transition (`--motion-md`, its stable id keeps the element through the morph). Never on first render; instant under reduced motion and the gallery's reduced preview.
 
 **Persistence contract.** `TallUiKit\Support\Checklist\ChecklistStore`:
 

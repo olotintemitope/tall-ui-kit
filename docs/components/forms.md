@@ -57,6 +57,7 @@ Wrap it in `x-ui.form`. Width: `max-w-[640px]`, centred.
 | `guard` | true | Unsaved-changes guard |
 | `dirty` | false | Keep the guard on after an accepted step |
 | `errors` | [] | `x-ui.error-summary` fields for the current step |
+| `stepper` | inline | The step list is `x-ui.stepper`: `inline` (the text list below) or `default` (its markers; they stack on narrow panels). See [workflow](workflow.md) |
 | slot | | The current step's fields |
 | slot `aside` | | A 360px column from lg (below the panel on phones) |
 

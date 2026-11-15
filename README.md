@@ -114,6 +114,7 @@ Not in the package (app code): navigation data, shells and command palette data,
   - [Cards and charts](docs/components/data-display.md)
   - [Data table](docs/components/data-table.md), [exports](docs/components/exports.md)
   - [Icons and copy to clipboard](docs/components/copy-and-icons.md)
+  - [Workflow and progress: stepper, timeline, tag input, avatar group, sortable, slider, banner, tree, progress](docs/components/workflow.md)
 - [Accessibility and focus](docs/accessibility.md), [motion](docs/motion.md), [performance budgets](docs/performance.md), [JavaScript](docs/javascript.md)
 
 ## Configuration
@@ -128,7 +129,7 @@ npm run build                 # builds both themes and the kit JS into workbench
 composer serve                # http://127.0.0.1:8000 (?theme=neutral or ?theme=newbanger)
 ```
 
-Pages: Basics, Forms, Overlays, Data display, Charts, Data table (Livewire, 320 sample rows on a private SQLite file), Sidebar.
+Pages: Basics, Forms, Overlays, Data display, Charts, Data table (Livewire, 320 sample rows on a private SQLite file), Workflow (Livewire demos of the sortable, tree, tag input, slider, banner and uploads), Sidebar.
 
 ## Checks
 

@@ -1,6 +1,6 @@
 # Components
 
-Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md).
+Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md), [workflow and progress](workflow.md).
 
 ## Components
 
@@ -65,6 +65,8 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.time`, `x-ui.dl`, `.item`, `x-ui.breadcrumb` | Text and structure: `docs/components/html-elements.md` |
 | `x-ui.audio`, `x-ui.video`, `x-ui.embed`, `x-ui.figure`, `x-ui.lightbox` | Media and embed providers: `docs/components/html-elements.md`. Prices are app components |
 | `x-ui.form-layout.*` | Form layouts: `docs/components/forms.md` |
+| `x-ui.stepper`, `x-ui.timeline` (+ `.item`, `.day`), `x-ui.tag-input`, `x-ui.avatar-group`, `x-ui.sortable` (+ `.item`), `x-ui.slider`, `x-ui.banner`, `x-ui.tree` | Workflow components: `steps`/`current`/`variant`/`orientation`/`clickable`; `items`/`groupByDay`/`limit`; array `wire:model`, `suggestions`, `max`, `pattern`; `people`/`max`; `items`/`action` (one call with the new order); single or `dual`, `format`; `tone`, `dismissible`, `name`, `persist` (the `DismissStore`); `nodes`, `selectable`/`checkable`, `lazy`. See [workflow](workflow.md) |
+| `x-ui.progress` (sizes, tones, `labelPosition`, `format`, `buffer`), `x-ui.progress-ring`, `x-ui.progress-steps`, `x-ui.upload-progress` (+ `.list`) | Progress family: see [workflow](workflow.md) "Progress" |
 
 ## Typography components
 
