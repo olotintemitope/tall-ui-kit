@@ -1,0 +1,2 @@
+{{-- Inline code: mono 13px (numeric role), ink on surface-muted (13.6:1), rounded-sm. --}}
+<code {{ $attributes->class(['rounded-sm bg-surface-muted px-1 py-px type-numeric text-ink']) }}>{{ $slot }}</code>

@@ -1,0 +1,58 @@
+/*
+ * NewBanger theme for tall-ui-kit. One accent, #FF614D (`primary`); everything else
+ * is a neutral grey derived from #212322 (`secondary` / `ink`). Fonts: Space Grotesk
+ * for titles and figures, Inter for everything else (load them in the layout, e.g.
+ * Google Fonts or self-hosted). Logo slots: set config('tall-ui-kit.brand.logo_light')
+ * and logo_dark (see docs/theming.md).
+ *
+ * Contrast (against white unless stated): ink 15.81, ink-body 11.64, ink-muted 5.85,
+ * ink on primary 5.32 (the fill is 2.97, so the primary button is edged in
+ * primary-hover, 3.70), primary-text 5.21, control 3.65, focus 4.12.
+ * `composer contrast newbanger` measures every pair the kit uses.
+ */
+@theme {
+    --color-primary: #FF614D;
+    --color-primary-hover: #E5543F;
+    --color-primary-text: #BC4530;
+    --color-primary-fill-hover: #FF7462;
+    --color-primary-fill-active: #F0573F;
+    --color-secondary: #212322;
+    --color-secondary-light: #2E3130;
+    --color-neutral-900: #111211;
+
+    --color-ink: #212322;
+    --color-ink-body: #373938;
+    --color-ink-muted: #646564;
+    --color-line: #E5E6E5;
+    --color-line-strong: #D2D3D2;
+    --color-surface-subtle: #F6F6F6;
+    --color-surface-muted: #EEEEEE;
+    --color-page-muted: #F7F7F8;
+    --color-panel-border: #E7E7E9;
+    --color-panel-footer: #FAFAFA;
+    --color-control: #858685;
+    --color-control-hover: #6F706F;
+    --color-focus: #DB4C37;
+    --color-scrim: rgb(33 35 34 / 0.4);
+
+    /* Older shadcn-style names some kit class strings still use. */
+    --color-card: #FFFFFF;
+    --color-card-foreground: #212322;
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #212322;
+
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* Chart tokens, always emitted: charts read them at runtime through var(). */
+@theme static {
+    --color-chart-accent: #BC4530;
+    --color-chart-1: #212322;
+    --color-chart-2: #646564;
+    --color-chart-3: #909190;
+    --color-chart-grid: #F0F1F1;
+    --color-chart-axis: #E5E6E5;
+    --color-chart-tick: #646564;
+}

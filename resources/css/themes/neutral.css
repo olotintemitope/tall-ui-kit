@@ -1,0 +1,55 @@
+/*
+ * Neutral theme for tall-ui-kit (the default). True greys plus one muted slate accent.
+ * The primary button is a light slate fill carrying ink text and edged in
+ * primary-hover, the same structure as every kit theme, so no component changes.
+ * System fonts: no web font to load.
+ *
+ * Every pair the kit uses meets 4.5:1 for text and 3:1 for boundaries and marks;
+ * `composer contrast neutral` measures them (scripts/contrast.php).
+ */
+@theme {
+    --color-primary: #AFC0D1;
+    --color-primary-hover: #5F7891;
+    --color-primary-text: #3D5A78;
+    --color-primary-fill-hover: #BFCDDB;
+    --color-primary-fill-active: #9FB2C6;
+    --color-secondary: #1F2021;
+    --color-secondary-light: #2E3032;
+    --color-neutral-900: #111213;
+
+    --color-ink: #1F2021;
+    --color-ink-body: #393A3C;
+    --color-ink-muted: #606264;
+    --color-line: #E4E5E6;
+    --color-line-strong: #D1D2D4;
+    --color-surface-subtle: #F5F5F6;
+    --color-surface-muted: #EDEDEE;
+    --color-page-muted: #F7F7F8;
+    --color-panel-border: #E6E6E8;
+    --color-panel-footer: #FAFAFA;
+    --color-control: #818385;
+    --color-control-hover: #6A6C6E;
+    --color-focus: #5B7A99;
+    --color-scrim: rgb(31 32 33 / 0.4);
+
+    /* Older shadcn-style names some kit class strings still use. */
+    --color-card: #FFFFFF;
+    --color-card-foreground: #1F2021;
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #1F2021;
+
+    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-heading: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Chart tokens, always emitted: charts read them at runtime through var(). */
+@theme static {
+    --color-chart-accent: #3D5A78;
+    --color-chart-1: #1F2021;
+    --color-chart-2: #606264;
+    --color-chart-3: #8C8E90;
+    --color-chart-grid: #F0F0F1;
+    --color-chart-axis: #E4E5E6;
+    --color-chart-tick: #606264;
+}

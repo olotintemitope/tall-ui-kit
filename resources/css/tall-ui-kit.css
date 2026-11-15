@@ -1,0 +1,1602 @@
+/*
+ * tall-ui-kit: Tailwind 4 entry. Import it after Tailwind and before exactly one theme:
+ *
+ *   @import 'tailwindcss';
+ *   @import '../../vendor/olotintemitope/tall-ui-kit/resources/css/tall-ui-kit.css';
+ *   @import '../../vendor/olotintemitope/tall-ui-kit/resources/css/themes/neutral.css';
+ *
+ * This file holds the structure (variants, type scale, elevation, motion, base layer,
+ * type-* utilities and component layers). Colours and fonts live in the theme files,
+ * so switching themes is one import. docs/theming.md lists every token a theme sets.
+ */
+
+/* The kit's views, scripts and PHP class strings, relative to this file. */
+@source '../views';
+@source '../js';
+@source '../../src';
+
+/*
+ * Set on <html> by the shell layouts (inline script before paint, then Alpine)
+ * when the desktop sidebar is collapsed to icons. Pair with `lg:`.
+ */
+@custom-variant sidebar-collapsed (&:where([data-sidebar='collapsed'], [data-sidebar='collapsed'] *));
+
+/*
+ * Sidebar rail (x-ui.sidebar collapsed to icons). In a shell it follows the
+ * html[data-sidebar] state from lg, so the stored state applies before first paint;
+ * a static sidebar (gallery demos, `:fixed="false"`) follows its own data-collapsed
+ * at every width. Use `rail:` inside x-ui.sidebar parts only.
+ */
+@custom-variant rail {
+    @media (width >= 64rem) {
+        &:where([data-sidebar='collapsed'] [data-sidebar-root='shell'], [data-sidebar='collapsed'] [data-sidebar-root='shell'] *) {
+            @slot;
+        }
+    }
+
+    &:where([data-sidebar-root='static'][data-collapsed], [data-sidebar-root='static'][data-collapsed] *) {
+        @slot;
+    }
+}
+
+/*
+ * Focus mode, set on <html> as data-focus="on" (inline script before paint, then
+ * the `focusMode` store in resources/js/ui.js). Pair with `lg:`: focus mode only
+ * applies from lg. `:is()` (not `:where()`) so it wins over sidebar-collapsed.
+ */
+@custom-variant focus-mode (&:is([data-focus='on'] *));
+
+/*
+ * Interaction states (docs/ui-kit.md "States"). One variant covers both the real
+ * pseudo-class and a forced `data-force` attribute, so the gallery's states matrix
+ * draws exactly the classes users see. Disabled controls (`:disabled` or
+ * aria-disabled) never take hover or pressed styles.
+ */
+@custom-variant state-hover {
+    &:hover:not(:disabled, [aria-disabled='true'], [aria-busy='true']) {
+        @slot;
+    }
+
+    &[data-force='hover'] {
+        @slot;
+    }
+}
+
+/*
+ * Disabled without opacity: `:disabled` or aria-disabled, except while a control is
+ * busy (aria-busy keeps its own look with the spinner).
+ */
+@custom-variant state-disabled {
+    &:disabled:not([aria-busy='true']) {
+        @slot;
+    }
+
+    &[aria-disabled='true']:not([aria-busy='true']) {
+        @slot;
+    }
+}
+
+@custom-variant state-active {
+    &:active:not(:disabled, [aria-disabled='true'], [aria-busy='true']) {
+        @slot;
+    }
+
+    &[data-force='active'] {
+        @slot;
+    }
+}
+
+
+/*
+ * Structure tokens shared by every theme. Colours and fonts: resources/css/themes/*.
+ */
+@theme {
+    /*
+     * Elevation. Level 0 `page-muted` is the tinted page behind form panels
+     * (form contexts only; data pages stay white and flat). Level 1 `panel`,
+     * level 2 `popover` (menus, toasts), level 3 `dialog`. One soft neutral
+     * shadow per level, always with a border.
+     */
+    --shadow-panel: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+    --shadow-popover: 0 4px 12px rgba(16, 24, 40, 0.08);
+    --shadow-dialog: 0 12px 32px rgba(16, 24, 40, 0.14);
+
+    /* Switch thumb lift and the sticky form action bar's top edge. */
+    --shadow-thumb: 0 1px 2px rgba(16, 24, 40, 0.2);
+    --shadow-bar: 0 -1px 2px rgba(16, 24, 40, 0.04);
+
+    --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+    /*
+     * Type scale. Every piece of UI text maps to exactly one role; use the
+     * `type-*` utilities, which add font family and colour. Weights are 400, 500
+     * and 600 only; nothing is smaller than 11px (label role only).
+     */
+    --text-title: 22px;
+    --text-title--line-height: 28px;
+    --text-title--font-weight: 600;
+    --text-title--letter-spacing: -0.01em;
+    --text-heading: 15px;
+    --text-heading--line-height: 22px;
+    --text-heading--font-weight: 600;
+    --text-subheading: 14px;
+    --text-subheading--line-height: 20px;
+    --text-subheading--font-weight: 600;
+    --text-label: 11px;
+    --text-label--line-height: 16px;
+    --text-label--font-weight: 600;
+    --text-label--letter-spacing: 0.08em;
+    --text-body-strong: 14px;
+    --text-body-strong--line-height: 20px;
+    --text-body-strong--font-weight: 500;
+    --text-field-label: 13px;
+    --text-field-label--line-height: 18px;
+    --text-field-label--font-weight: 500;
+    --text-meta: 13px;
+    --text-meta--line-height: 18px;
+    --text-meta--font-weight: 400;
+    --text-caption: 12px;
+    --text-caption--line-height: 16px;
+    --text-caption--font-weight: 400;
+    --text-figure: 22px;
+    --text-figure--line-height: 26px;
+    --text-figure--font-weight: 600;
+    --text-numeric: 13px;
+    --text-numeric--line-height: 18px;
+    --text-numeric--font-weight: 400;
+    --text-body: 14px;
+    --text-body--line-height: 20px;
+    --text-body--font-weight: 400;
+
+    /*
+     * Motion (docs/components/motion.md). Durations are 100, 150, 200 and 300ms
+     * (`duration-100` ... `duration-300`, or var(--motion-*) in CSS and motion.js).
+     * Two curves: `ease-motion-out` for things entering or moving,
+     * `ease-motion-in-out` for things that change size in place.
+     */
+    --ease-motion-out: cubic-bezier(0.2, 0, 0, 1);
+    --ease-motion-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Loaders (x-ui.spinner, x-ui.progress-bar). Reduced motion swaps rotation and
+       travel for a slow opacity pulse. Skeletons use Tailwind's animate-pulse. */
+    --animate-spinner: spin 0.7s linear infinite;
+    --animate-spinner-reduced: loader-fade 1.6s ease-in-out infinite;
+    --animate-progress: progress-slide 1.2s ease-in-out infinite;
+
+    @keyframes loader-fade {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.55; }
+    }
+
+    @keyframes progress-slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(250%); }
+    }
+}
+
+/* Lucide calendar and clock (0.412) as masks for the date and time picker indicators. */
+:root {
+    --picker-icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Crect width='18' height='18' x='3' y='4' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E");
+    --picker-icon-clock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+}
+
+
+/*
+ * Tailwind 3 style defaults: a neutral default border colour (v4 uses currentColor)
+ * and a pointer cursor on buttons.
+ */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+
+    /*
+     * Programmatic focus targets (tabindex -1: page headings, dialog titles, the error
+     * summary) show the kit ring only when the move followed a keyboard action.
+     */
+    [tabindex='-1']:focus {
+        outline: none;
+    }
+
+    /*
+     * Only after a keyboard action (html[data-input="keyboard"], set in ui.js). The
+     * browser's own :focus-visible guess is not enough: after wire:navigate swaps the
+     * page it treats the heading focus as keyboard focus, so mouse users saw an orange
+     * ring on every page heading.
+     */
+    html[data-input='keyboard'] [tabindex='-1']:focus {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    /*
+     * Focus not obscured (WCAG 2.4.11): keep scrolled-to and focused elements clear of
+     * the 56px sticky top bar and the sticky form action bar at the bottom.
+     */
+    html {
+        scroll-padding-top: 4.5rem;
+        scroll-padding-bottom: 5rem;
+    }
+
+    /*
+     * Reduced motion: no transitions or smooth scrolling anywhere. Animations are
+     * handled per component (spinner and progress bar pulse slowly, skeletons stop).
+     */
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto !important;
+        }
+
+        *,
+        ::before,
+        ::after {
+            transition-duration: 0s !important;
+        }
+
+        /* Any spinning icon (refresh buttons, older loaders) pulses instead. */
+        .animate-spin {
+            animation: loader-fade 1.6s ease-in-out infinite;
+        }
+    }
+
+    html {
+        font-family: var(--font-body);
+        color: var(--color-secondary);
+        scroll-behavior: smooth;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+        font-weight: 600;
+    }
+
+    /* x-ui controls (data-ui) draw their own focus and invalid states. */
+    input:not([data-ui]):focus,
+    select:not([data-ui]):focus,
+    textarea:not([data-ui]):focus,
+    input:not([data-ui]):focus-visible,
+    select:not([data-ui]):focus-visible,
+    textarea:not([data-ui]):focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 30%, transparent);
+        border-color: var(--color-focus);
+    }
+
+    /*
+     * Autofill: no yellow. The standard :autofill and the WebKit alias are kept in
+     * separate rules, so a browser that knows only one still applies it. The fill is
+     * painted white with an inset shadow (the only way past the UA !important
+     * background); the border stays the control's own.
+     */
+    input:autofill,
+    select:autofill,
+    textarea:autofill {
+        box-shadow: 0 0 0 1000px white inset;
+        -webkit-text-fill-color: var(--color-ink);
+        caret-color: var(--color-ink);
+    }
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    textarea:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px white inset;
+        box-shadow: 0 0 0 1000px white inset;
+        -webkit-text-fill-color: var(--color-ink);
+        caret-color: var(--color-ink);
+    }
+
+    /* Native checkboxes, radios, ranges and progress fall back to ink, never the UA blue. */
+    :root {
+        accent-color: var(--color-secondary);
+    }
+
+    /* Selected text: ink on a light accent wash (12.05:1). */
+    ::selection {
+        background-color: color-mix(in srgb, var(--color-primary) 25%, white);
+        color: var(--color-ink);
+    }
+
+    /* Strip clashing browser defaults: spin buttons, the search cancel button, number field arrows in Firefox. */
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+
+    input[type='search']::-webkit-search-cancel-button,
+    input[type='search']::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
+
+    /*
+     * Date and time pickers: the WebKit indicator is redrawn as a Lucide calendar or
+     * clock mask in ink-muted (5.86:1), so it matches the kit's icons. Firefox and
+     * Safari draw their own button and keep it.
+     */
+    input[type='date']::-webkit-calendar-picker-indicator,
+    input[type='datetime-local']::-webkit-calendar-picker-indicator,
+    input[type='month']::-webkit-calendar-picker-indicator,
+    input[type='week']::-webkit-calendar-picker-indicator,
+    input[type='time']::-webkit-calendar-picker-indicator {
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        margin-left: 6px;
+        cursor: pointer;
+        background: var(--color-ink-muted);
+        -webkit-mask: var(--picker-icon-calendar) center / 16px 16px no-repeat;
+        mask: var(--picker-icon-calendar) center / 16px 16px no-repeat;
+    }
+
+    input[type='time']::-webkit-calendar-picker-indicator {
+        -webkit-mask-image: var(--picker-icon-clock);
+        mask-image: var(--picker-icon-clock);
+    }
+
+    input:disabled::-webkit-calendar-picker-indicator {
+        cursor: not-allowed;
+    }
+
+    input::-webkit-datetime-edit-fields-wrapper {
+        padding: 0;
+    }
+
+    /* Text-level semantics (docs/ui-kit-html.md). No italics anywhere in the kit. */
+    mark {
+        background-color: color-mix(in srgb, var(--color-primary) 18%, white);
+        color: var(--color-ink);
+        border-radius: 2px;
+        padding: 0 1px;
+    }
+
+    abbr[title] {
+        text-decoration: underline dotted var(--color-ink-muted);
+        text-underline-offset: 3px;
+        cursor: help;
+    }
+
+    small {
+        font-size: var(--text-caption);
+        line-height: var(--text-caption--line-height);
+    }
+
+    cite,
+    var,
+    address,
+    dfn,
+    em {
+        font-style: normal;
+    }
+
+    cite {
+        color: var(--color-ink);
+        font-weight: 500;
+    }
+
+    var,
+    samp {
+        font-family: var(--font-mono);
+        font-size: 0.929em;
+        color: var(--color-ink);
+    }
+
+    q {
+        quotes: '\201C' '\201D' '\2018' '\2019';
+    }
+
+    data {
+        font-variant-numeric: tabular-nums;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /*
+     * Privacy mode (x-ui.money). The attribute is set from localStorage by an
+     * inline script in layouts/app before first paint, so figures never flash.
+     */
+    /* Focus mode hides regions marked data-focus-hide, from lg only. */
+    @media (width >= 64rem) {
+        html[data-focus='on'] [data-focus-hide] {
+            display: none !important;
+        }
+    }
+
+    html[data-privacy='hidden'] [data-money] {
+        display: inline-block;
+        filter: blur(6px);
+        user-select: none;
+        cursor: default;
+        opacity: 0.9;
+    }
+}
+
+
+/*
+ * Type roles (see the scale in @theme). Colour is part of the role; on dark
+ * surfaces use the bare `text-<role>` size token with a white colour instead.
+ */
+@utility type-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    font-weight: var(--text-title--font-weight);
+    letter-spacing: var(--text-title--letter-spacing);
+    color: var(--color-ink);
+}
+
+@utility type-heading {
+    font-family: var(--font-body);
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    font-weight: var(--text-heading--font-weight);
+    color: var(--color-ink);
+}
+
+@utility type-subheading {
+    font-family: var(--font-body);
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    font-weight: var(--text-subheading--font-weight);
+    color: var(--color-ink);
+}
+
+@utility type-label {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    font-weight: var(--text-label--font-weight);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+}
+
+@utility type-body {
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: var(--text-body--font-weight);
+    color: var(--color-ink-body);
+}
+
+@utility type-body-strong {
+    font-family: var(--font-body);
+    font-size: var(--text-body-strong);
+    line-height: var(--text-body-strong--line-height);
+    font-weight: var(--text-body-strong--font-weight);
+    color: var(--color-ink);
+}
+
+@utility type-field-label {
+    font-family: var(--font-body);
+    font-size: var(--text-field-label);
+    line-height: var(--text-field-label--line-height);
+    font-weight: var(--text-field-label--font-weight);
+    color: var(--color-ink);
+}
+
+@utility type-meta {
+    font-family: var(--font-body);
+    font-size: var(--text-meta);
+    line-height: var(--text-meta--line-height);
+    font-weight: var(--text-meta--font-weight);
+    color: var(--color-ink-muted);
+}
+
+@utility type-caption {
+    font-family: var(--font-body);
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+    font-weight: var(--text-caption--font-weight);
+    color: var(--color-ink-muted);
+}
+
+@utility type-figure {
+    font-family: var(--font-heading);
+    font-size: var(--text-figure);
+    line-height: var(--text-figure--line-height);
+    font-weight: var(--text-figure--font-weight);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+}
+
+@utility type-numeric {
+    font-family: var(--font-mono);
+    font-size: var(--text-numeric);
+    line-height: var(--text-numeric--line-height);
+    font-weight: var(--text-numeric--font-weight);
+    font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Keyboard focus for buttons and links: 2px outline, 2px offset, in the focus
+ * colour, on :focus-visible only (never a mouse click). `data-force="focus"` draws
+ * the same outline for the states matrix. `focus-ring-inset` is the tabs variant,
+ * drawn 4px inside so a scrolling tab row never clips it and a selected tab's
+ * underline stays visible below it.
+ */
+@utility focus-ring {
+    &:focus-visible,
+    &[data-force='focus'] {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+}
+
+@utility focus-ring-inset {
+    &:focus-visible,
+    &[data-force='focus'] {
+        outline: 2px solid var(--color-focus);
+        outline-offset: -4px;
+    }
+}
+
+@utility no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+
+/*
+ * Long user- or admin-authored content (x-ui.prose). Scoped to `.prose-kit`; the
+ * Tailwind typography plugin is not used. Every value is a kit token or role:
+ * 68ch measure, blocks 12px apart, h2/h3/h4 in the heading, subheading and label
+ * roles, links in primary-text (5.21:1) always underlined, tables in the
+ * x-ui.table style, hr as a 1px line. `.prose-kit-sm` is the dense 13/20 variant
+ * for ticket threads. Sanitise user HTML on the server before rendering it.
+ */
+@layer components {
+    .prose-kit {
+        max-width: 68ch;
+        font-family: var(--font-body);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink-body);
+        overflow-wrap: break-word;
+    }
+
+    .prose-kit > * + * {
+        margin-top: 12px;
+    }
+
+    .prose-kit > :first-child {
+        margin-top: 0;
+    }
+
+    .prose-kit h2 {
+        margin-top: 28px;
+        font-family: var(--font-body);
+        font-size: var(--text-heading);
+        line-height: var(--text-heading--line-height);
+        font-weight: 600;
+        color: var(--color-ink);
+    }
+
+    .prose-kit h3 {
+        margin-top: 24px;
+        font-family: var(--font-body);
+        font-size: var(--text-subheading);
+        line-height: var(--text-subheading--line-height);
+        font-weight: 600;
+        color: var(--color-ink);
+    }
+
+    .prose-kit h4 {
+        margin-top: 20px;
+        font-family: var(--font-body);
+        font-size: var(--text-label);
+        line-height: var(--text-label--line-height);
+        font-weight: 600;
+        letter-spacing: var(--text-label--letter-spacing);
+        text-transform: uppercase;
+        color: var(--color-ink-muted);
+    }
+
+    .prose-kit h2 + *,
+    .prose-kit h3 + *,
+    .prose-kit h4 + * {
+        margin-top: 6px;
+    }
+
+    .prose-kit strong,
+    .prose-kit b {
+        font-weight: 600;
+        color: var(--color-ink);
+    }
+
+    .prose-kit a {
+        color: var(--color-primary-text);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+        border-radius: var(--radius-sm);
+        transition: color 100ms;
+    }
+
+    .prose-kit a:hover {
+        color: var(--color-ink);
+    }
+
+    .prose-kit a:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    .prose-kit ul,
+    .prose-kit ol {
+        padding-left: 20px;
+    }
+
+    .prose-kit ul {
+        list-style-type: disc;
+    }
+
+    .prose-kit ol {
+        list-style-type: decimal;
+    }
+
+    .prose-kit li + li,
+    .prose-kit li > ul,
+    .prose-kit li > ol {
+        margin-top: 6px;
+    }
+
+    .prose-kit li::marker {
+        color: var(--color-ink-muted);
+    }
+
+    .prose-kit code {
+        border-radius: var(--radius-sm);
+        background-color: var(--color-surface-muted);
+        padding: 1px 4px;
+        font-family: var(--font-mono);
+        font-size: var(--text-numeric);
+        color: var(--color-ink);
+    }
+
+    .prose-kit pre {
+        overflow-x: auto;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-panel-footer);
+        padding: 12px;
+        font-family: var(--font-mono);
+        font-size: var(--text-numeric);
+        line-height: 20px;
+        color: var(--color-ink);
+    }
+
+    .prose-kit pre code {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        font-size: inherit;
+    }
+
+    .prose-kit blockquote {
+        padding-left: 16px;
+        color: var(--color-ink-body);
+    }
+
+    .prose-kit hr {
+        border: 0;
+        border-top: 1px solid var(--color-line);
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+
+    .prose-kit hr + * {
+        margin-top: 0;
+    }
+
+    .prose-kit img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--radius-lg);
+    }
+
+    .prose-kit figcaption {
+        margin-top: 6px;
+        font-size: var(--text-caption);
+        line-height: var(--text-caption--line-height);
+        color: var(--color-ink-muted);
+    }
+
+    .prose-kit table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--color-line);
+        text-align: left;
+    }
+
+    .prose-kit thead tr {
+        background-color: var(--color-panel-footer);
+    }
+
+    .prose-kit th {
+        height: 36px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--color-line);
+        font-size: var(--text-label);
+        line-height: var(--text-label--line-height);
+        font-weight: 600;
+        letter-spacing: var(--text-label--letter-spacing);
+        text-transform: uppercase;
+        color: var(--color-ink-muted);
+        white-space: nowrap;
+    }
+
+    .prose-kit td {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--color-line);
+        vertical-align: top;
+    }
+
+    .prose-kit-sm {
+        font-size: var(--text-meta);
+        line-height: 20px;
+    }
+
+    .prose-kit-sm > * + * {
+        margin-top: 8px;
+    }
+
+    .prose-kit-sm h2 {
+        margin-top: 20px;
+        font-size: var(--text-subheading);
+        line-height: var(--text-subheading--line-height);
+    }
+
+    .prose-kit-sm h3,
+    .prose-kit-sm h4 {
+        margin-top: 16px;
+    }
+
+    .prose-kit-sm h3 {
+        font-size: var(--text-meta);
+        line-height: 20px;
+    }
+
+    .prose-kit-sm code,
+    .prose-kit-sm pre {
+        font-size: var(--text-caption);
+    }
+
+    .prose-kit-sm td {
+        padding: 6px 12px;
+    }
+
+    .prose-kit-sm th {
+        height: 32px;
+        padding: 0 12px;
+    }
+}
+
+/*
+ * Motion (docs/ui-kit.md "Motion"). Native CSS first: transitions, @starting-style
+ * and transition-behavior: allow-discrete for the top-layer dialog and sheet;
+ * Alpine x-transition for menus, popovers, the palette and toasts; x-collapse for
+ * accordion height. GSAP (resources/js/motion.js, loaded lazily) only for the
+ * sliding segmented/tabs indicator (Flip) and figure count-ups.
+ * Only transform and opacity animate; the accordion, sidebar and focus-mode widths
+ * are the measured exceptions. No permanent compositor hints. Reduced motion (or
+ * [data-motion-preview='reduced'] in the gallery) makes every change instant.
+ */
+:root {
+    --motion-xs: 100ms;
+    --motion-sm: 150ms;
+    --motion-md: 200ms;
+    --motion-lg: 300ms;
+    --motion-ease-out: cubic-bezier(0.2, 0, 0, 1);
+    --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --motion-xs: 0ms;
+        --motion-sm: 0ms;
+        --motion-md: 0ms;
+        --motion-lg: 0ms;
+    }
+}
+
+/* Gallery preview of reduced motion: the same instant changes, scoped to a region. */
+[data-motion-preview='reduced'],
+[data-motion-preview='reduced'] *,
+[data-motion-preview='reduced'] ::before,
+[data-motion-preview='reduced'] ::after,
+html[data-motion-preview='reduced'] dialog,
+html[data-motion-preview='reduced'] dialog *,
+html[data-motion-preview='reduced'] [data-toast] {
+    --motion-xs: 0ms;
+    --motion-sm: 0ms;
+    --motion-md: 0ms;
+    --motion-lg: 0ms;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+}
+
+@layer components {
+    /*
+     * Native <dialog> (x-ui.dialog, x-ui.confirm, x-ui.alert-dialog, x-ui.sheet).
+     * Opens with showModal(): the top layer, inert page and Escape come from the
+     * browser. Dialog: fade plus scale from 0.98. Sheet: slide from the right.
+     * `overlay` and `display` switch discretely at the end, so the exit can play.
+     */
+    .ui-dialog {
+        opacity: 0;
+        transform: scale(0.98);
+        transition:
+            opacity var(--motion-sm) var(--motion-ease-out),
+            transform var(--motion-sm) var(--motion-ease-out),
+            overlay var(--motion-sm) allow-discrete,
+            display var(--motion-sm) allow-discrete;
+    }
+
+    .ui-dialog[open] {
+        opacity: 1;
+        transform: none;
+    }
+
+    @starting-style {
+        .ui-dialog[open] {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+    }
+
+    .ui-dialog::backdrop,
+    .ui-sheet::backdrop {
+        background-color: var(--color-scrim);
+        opacity: 0;
+        transition:
+            opacity var(--motion-sm) var(--motion-ease-out),
+            overlay var(--motion-sm) allow-discrete,
+            display var(--motion-sm) allow-discrete;
+    }
+
+    .ui-dialog[open]::backdrop,
+    .ui-sheet[open]::backdrop {
+        opacity: 1;
+    }
+
+    @starting-style {
+        .ui-dialog[open]::backdrop,
+        .ui-sheet[open]::backdrop {
+            opacity: 0;
+        }
+    }
+
+    .ui-sheet {
+        transform: translateX(100%);
+        opacity: 1;
+        transition:
+            transform var(--motion-md) var(--motion-ease-out),
+            overlay var(--motion-md) allow-discrete,
+            display var(--motion-md) allow-discrete;
+    }
+
+    .ui-sheet[open] {
+        transform: none;
+    }
+
+    @starting-style {
+        .ui-sheet[open] {
+            transform: translateX(100%);
+        }
+    }
+
+    /* The mobile navigation drawer (x-ui.sidebar) slides in from the left. */
+    .ui-drawer {
+        transform: translateX(-100%);
+        transition:
+            transform var(--motion-md) var(--motion-ease-out),
+            overlay var(--motion-md) allow-discrete,
+            display var(--motion-md) allow-discrete;
+    }
+
+    .ui-drawer[open] {
+        transform: none;
+    }
+
+    @starting-style {
+        .ui-drawer[open] {
+            transform: translateX(-100%);
+        }
+    }
+
+    .ui-drawer::backdrop {
+        background-color: var(--color-scrim);
+        opacity: 0;
+        transition:
+            opacity var(--motion-md) var(--motion-ease-out),
+            overlay var(--motion-md) allow-discrete,
+            display var(--motion-md) allow-discrete;
+    }
+
+    .ui-drawer[open]::backdrop {
+        opacity: 1;
+    }
+
+    @starting-style {
+        .ui-drawer[open]::backdrop {
+            opacity: 0;
+        }
+    }
+
+    /* Mobile full-screen dialogs slide up instead of scaling. */
+    @media (width < 40rem) {
+        .ui-dialog-fullscreen {
+            transform: translateY(16px);
+        }
+
+        @starting-style {
+            .ui-dialog-fullscreen[open] {
+                transform: translateY(16px);
+            }
+        }
+    }
+
+    /* No page scroll behind an open modal dialog. */
+    html:has(dialog.ui-dialog[open], dialog.ui-sheet[open], dialog.ui-drawer[open]) {
+        overflow: hidden;
+    }
+
+    /*
+     * Long pages: a section waiting for its deferred Alpine init (data-ui-defer,
+     * resources/js/defer.js) skips style, layout and paint while it is off screen. It stays
+     * in the accessibility tree, focusable and findable in the page. Lifted as soon as the
+     * section starts (data-ui-live), because content-visibility also clips painting to the
+     * section and menus, tooltips and focus rings must never be cut off.
+     */
+    [data-ui-defer]:not([data-ui-live]) {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 40rem;
+    }
+
+    /* A deferred card waiting off screen: about its rendered height. */
+    [data-ui-defer='card']:not([data-ui-live]) {
+        contain-intrinsic-size: auto 15rem;
+    }
+
+    /* Switch thumb and checkbox tick: transform and opacity on the kit curve. */
+    [data-ui='switch'] > span {
+        transition-property: transform;
+        transition-duration: var(--motion-sm);
+        transition-timing-function: var(--motion-ease-out);
+    }
+
+    [data-ui='checkbox'] ~ svg {
+        transform: scale(0.6);
+        transition:
+            opacity var(--motion-xs) var(--motion-ease-out),
+            transform var(--motion-sm) var(--motion-ease-out);
+    }
+
+    [data-ui='checkbox']:checked ~ svg {
+        transform: none;
+    }
+
+    /*
+     * Row highlight after a refresh (data-motion-flash, set by motion.js when the
+     * row's version changes): a brief surface-subtle wash drawn on a pseudo-element
+     * whose opacity alone animates; multiply keeps the row's text untouched.
+     */
+    [data-motion-flashing] {
+        position: relative;
+    }
+
+    [data-motion-flashing]::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: var(--color-surface-muted);
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        opacity: 0;
+        animation: motion-flash calc(var(--motion-lg) * 2) var(--motion-ease-in-out);
+    }
+
+    @keyframes motion-flash {
+        0% { opacity: 0; }
+        25% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    /* The sliding indicator's ghost (motion.js): drawn under the labels while it moves. */
+    [data-motion-indicating] {
+        position: relative;
+    }
+
+    [data-motion-indicating] > :not([data-motion-ghost]),
+    [data-motion-indicating] [role='radio'],
+    [data-motion-indicating] [role='tab'] {
+        position: relative;
+        z-index: 1;
+    }
+
+    [data-motion-pending] {
+        background-color: transparent !important;
+        border-color: transparent !important;
+    }
+
+    [data-motion-ghost] {
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* Sidebar section and accordion chevrons turn with the disclosure. */
+    .motion-chevron {
+        transition: transform var(--motion-sm) var(--motion-ease-out);
+    }
+
+    [aria-expanded='true'] > .motion-chevron,
+    [aria-expanded='true'] .motion-chevron {
+        transform: rotate(90deg);
+    }
+
+    @media (forced-colors: active) {
+        [data-motion-flashing]::after,
+        [data-motion-ghost] {
+            display: none;
+        }
+
+        [data-motion-pending] {
+            background-color: revert !important;
+            border-color: revert !important;
+        }
+    }
+}
+
+/*
+ * x-ui.select listbox (resources/js/select.js). Options carry no classes (a country list
+ * is 250 of them), so the list styles them: the label wraps (never cut), the chosen
+ * option shows a check drawn by one mask (no SVG per option), the active option
+ * (aria-activedescendant, also the hovered one) is a surface-subtle fill inside a 1px
+ * `control` outline (3.38:1 on the fill), and disabled options are ink-muted (5.85:1) and skipped.
+ */
+@layer components {
+    .ui-select-list [role='option'] {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        min-height: 2rem;
+        padding: 0.375rem 0.5rem;
+        border-radius: 0.375rem;
+        color: var(--color-ink);
+        overflow-wrap: anywhere;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .ui-select-list [role='option']::before {
+        content: '';
+        flex: none;
+        width: 1rem;
+        height: 1rem;
+        margin-top: 0.125rem;
+    }
+
+    .ui-select-list [role='option'][aria-selected='true']::before {
+        background-color: currentColor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 1rem 1rem no-repeat;
+    }
+
+    .ui-select-list [role='option'][data-active] {
+        background-color: var(--color-surface-subtle);
+        outline: 1px solid var(--color-control);
+        outline-offset: -1px;
+    }
+
+    .ui-select-list [role='option'][aria-disabled='true'] {
+        color: var(--color-ink-muted);
+        cursor: not-allowed;
+    }
+
+    @media (forced-colors: active) {
+        .ui-select-list [role='option'][aria-selected='true']::before {
+            forced-color-adjust: none;
+            background-color: CanvasText;
+        }
+
+        .ui-select-list [role='option'][data-active] {
+            outline: 2px solid Highlight;
+        }
+    }
+}
+
+/*
+ * Native form and media elements (docs/ui-kit-html.md): range, progress, meter and
+ * colour, plus the client-side invalid and read-only states. Every value is a token.
+ */
+@layer components {
+    /*
+     * x-ui.range. The track is 4px `control` (3.65:1), the chosen part ink, the thumb
+     * a 24px white disc with a 1px `control` edge (the 24px target of WCAG 2.5.8).
+     * Dual ranges stack two inputs; only the thumbs take pointer events there.
+     */
+    .ui-range {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        width: 100%;
+        height: 24px;
+        margin: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .ui-range-dual .ui-range {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .ui-range::-webkit-slider-runnable-track {
+        height: 4px;
+        border-radius: 2px;
+        background: transparent;
+    }
+
+    .ui-range::-moz-range-track {
+        height: 4px;
+        border-radius: 2px;
+        background: transparent;
+    }
+
+    .ui-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: auto;
+        width: 24px;
+        height: 24px;
+        margin-top: -10px;
+        border-radius: 9999px;
+        border: 1px solid var(--color-control);
+        background: white;
+        box-shadow: var(--shadow-thumb);
+        cursor: pointer;
+        transition: border-color var(--motion-xs) linear;
+    }
+
+    .ui-range::-moz-range-thumb {
+        pointer-events: auto;
+        width: 22px;
+        height: 22px;
+        border-radius: 9999px;
+        border: 1px solid var(--color-control);
+        background: white;
+        box-shadow: var(--shadow-thumb);
+        cursor: pointer;
+    }
+
+    .ui-range:hover::-webkit-slider-thumb {
+        border-color: var(--color-control-hover);
+    }
+
+    .ui-range:hover::-moz-range-thumb {
+        border-color: var(--color-control-hover);
+    }
+
+    .ui-range:focus-visible {
+        outline: none;
+    }
+
+    .ui-range:focus-visible::-webkit-slider-thumb {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    .ui-range:focus-visible::-moz-range-thumb {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    .ui-range:disabled {
+        cursor: not-allowed;
+    }
+
+    .ui-range:disabled::-webkit-slider-thumb {
+        border-style: dashed;
+        background: var(--color-surface-subtle);
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+    .ui-range:disabled::-moz-range-thumb {
+        border-style: dashed;
+        background: var(--color-surface-subtle);
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+    /*
+     * x-ui.progress: a native <progress>, 4px `surface-muted` track, `chart-1` fill
+     * (15.8:1 on white, 13.6:1 on the track). Indeterminate: the element keeps its
+     * role and an aria-hidden 30% segment slides across (transform only, no stripes);
+     * reduced motion holds it still and pulses its opacity.
+     */
+    .ui-progress {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        width: 100%;
+        height: 4px;
+        border: 0;
+        border-radius: 2px;
+        overflow: hidden;
+        background-color: var(--color-surface-muted);
+        color: var(--color-chart-1);
+    }
+
+    .ui-progress::-webkit-progress-bar {
+        background-color: var(--color-surface-muted);
+        border-radius: 2px;
+    }
+
+    .ui-progress::-webkit-progress-value {
+        background-color: var(--color-chart-1);
+        border-radius: 2px;
+        transition: width var(--motion-md) var(--motion-ease-out);
+    }
+
+    .ui-progress::-moz-progress-bar {
+        background-color: var(--color-chart-1);
+        border-radius: 2px;
+    }
+
+    .ui-progress:indeterminate::-webkit-progress-bar {
+        background-color: var(--color-surface-muted);
+    }
+
+    .ui-progress:indeterminate::-moz-progress-bar {
+        background-color: transparent;
+    }
+
+    .ui-progress-segment {
+        position: absolute;
+        inset-block: 0;
+        left: 0;
+        width: 30%;
+        border-radius: 2px;
+        background-color: var(--color-chart-1);
+        animation: ui-progress-slide 1.4s var(--motion-ease-in-out) infinite;
+    }
+
+    @keyframes ui-progress-slide {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(340%); }
+    }
+
+    /*
+     * x-ui.meter: a native <meter> on the same 4px track. The browser picks the
+     * optimum, sub-optimum or even-less-good bar from low, high and optimum; each is a
+     * status colour at 3:1 or more on white and on the track (emerald-700 5.36 / 4.62,
+     * amber-700 5.03 / 4.34, red-700 6.42 / 5.53). The value and its word are printed
+     * beside it, so colour is never the only cue.
+     */
+    .ui-meter {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        width: 100%;
+        height: 4px;
+        border: 0;
+        border-radius: 2px;
+        background: var(--color-surface-muted);
+        overflow: hidden;
+    }
+
+    .ui-meter::-webkit-meter-inner-element {
+        display: block;
+    }
+
+    .ui-meter::-webkit-meter-bar {
+        height: 4px;
+        border: 0;
+        border-radius: 2px;
+        background: var(--color-surface-muted);
+    }
+
+    .ui-meter::-webkit-meter-optimum-value { background: var(--color-emerald-700); border-radius: 2px; }
+    .ui-meter::-webkit-meter-suboptimum-value { background: var(--color-amber-700); border-radius: 2px; }
+    .ui-meter::-webkit-meter-even-less-good-value { background: var(--color-red-700); border-radius: 2px; }
+    .ui-meter::-moz-meter-bar { border-radius: 2px; background: var(--color-emerald-700); }
+    .ui-meter:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--color-amber-700); }
+    .ui-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--color-red-700); }
+
+    /* x-ui.color: the native swatch fills its 28px box with a 4px radius and no UA bevel. */
+    .ui-color-swatch {
+        -webkit-appearance: none;
+        appearance: none;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .ui-color-swatch::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    .ui-color-swatch::-webkit-color-swatch {
+        border: 1px solid var(--color-control);
+        border-radius: 4px;
+    }
+
+    .ui-color-swatch::-moz-color-swatch {
+        border: 1px solid var(--color-control);
+        border-radius: 4px;
+    }
+
+    /*
+     * Client-side invalid (:user-invalid: only after the user has edited or tried to
+     * submit), on kit control boxes. Browsers without it get the same look from
+     * aria-invalid, which resources/js/forms.js sets on blur from the constraint check.
+     */
+    [data-control-box]:has(:is(input, select, textarea):user-invalid),
+    [data-control-box]:has([aria-invalid='true']) {
+        border-color: var(--color-red-600);
+    }
+
+    [data-control-box]:has(:is(input, select, textarea):user-invalid):focus-within,
+    [data-control-box]:has([aria-invalid='true']):focus-within {
+        border-color: var(--color-red-600);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-red-600) 20%, transparent);
+    }
+
+    /* Read-only (not disabled) text controls: a `panel-footer` fill and a default cursor; the 3.65:1 border stays. The copy field is read-only by design and stays white. */
+    [data-control-box]:not([data-copy-field]):has(> input[data-ui]:read-only:not(:disabled):not([type='range'], [type='color'], [type='checkbox'], [type='radio'], [type='file'])) {
+        background-color: var(--color-panel-footer);
+    }
+
+    [data-control-box]:not([data-copy-field]) > input[data-ui]:read-only:not(:disabled) {
+        cursor: default;
+    }
+
+    /* x-ui.accordion / x-ui.disclosure: no UA marker; the kit chevron turns instead. */
+    .ui-summary {
+        list-style: none;
+    }
+
+    .ui-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .ui-summary .ui-chevron {
+        transition: transform var(--motion-sm) var(--motion-ease-out);
+    }
+
+    details[open] > .ui-summary .ui-chevron,
+    [data-open='true'] > .ui-summary .ui-chevron {
+        transform: rotate(90deg);
+    }
+
+    [data-open='false'] > .ui-summary .ui-chevron {
+        transform: none;
+    }
+
+    /* x-ui.popover on the Popover API: reset the UA's centred inset and border; Alpine anchors it. */
+    [popover].ui-popover {
+        margin: 0;
+        inset: auto;
+        border: 1px solid var(--color-panel-border);
+        opacity: 1;
+        transition:
+            opacity var(--motion-sm) var(--motion-ease-out),
+            overlay var(--motion-sm) allow-discrete,
+            display var(--motion-sm) allow-discrete;
+    }
+
+    [popover].ui-popover:not(:popover-open) {
+        opacity: 0;
+    }
+
+    @starting-style {
+        [popover].ui-popover:popover-open {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ui-progress-segment {
+            animation: loader-fade 1.6s ease-in-out infinite;
+            transform: translateX(115%);
+        }
+    }
+
+    html[data-motion-preview='reduced'] .ui-progress-segment {
+        animation: loader-fade 1.6s ease-in-out infinite;
+        transform: translateX(115%);
+    }
+
+    @media (forced-colors: active) {
+        .ui-progress,
+        .ui-meter,
+        .ui-range {
+            forced-color-adjust: auto;
+        }
+
+        .ui-progress-segment {
+            background-color: CanvasText;
+        }
+    }
+}
+
+/*
+ * Print (data pages): the shell's sidebar, top bar, toasts and anything marked
+ * data-print-hide drop out; main takes the page; links print their URL after the
+ * text; tables keep their rules and repeat their header row.
+ */
+@media print {
+    [data-sidebar],
+    [data-sidebar-root],
+    header.sticky,
+    [data-progress-bar],
+    [data-toaster],
+    [data-print-hide],
+    a[href='#main'] {
+        display: none !important;
+    }
+
+    html,
+    body,
+    main {
+        background: white !important;
+    }
+
+    .lg\:pl-60,
+    .lg\:sidebar-collapsed\:pl-14 {
+        padding-left: 0 !important;
+    }
+
+    main a[href^='http']::after,
+    main a[href^='/']::after {
+        content: ' (' attr(href) ')';
+        font-size: var(--text-caption);
+        color: var(--color-ink-muted);
+        word-break: break-all;
+    }
+
+    main [data-print-no-url]::after,
+    main nav a::after {
+        content: none !important;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    figure,
+    [data-panel] {
+        break-inside: avoid;
+    }
+
+    [data-panel],
+    .shadow-panel {
+        box-shadow: none !important;
+    }
+}
+
+/*
+ * Lean markup for dense rows (one class instead of a long utility list per instance):
+ * x-ui.copy-text, x-ui.badge lean, x-ui.money lean. Same look and ratios as the full
+ * components (docs/ui-kit.md).
+ */
+@layer components {
+    .ui-copy-text {
+        position: relative;
+        display: inline-flex;
+        max-width: 100%;
+        align-items: center;
+        gap: 4px;
+        vertical-align: middle;
+    }
+
+    .ui-copy-inline {
+        display: inline-flex;
+        flex: none;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        color: var(--color-ink-muted);
+        opacity: 0;
+        transition: opacity var(--motion-xs) linear, background-color var(--motion-xs) linear;
+    }
+
+    .ui-copy-inline svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+
+    .ui-copy-text:hover .ui-copy-inline,
+    .ui-copy-inline:focus-visible,
+    .ui-copy-inline:not([data-copy-state='idle']) {
+        opacity: 1;
+    }
+
+    .ui-copy-inline:hover {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-ink);
+    }
+
+    .ui-copy-inline[data-copy-state='copied'] {
+        color: var(--color-emerald-700);
+    }
+
+    @media (hover: none) {
+        .ui-copy-inline {
+            opacity: 1;
+        }
+    }
+
+    .ui-copy-tip {
+        z-index: 60;
+        width: max-content;
+        max-width: 20rem;
+        overflow-wrap: anywhere;
+        border-radius: 6px;
+        background-color: var(--color-secondary);
+        padding: 4px 8px;
+        font-family: var(--font-body);
+        font-size: var(--text-caption);
+        line-height: var(--text-caption--line-height);
+        font-weight: 500;
+        color: white;
+        pointer-events: none;
+    }
+
+    .ui-badge {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        white-space: nowrap;
+        border-radius: 9999px;
+        padding: 2px 8px;
+        font-family: var(--font-body);
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 500;
+        background-color: var(--color-surface-muted);
+        color: var(--color-ink);
+    }
+
+    .ui-badge[data-tone='success'] { background-color: var(--color-emerald-50); color: var(--color-emerald-800); }
+    .ui-badge[data-tone='warning'] { background-color: var(--color-amber-50); color: var(--color-amber-800); }
+    .ui-badge[data-tone='danger'] { background-color: var(--color-red-50); color: var(--color-red-700); }
+    .ui-badge[data-tone='info'] { background-color: var(--color-blue-50); color: var(--color-blue-700); }
+    .ui-badge[data-tone='accent'] { background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); color: var(--color-primary-text); }
+    .ui-badge[data-tone='outline'] { background-color: white; color: var(--color-ink-muted); box-shadow: inset 0 0 0 1px var(--color-line-strong); }
+    .ui-badge[data-size='sm'] { font-size: 11px; line-height: 14px; }
+}
+
