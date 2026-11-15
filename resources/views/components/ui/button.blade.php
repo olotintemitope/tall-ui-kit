@@ -1,7 +1,7 @@
 {{--
     Button or link styled as a button.
     Props: variant (default|primary|secondary|outline|ghost|destructive|link; `primary` is an
-    alias of `default`), size (default h-9 | sm h-8 | lg h-10 | icon 36 | icon-sm 32), href
+    alias of `default`), size (default h-9, `md` is an alias of `default` | sm h-8 | lg h-10 | icon 36 | icon-sm 32 | icon-lg 40), href
     (renders an <a>), type (button), loading (a Livewire action name, or true for any: a
     spinner over the label while it runs, same width, aria-busy and clicks blocked),
     busy (the loading state drawn statically, e.g. while an Alpine fetch runs), disabled
@@ -49,7 +49,9 @@
         'lg' => 'min-h-10 px-4 py-2 text-body-strong',
         'icon' => 'h-9 w-9',
         'icon-sm' => 'h-8 w-8',
+        'icon-lg' => 'h-10 w-10',
     ];
+    $sizes['md'] = $sizes['default'];
 
     $isBusy = (bool) $busy;
     $classes = [
@@ -74,7 +76,7 @@
 
 @if ($href)
     <a
-        @if ($disabled) aria-disabled="true" role="link" @else href="{{ $href }}" @endif
+        @if ($disabled) aria-disabled="true" role="link" tabindex="0" @else href="{{ $href }}" @endif
         @if ($pressed !== null) aria-pressed="{{ $pressed ? 'true' : 'false' }}" @endif
         {{ $attributes->class($classes) }}
     >{{ $slot }}</a>

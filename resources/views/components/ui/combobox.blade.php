@@ -55,7 +55,7 @@
 >
     <div @class([
         'flex items-stretch overflow-hidden rounded-md border bg-surface transition-[border-color,box-shadow] duration-100',
-        $size === 'sm' ? 'h-8' : 'h-9',
+        FormControl::height($size),
         'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
         'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed',
@@ -98,6 +98,8 @@
         id="{{ $controlId }}-listbox"
         role="listbox"
         @if ($label) aria-label="{{ $label }}" @else aria-labelledby="{{ $controlId }}-label" @endif
+        {{-- Outside x-ui.field there is no label element: name the list from the input instead. --}}
+        x-init="if (! $el.hasAttribute('aria-label') && ! document.getElementById($el.getAttribute('aria-labelledby'))) { const name = ($refs.input.labels?.[0]?.textContent ?? $refs.input.getAttribute('aria-label') ?? '').replace(/\s*\*\s*$/, '').trim(); $el.removeAttribute('aria-labelledby'); if (name) $el.setAttribute('aria-label', name) }"
         x-show="open"
         x-cloak
         x-effect="open && $revealBelow($el, $el.parentElement.querySelector('[role=combobox]'))"

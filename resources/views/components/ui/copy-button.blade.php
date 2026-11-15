@@ -11,7 +11,7 @@
       value        the text to copy
       variant      label (icon and label, outline button), icon (icon only, ghost,
                    label as aria-label and tooltip), link (icon and label, link style)
-      size         default (36px) or sm (32px), as x-ui.button
+      size         default (36px), sm (32px) or lg (40px), as x-ui.button
       label        "Copy" (say what for icon-only buttons: "Copy reference");
       copiedLabel  "Copied"
       toast        also a "Copied to clipboard." toast, for copies from a menu
@@ -33,18 +33,19 @@
 
 @php
     $variant = in_array($variant, ['label', 'icon', 'link'], true) ? $variant : 'label';
-    $small = $size === 'sm';
+    $small = \TallUiKit\Support\FormControl::size($size) === 'sm';
+    $large = \TallUiKit\Support\FormControl::size($size) === 'lg';
     $force = in_array($attributes->get('data-force'), ['copied', 'failed'], true) ? $attributes->get('data-force') : null;
     $state = $force ?? 'idle';
     $options = array_filter(['value' => $value, 'toast' => $toast ?: null, 'force' => $force], fn ($v) => $v !== null);
 
     $base = 'relative inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap font-body transition-colors duration-100 motion-reduce:transition-none [&_svg]:pointer-events-none [&_svg]:size-4';
     $look = match (true) {
-        $joined === 'field' => ['self-stretch border-l border-control focus-ring-inset state-hover:bg-surface-subtle state-active:bg-surface-muted', $variant === 'icon' ? ($small ? 'w-8' : 'w-9') : ($small ? 'px-2.5 text-meta font-medium' : 'px-3 text-body-strong')],
+        $joined === 'field' => ['self-stretch border-l border-control focus-ring-inset state-hover:bg-surface-subtle state-active:bg-surface-muted', $variant === 'icon' ? ($small ? 'w-8' : ($large ? 'w-10' : 'w-9')) : ($small ? 'px-2.5 text-meta font-medium' : ($large ? 'px-4 text-body-strong' : 'px-3 text-body-strong'))],
         $joined === 'inline' => ['size-6 rounded-sm focus-ring state-hover:bg-surface-subtle'],
-        $variant === 'icon' => ['rounded-md border border-transparent focus-ring state-hover:bg-surface-subtle state-active:bg-surface-muted', $small ? 'size-8' : 'size-9'],
+        $variant === 'icon' => ['rounded-md border border-transparent focus-ring state-hover:bg-surface-subtle state-active:bg-surface-muted', $small ? 'size-8' : ($large ? 'size-10' : 'size-9')],
         $variant === 'link' => ['rounded-sm underline-offset-4 focus-ring state-hover:underline', $small ? 'text-meta font-medium' : 'text-body-strong'],
-        default => ['rounded-md border border-control bg-surface focus-ring state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted', $small ? 'h-8 px-2.5 text-meta font-medium' : 'h-9 px-3 text-body-strong'],
+        default => ['rounded-md border border-control bg-surface focus-ring state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted', $small ? 'min-h-8 px-2.5 text-meta font-medium' : ($large ? 'min-h-10 px-4 text-body-strong' : 'min-h-9 px-3 text-body-strong')],
     };
 
     // Idle colour per variant (icons ink-muted 5.86:1, link primary-text 5.21:1); copied is emerald-700 (5.48:1) everywhere.

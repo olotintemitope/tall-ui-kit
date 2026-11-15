@@ -1,7 +1,7 @@
 {{--
     Text input, h-9. Props: type (text; email, url, tel, search, number and the date and
     time types get the right inputmode, autocomplete, autocapitalize and spellcheck by
-    default, each overridable as an attribute), size (default h-9 | sm h-8, for dense toolbars),
+    default, each overridable as an attribute), size (sm h-8 for dense toolbars | default h-9, `md` is an alias | lg h-10),
     width (full|lg|md|sm|xs; default md, or the field's width), invalid (force the error
     state). Slots: prefix and suffix (a currency sign or a unit), inside the border with a
     hairline divider (`<x-slot:prefix plain>` drops the divider, as x-ui.search does). Inside x-ui.field it takes the field's id, hint and error wiring; on its
@@ -22,7 +22,7 @@
     $box = [
         'flex items-stretch overflow-hidden rounded-md border bg-surface transition-[border-color,box-shadow] duration-100',
         FormControl::width($width, in_array($type, ['date', 'time', 'month', 'week'], true) ? 'date' : ($type === 'datetime-local' ? 'datetime' : 'md')),
-        $size === 'sm' ? 'h-8' : 'h-9',
+        FormControl::height($size),
         'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
         'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:hover:border-control',

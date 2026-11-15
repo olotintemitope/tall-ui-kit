@@ -13,14 +13,15 @@
     per cell). The server prints the label from the bound value, so the first paint and
     every morph show it.
 
-    Props: mode (date | datetime | time | month | week | range), size (default h-9 | sm
-    h-8), width (full|lg|md|sm|xs; default w-40, datetime w-56, range w-64), invalid,
+    Props: mode (date | datetime | time | month | week | range), size (sm h-8 | default
+    h-9 | lg h-10), width (full|lg|md|sm|xs; default w-40, datetime w-56, range w-64), invalid,
     min, max (in the value format), step (seconds, time and datetime: sets the minute
     step), minuteStep (5), hours (24 | 12: display only, the value stays H:i), disabledDates
     (a list of Y-m-d dates and weekday tokens: sat, sun, weekends; or the name of a global
     JS function given a Y-m-d date that returns true to disable it), weekStart (0 Sunday to
     6 Saturday; default the visitor's locale, else Monday; week mode is always Monday),
     defaultTime (09:00, the time a datetime takes when only a day is chosen), placeholder,
+    value (an attribute: the initial value in the value format, when nothing is bound),
     defer (start the picker's Alpine later, docs/performance.md). Range only: presets
     (true for Last 7 days, Last 30 days, This month, Custom; or keys and labels, see
     DateInput::PRESETS, or ['label', 'start', 'end'] entries; false for none), start and
@@ -149,7 +150,7 @@
 
 {{-- Kept small (a Livewire island re-renders it): looks live in the kit CSS (.ui-date-*), listeners are added by datepicker.js. --}}
 <div {{ $rootAttributes->class(['relative min-w-0 max-w-full', $widthClass])->merge($state) }} data-ui-date{{ $defer ? ' data-ui-defer' : '' }}>
-<div x-ref="box" @class(['ui-date-box', 'ui-date-sm' => $size === 'sm', 'ui-date-invalid' => $isInvalid]) data-control-box>
+<div x-ref="box" @class(['ui-date-box', 'ui-date-sm' => \TallUiKit\Support\FormControl::size($size) === 'sm', 'ui-date-lg' => \TallUiKit\Support\FormControl::size($size) === 'lg', 'ui-date-invalid' => $isInvalid]) data-control-box>
 <input type="text" {{ $textAttributes->merge([
     'id' => $controlId,
     'value' => $label,

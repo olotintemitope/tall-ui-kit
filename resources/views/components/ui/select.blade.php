@@ -14,7 +14,7 @@
     Props: options (value => label, or a list of ['value' => , 'label' => , 'disabled' => ];
     a string key whose value is an array of value => label is a group), placeholder (an
     empty-value first option), selected (initial value without wire:model; a list with
-    `multiple`), size (default 36px | sm 32px), width (auto, the default: as wide as the
+    `multiple`), size (sm 32px | default 36px, `md` is an alias | lg 40px), width (auto, the default: as wide as the
     longest label plus the chevron, at least 6rem, never wider than its container; or
     full|lg|md|sm|xs), invalid, multiple (a listbox with checkmarks; the trigger lists the
     chosen labels and wraps), rows (kept for the old API: the list scrolls at 18rem).
@@ -129,8 +129,8 @@
         'data-ui' => 'select',
     ])->class([
         'relative [grid-area:1/1] flex w-full items-center rounded-md border bg-surface pl-3 pr-9 text-left font-body text-body text-ink outline-none transition-[border-color,box-shadow] duration-100 cursor-default',
-        'min-h-8 py-1' => $size === 'sm',
-        'min-h-9 py-1.5' => $size !== 'sm',
+        FormControl::height($size, true),
+        FormControl::size($size) === 'sm' ? 'py-1' : (FormControl::size($size) === 'lg' ? 'py-2' : 'py-1.5'),
         'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:text-ink-muted',
         'border-danger focus:ring-2 focus:ring-danger/20' => $isInvalid,
         'border-control enabled:hover:border-control-hover focus:border-focus focus:ring-2 focus:ring-primary/20 aria-expanded:border-focus' => ! $isInvalid,

@@ -1317,6 +1317,10 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
         height: 2rem;
     }
 
+    .ui-date-box.ui-date-lg {
+        height: 2.5rem;
+    }
+
     .ui-date-box:hover {
         border-color: var(--color-control-hover);
     }

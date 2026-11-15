@@ -49,6 +49,28 @@ class FormControl
         return $widths[is_string($width) && ! in_array($width, ['date', 'datetime'], true) ? $width : ''] ?? $widths[$default];
     }
 
+    /**
+     * One size vocabulary for every control: `sm` (32px), `default` (36px, `md` is an
+     * alias) and `lg` (40px), the same heights as x-ui.button. Unknown values fall
+     * back to default, so older call sites keep working.
+     */
+    public static function size(mixed $size): string
+    {
+        return match ($size) {
+            'sm', 'xs' => 'sm',
+            'lg' => 'lg',
+            default => 'default',
+        };
+    }
+
+    /** The control height for a size: `h-8|h-9|h-10`, or `min-h-*` for boxes that grow. */
+    public static function height(mixed $size, bool $min = false): string
+    {
+        $height = ['sm' => 'h-8', 'default' => 'h-9', 'lg' => 'h-10'][self::size($size)];
+
+        return $min ? 'min-'.$height : $height;
+    }
+
     public static function hintId(string $id): string
     {
         return $id.'-hint';

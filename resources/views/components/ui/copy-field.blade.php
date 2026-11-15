@@ -7,7 +7,7 @@
       value      what is copied when it differs from `text`; without it the shown text
                  is copied, so a masked text copies the mask
       label      accessible name of the input when not inside x-ui.field
-      size       default (36px) or sm (32px); width full (default), md or sm
+      size       default (36px), sm (32px) or lg (40px); width full (default), md or sm
       iconOnly   an icon-only button (tooltip "Copy") instead of icon and "Copy"
       mono       the value in the mono face (keys, references)
       toast      also a toast, as x-ui.copy-button
@@ -26,7 +26,7 @@
 @aware(['id' => null, 'name' => null, 'hint' => null])
 
 @php
-    $small = $size === 'sm';
+    $small = \TallUiKit\Support\FormControl::size($size) === 'sm';
     $force = in_array($attributes->get('data-force'), ['copied', 'failed'], true) ? $attributes->get('data-force') : null;
     $options = array_filter(['value' => $value, 'toast' => $toast ?: null, 'force' => $force], fn ($v) => $v !== null);
     // Inside x-ui.field the field's label points at this input; alone, a stable id from the text.
@@ -39,7 +39,7 @@
     x-on:focusout="leave($event)"
     {{ $attributes->except('data-force')->class([
         'relative flex items-stretch overflow-hidden rounded-md border border-control bg-surface transition-colors duration-100 has-[input:focus-visible]:border-focus has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-primary/20',
-        $small ? 'h-8' : 'h-9',
+        \TallUiKit\Support\FormControl::height($size),
         $widths[$width] ?? $widths['full'],
     ]) }}
     data-copy-field

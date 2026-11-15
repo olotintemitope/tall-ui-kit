@@ -8,7 +8,7 @@
     ("₦150,000") and plain while editing. Bind with wire:model / x-model on the
     component (a number or null; `.live.debounce` works as on an input).
     Props: min, max, step (1), format (number | money | percent), currency (NGN | USD),
-    decimals, size (default h-9 | sm h-8), width (sm), invalid, label (accessible name
+    decimals, size (sm h-8 | default h-9 | lg h-10), width (sm), invalid, label (accessible name
     outside x-ui.field), decrementLabel / incrementLabel ("Decrease" / "Increase",
     suffixed with the field's name when given as `noun`), noun.
 --}}
@@ -26,9 +26,10 @@
     $controlId = FormControl::id($attributes->get('id', $id), $fieldName) ?? 'number-'.uniqid();
     $message = FormControl::error($errors ?? null, $fieldName, $error);
     $isInvalid = $invalid ?? (bool) $message;
-    $small = $size === 'sm';
+    $small = FormControl::size($size) === 'sm';
+    $large = FormControl::size($size) === 'lg';
     $options = ['min' => $min, 'max' => $max, 'step' => $step, 'format' => $format, 'currency' => $currency, 'decimals' => $decimals, 'value' => $value];
-    $button = ['flex shrink-0 items-center justify-center border-l border-control text-ink-muted transition-colors duration-100 focus-ring-inset state-hover:bg-surface-subtle state-hover:text-ink state-active:bg-surface-muted aria-disabled:cursor-not-allowed aria-disabled:text-ink-muted aria-disabled:bg-surface-subtle', $small ? 'w-7' : 'w-8'];
+    $button = ['flex shrink-0 items-center justify-center border-l border-control text-ink-muted transition-colors duration-100 focus-ring-inset state-hover:bg-surface-subtle state-hover:text-ink state-active:bg-surface-muted aria-disabled:cursor-not-allowed aria-disabled:text-ink-muted aria-disabled:bg-surface-subtle', $small ? 'w-7' : ($large ? 'w-9' : 'w-8')];
     $suffix = $noun ? ' '.$noun : '';
 @endphp
 
@@ -39,7 +40,7 @@
     {{ $attributes->only('class')->class([
         'flex items-stretch overflow-hidden rounded-md border bg-surface transition-[border-color,box-shadow] duration-100',
         FormControl::width($width, 'sm'),
-        $small ? 'h-8' : 'h-9',
+        FormControl::height($size),
         'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
         'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed',
