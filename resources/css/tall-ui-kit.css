@@ -1720,3 +1720,419 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
     .ui-badge[data-size='sm'] { font-size: 11px; line-height: 14px; }
 }
 
+/*
+ * Workflow components (docs/components/workflow.md): tag input, timeline, avatar group,
+ * sortable, slider, tree, and the progress family (x-ui.progress fill, buffer and
+ * tones, x-ui.progress-ring, x-ui.progress-steps). Ratios: KitContrast "Workflow" and
+ * "Progress" rows. Motion uses the kit tokens (0ms under reduced motion and the
+ * gallery's reduced preview); only transform and opacity animate.
+ */
+@layer components {
+    /* Tag chips: surface-muted, 6px radius (never a pill), body text in ink. */
+    .ui-tag {
+        display: inline-flex;
+        max-width: 100%;
+        min-height: 24px;
+        align-items: center;
+        gap: 2px;
+        border-radius: 4px;
+        background-color: var(--color-surface-muted);
+        padding: 0 2px 0 8px;
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink);
+    }
+
+    .ui-tag-remove {
+        display: inline-flex;
+        flex: none;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        color: var(--color-ink-muted);
+    }
+
+    button.ui-tag-remove:hover {
+        background-color: var(--color-line-strong);
+        color: var(--color-ink);
+    }
+
+    /* Timeline: the last entry of each list has no rail; extra entries wait for "Show more". */
+    .ui-timeline li:last-child > [data-timeline-rail] {
+        display: none;
+    }
+
+    /* !important: the entries' own `flex` utility sits in a later layer. */
+    .ui-timeline:not([data-expanded]) [data-timeline-extra] {
+        display: none !important;
+    }
+
+    /* Avatar group tooltip (resources/js/avatar-group.js places it, fixed). */
+    .ui-avatar-tip {
+        position: fixed;
+        z-index: 60;
+        display: none;
+        width: max-content;
+        max-width: min(20rem, calc(100vw - 16px));
+        overflow-wrap: anywhere;
+        border-radius: 6px;
+        background-color: var(--color-secondary);
+        padding: 4px 8px;
+        font-family: var(--font-body);
+        font-size: var(--text-caption);
+        line-height: var(--text-caption--line-height);
+        font-weight: 500;
+        color: white;
+        pointer-events: none;
+    }
+
+    [data-avatar-group][data-tip-open] .ui-avatar-tip {
+        display: block;
+    }
+
+    /* Sortable: a 32px grip, rows slide by transform while one is lifted. */
+    .ui-sortable-handle {
+        display: inline-flex;
+        flex: none;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        color: var(--color-ink-muted);
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+    }
+
+    .ui-sortable-handle:hover {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-ink);
+    }
+
+    .ui-sortable-handle:disabled {
+        cursor: not-allowed;
+        color: var(--color-ink-muted);
+        background: none;
+    }
+
+    .ui-sortable[data-sorting] {
+        cursor: grabbing;
+        user-select: none;
+    }
+
+    .ui-sortable-item[data-sort-shift] {
+        transition: transform var(--motion-sm) var(--motion-ease-out);
+    }
+
+    .ui-sortable-item[data-dragging],
+    .ui-sortable-item[data-grabbed] {
+        position: relative;
+        z-index: 10;
+        background-color: var(--color-surface-subtle);
+        box-shadow: var(--shadow-popover);
+    }
+
+    .ui-sortable-item[data-dragging] .ui-sortable-handle {
+        cursor: grabbing;
+    }
+
+    /* Slider: a 4px control track, the chosen part in ink, 20px thumbs. */
+    .ui-slider {
+        position: relative;
+        height: 24px;
+        margin-inline: 10px;
+        touch-action: none;
+        cursor: pointer;
+    }
+
+    .ui-slider-rail,
+    .ui-slider-fill {
+        position: absolute;
+        top: 50%;
+        height: 4px;
+        border-radius: 2px;
+        translate: 0 -50%;
+        pointer-events: none;
+    }
+
+    .ui-slider-rail {
+        left: -10px;
+        right: -10px;
+        background-color: var(--color-control);
+    }
+
+    .ui-slider-fill {
+        background-color: var(--color-secondary);
+    }
+
+    .ui-slider-thumb {
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border: 1px solid var(--color-control);
+        border-radius: 9999px;
+        background-color: white;
+        box-shadow: var(--shadow-thumb);
+        translate: -50% -50%;
+        cursor: grab;
+        touch-action: none;
+    }
+
+    .ui-slider-thumb:hover,
+    .ui-slider-thumb[data-dragging] {
+        border-color: var(--color-ink);
+    }
+
+    .ui-slider-thumb[data-dragging] {
+        cursor: grabbing;
+    }
+
+    [data-slider][data-disabled] .ui-slider {
+        cursor: not-allowed;
+    }
+
+    [data-slider][data-disabled] .ui-slider-rail {
+        border: 1px dashed var(--color-control);
+        background-color: var(--color-surface-subtle);
+    }
+
+    [data-slider][data-disabled] .ui-slider-fill {
+        background-color: var(--color-ink-muted);
+    }
+
+    [data-slider][data-disabled] .ui-slider-thumb {
+        cursor: not-allowed;
+        border-style: dashed;
+        background-color: var(--color-surface-subtle);
+        box-shadow: none;
+    }
+
+    /* Tree: 32px rows, 16px per level, the focus ring inset on the row. */
+    .ui-tree-item {
+        outline: none;
+    }
+
+    .ui-tree-row {
+        display: flex;
+        min-height: 32px;
+        align-items: center;
+        gap: 4px;
+        border-radius: 6px;
+        padding: 4px 8px 4px calc(var(--tree-level, 0) * 16px + 4px);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink-body);
+        cursor: default;
+    }
+
+    .ui-tree-item[aria-expanded] > .ui-tree-row,
+    [data-tree='select'] .ui-tree-row,
+    [data-tree='check'] .ui-tree-row,
+    .ui-tree-item[data-href] > .ui-tree-row {
+        cursor: pointer;
+    }
+
+    .ui-tree-row:hover {
+        background-color: var(--color-surface-subtle);
+        color: var(--color-ink);
+    }
+
+    .ui-tree-item[aria-selected='true'] > .ui-tree-row {
+        background-color: var(--color-surface-muted);
+        color: var(--color-ink);
+        font-weight: 500;
+    }
+
+    .ui-tree-item:focus-visible > .ui-tree-row {
+        outline: 2px solid var(--color-focus);
+        outline-offset: -2px;
+    }
+
+    .ui-tree-item[aria-disabled='true'] > .ui-tree-row {
+        color: var(--color-ink-muted);
+        cursor: not-allowed;
+    }
+
+    .ui-tree-item[aria-expanded='false'] > [role='group'] {
+        display: none;
+    }
+
+    .ui-tree-label {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .ui-tree-status {
+        margin-left: auto;
+        flex: none;
+    }
+
+    .ui-tree-twisty {
+        display: inline-flex;
+        flex: none;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-ink-muted);
+    }
+
+    .ui-tree-twisty svg {
+        width: 16px;
+        height: 16px;
+        transition: transform var(--motion-sm) var(--motion-ease-out);
+    }
+
+    .ui-tree-item[aria-expanded='true'] > .ui-tree-row .ui-tree-twisty svg {
+        transform: rotate(90deg);
+    }
+
+    .ui-tree-box {
+        position: relative;
+        display: inline-flex;
+        flex: none;
+        width: 16px;
+        height: 16px;
+        align-items: center;
+        justify-content: center;
+        margin-right: 4px;
+        border: 1px solid var(--color-control);
+        border-radius: 4px;
+        background-color: white;
+        color: white;
+    }
+
+    .ui-tree-box svg {
+        width: 12px;
+        height: 12px;
+        opacity: 0;
+    }
+
+    .ui-tree-item[aria-checked='true'] > .ui-tree-row .ui-tree-box,
+    .ui-tree-item[aria-checked='mixed'] > .ui-tree-row .ui-tree-box {
+        border-color: var(--color-secondary);
+        background-color: var(--color-secondary);
+    }
+
+    .ui-tree-item[aria-checked='true'] > .ui-tree-row .ui-tree-check,
+    .ui-tree-item[aria-checked='mixed'] > .ui-tree-row .ui-tree-dash {
+        opacity: 1;
+    }
+
+    /* Progress: the native <progress> carries the semantics; the fill is drawn with scaleX. */
+    .ui-progress-track {
+        background-color: var(--color-surface-muted);
+        --progress-tone: var(--color-chart-1);
+    }
+
+    .ui-progress-track[data-tone='success'],
+    .ui-ring[data-tone='success'],
+    .ui-steps[data-tone='success'] { --progress-tone: var(--color-emerald-700); }
+
+    .ui-progress-track[data-tone='warning'],
+    .ui-ring[data-tone='warning'],
+    .ui-steps[data-tone='warning'] { --progress-tone: var(--color-amber-800); }
+
+    .ui-progress-track[data-tone='danger'],
+    .ui-ring[data-tone='danger'],
+    .ui-steps[data-tone='danger'] { --progress-tone: var(--color-red-700); }
+
+    .ui-progress-track > .ui-progress {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        opacity: 0;
+    }
+
+    .ui-progress-fill,
+    .ui-progress-buffer {
+        position: absolute;
+        inset: 0;
+        border-radius: 2px;
+        transform-origin: 0 50%;
+        transition: transform var(--motion-md) var(--motion-ease-out);
+        pointer-events: none;
+    }
+
+    .ui-progress-fill {
+        background-color: var(--progress-tone);
+    }
+
+    .ui-progress-buffer {
+        background-color: var(--color-line-strong);
+    }
+
+    .ui-progress-track .ui-progress-segment {
+        background-color: var(--progress-tone);
+    }
+
+    /* Progress ring: the arc in the tone, a quarter arc turns when indeterminate. */
+    .ui-ring {
+        --progress-tone: var(--color-chart-1);
+    }
+
+    .ui-ring-track {
+        stroke: var(--color-surface-muted);
+    }
+
+    .ui-ring-arc {
+        stroke: var(--progress-tone);
+    }
+
+    .ui-ring-spin {
+        animation: ui-ring-turn 0.9s linear infinite;
+    }
+
+    @keyframes ui-ring-turn {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Progress steps: N segments, 2px apart. */
+    .ui-steps {
+        --progress-tone: var(--color-chart-1);
+    }
+
+    .ui-steps-segment {
+        background-color: var(--color-surface-muted);
+    }
+
+    .ui-steps-segment[data-on] {
+        background-color: var(--progress-tone);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ui-ring-spin {
+            animation: loader-fade 1.6s ease-in-out infinite;
+        }
+    }
+
+    html[data-motion-preview='reduced'] .ui-ring-spin {
+        animation: loader-fade 1.6s ease-in-out infinite;
+    }
+
+    @media (forced-colors: active) {
+        .ui-progress-fill,
+        .ui-steps-segment[data-on],
+        .ui-slider-fill,
+        .ui-slider-rail {
+            background-color: CanvasText;
+        }
+
+        .ui-ring-arc {
+            stroke: CanvasText;
+        }
+
+        .ui-tree-item[aria-checked='true'] > .ui-tree-row .ui-tree-box,
+        .ui-tree-item[aria-checked='mixed'] > .ui-tree-row .ui-tree-box {
+            background-color: Highlight;
+        }
+
+        .ui-tree-item[aria-selected='true'] > .ui-tree-row {
+            outline: 1px solid Highlight;
+        }
+    }
+}

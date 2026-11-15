@@ -13,3 +13,4 @@ import './toasts';
 import './dialogs';
 import './ui';
 import './motion';
+import './widgets';

@@ -21,5 +21,7 @@ Route::middleware('web')->group(function () {
         Route::get($uri, fn () => view('gallery.'.$page))->name('gallery.'.$page);
     }
 
+    Route::get('/workflow', fn () => view('gallery.workflow'))->name('gallery.workflow');
+
     Route::get('/tables', TableGallery::class)->name('gallery.tables');
 });

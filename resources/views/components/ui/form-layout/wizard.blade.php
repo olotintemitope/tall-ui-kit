@@ -21,12 +21,14 @@
     title (the flow's name, h1-level context shown above the panel), backAction (back),
     nextAction (next), gotoAction (goTo), finishLabel ("Continue"), guard (true),
     errors (x-ui.error-summary fields for the current step), dirty (the flow holds values
-    that only live in this page's state, so the guard stays on after a step is accepted). Slots: default (the step),
+    that only live in this page's state, so the guard stays on after a step is accepted),
+    stepper (inline: the text list above; default: x-ui.stepper's markers, which stack
+    on narrow panels). The step list is x-ui.stepper either way. Slots: default (the step),
     aside (optional, e.g. a summary rail; below the panel on phones).
 --}}
 @props([
     'steps' => [], 'current' => 1, 'model' => 'step', 'flow' => null, 'draftModel' => 'wizard', 'title' => null,
-    'backAction' => 'back', 'nextAction' => 'next', 'gotoAction' => 'goTo', 'finishLabel' => 'Continue', 'guard' => true, 'errors' => [], 'dirty' => false,
+    'backAction' => 'back', 'nextAction' => 'next', 'gotoAction' => 'goTo', 'finishLabel' => 'Continue', 'guard' => true, 'errors' => [], 'dirty' => false, 'stepper' => 'inline',
 ])
 
 @php
@@ -49,28 +51,7 @@
     <div @class(['grid grid-cols-1 items-start gap-6', 'lg:grid-cols-[minmax(0,1fr)_360px]' => isset($aside)])>
         <x-ui.form :guard="$guard" :dirty="$dirty" wire:submit="{{ $nextAction }}" class="min-w-0" data-wizard-form>
             <x-ui.panel>
-                <nav aria-label="{{ $title ? $title.' steps' : 'Steps' }}" class="-mt-1">
-                    <p class="type-meta sm:hidden" data-wizard-compact>Step {{ $current }} of {{ $total }}</p>
-                    <ol class="hidden flex-wrap items-center gap-x-2 gap-y-1 sm:flex" data-wizard-steps>
-                        @foreach ($steps as $i => $step)
-                            @php($n = $i + 1)
-                            <li class="flex items-center gap-2">
-                                @if ($n > 1)
-                                    <span class="text-ink-muted" aria-hidden="true">·</span>
-                                @endif
-                                @if ($n < $current)
-                                    <button type="button" wire:click="{{ $gotoAction }}({{ $n }})" class="rounded-sm type-meta text-ink-body hover:text-ink focus-ring" data-wizard-step="done">
-                                        <span class="type-numeric">{{ $n }}</span> {{ $step }} <span class="text-emerald-700">Done</span>
-                                    </button>
-                                @elseif ($n === $current)
-                                    <span class="type-meta font-medium text-ink!" aria-current="step" data-wizard-step="current"><span class="type-numeric">{{ $n }}</span> {{ $step }}</span>
-                                @else
-                                    <span class="type-meta" data-wizard-step="upcoming"><span class="type-numeric">{{ $n }}</span> {{ $step }}</span>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ol>
-                </nav>
+                <x-ui.stepper :variant="$stepper === 'default' ? 'default' : 'inline'" :steps="$steps" :current="$current" clickable :action="$gotoAction" :label="$title ? $title.' steps' : 'Steps'" class="-mt-1" data-wizard-steps />
 
                 <h2 class="type-heading rounded-sm focus-ring" tabindex="-1" wire:key="wizard-heading-{{ $current }}" x-init="arrive({{ $current }}, $el)" data-wizard-heading>{{ $label }}</h2>
 

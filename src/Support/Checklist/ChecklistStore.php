@@ -2,6 +2,8 @@
 
 namespace TallUiKit\Support\Checklist;
 
+use TallUiKit\Support\Dismiss\DismissStore;
+
 /**
  * Where x-ui.checklist keeps its collapsed and dismissed state when it is rendered
  * with persist="server" (docs/components/feedback.md, "Checklist"). The default is
@@ -13,17 +15,13 @@ namespace TallUiKit\Support\Checklist;
  *
  * Keys come from the browser through WithChecklist, which checks them against
  * KEY_PATTERN first; an implementation still scopes them to the current user.
+ *
+ * It extends DismissStore (dismissed, dismiss and KEY_PATTERN), so the same store keeps
+ * x-ui.banner dismissals too unless the app binds DismissStore on its own.
  */
-interface ChecklistStore
+interface ChecklistStore extends DismissStore
 {
-    /** Letters, digits, underscore, colon and hyphen, 1 to 64 characters. */
-    public const KEY_PATTERN = '/^[A-Za-z0-9_:-]{1,64}$/';
-
     public function collapsed(string $key): bool;
 
-    public function dismissed(string $key): bool;
-
     public function setCollapsed(string $key, bool $collapsed): void;
-
-    public function dismiss(string $key): void;
 }

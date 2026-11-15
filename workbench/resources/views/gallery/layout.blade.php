@@ -11,6 +11,7 @@
         'data' => ['label' => 'Data display', 'href' => route('gallery.data')],
         'charts' => ['label' => 'Charts', 'href' => route('gallery.charts')],
         'tables' => ['label' => 'Data table', 'href' => route('gallery.tables')],
+        'workflow' => ['label' => 'Workflow', 'href' => route('gallery.workflow')],
         'checklist' => ['label' => 'Checklist', 'href' => route('gallery.checklist')],
         'sidebar' => ['label' => 'Sidebar', 'href' => route('gallery.sidebar')],
     ];
