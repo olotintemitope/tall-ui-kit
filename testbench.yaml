@@ -1,0 +1,25 @@
+laravel: '@testbench'
+
+providers:
+  - Livewire\LivewireServiceProvider
+  - BladeUI\Icons\BladeIconsServiceProvider
+  - MallardDuck\LucideIcons\BladeLucideIconsServiceProvider
+  - TallUiKit\TallUiKitServiceProvider
+  - Workbench\App\Providers\WorkbenchServiceProvider
+
+env:
+  - APP_NAME="TALL UI kit"
+  - APP_ENV=local
+  - APP_DEBUG=true
+  - SESSION_DRIVER=file
+  - CACHE_STORE=file
+  # Placeholder key for the local workbench gallery only (32 "k" bytes), never a real secret.
+  - APP_KEY=base64:a2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2s=
+
+workbench:
+  start: '/'
+  install: false
+  discovers:
+    web: true
+    views: true
+  build: []
