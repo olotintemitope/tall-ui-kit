@@ -1,0 +1,22 @@
+{
+    "name": "@olotintemitope/tall-ui-kit",
+    "private": true,
+    "type": "module",
+    "description": "JS and CSS sources of the tall-ui-kit Composer package. Apps import them from vendor/; this file only builds the workbench gallery and runs the browser checks.",
+    "license": "UNLICENSED",
+    "scripts": {
+        "build": "vite build --config workbench/vite.config.js",
+        "a11y": "node scripts/a11y.mjs"
+    },
+    "peerDependencies": {
+        "gsap": "^3.15.1"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "axe-core": "4.10.2",
+        "gsap": "^3.15.1",
+        "playwright": "1.63.0",
+        "tailwindcss": "^4.0.0",
+        "vite": "^8.0.0"
+    }
+}
