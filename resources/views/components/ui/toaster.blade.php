@@ -39,7 +39,7 @@
         x-cloak
         x-on:click="$store.toasts.expanded = true"
         aria-expanded="false"
-        class="pointer-events-auto self-end rounded-md border border-line bg-white px-2.5 py-1 font-body text-meta text-ink shadow-popover hover:bg-surface-subtle focus-ring"
+        class="pointer-events-auto self-end rounded-md border border-line bg-popover px-2.5 py-1 font-body text-meta text-ink shadow-popover hover:bg-surface-subtle focus-ring"
         x-text="$store.toasts.hiddenCount + ' more'"
         data-toast-more
     ></button>

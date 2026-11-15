@@ -4,7 +4,7 @@
 --}}
 @props(['label' => 'Loading', 'sub' => false])
 
-<div {{ $attributes->class(['rounded-lg border border-line bg-white p-4']) }} role="status" data-skeleton="card">
+<div {{ $attributes->class(['rounded-lg border border-line bg-card p-4']) }} role="status" data-skeleton="card">
     <span class="sr-only">{{ $label }}</span>
     <x-ui.skeleton.line role="label" width="w-20" />
     <x-ui.skeleton.line role="figure" width="w-28" class="mt-1" />

@@ -45,7 +45,7 @@
         x-anchor.{{ $placement }}{{ $flip }}.offset.6="$refs.anchor.firstElementChild"
         x-effect="open && $revealBelow($el, $refs.anchor.firstElementChild)"
         @if ($title) role="dialog" aria-labelledby="{{ $panelId }}-title" @else role="group" aria-label="{{ $label }}" @endif
-        class="ui-popover z-50 rounded-lg border border-panel-border bg-white p-3 text-left shadow-popover {{ $width }}"
+        class="ui-popover z-50 rounded-lg border border-panel-border bg-popover p-3 text-left shadow-popover {{ $width }}"
         data-popover-panel
     >
         @if ($title)

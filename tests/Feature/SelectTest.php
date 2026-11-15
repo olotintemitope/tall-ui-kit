@@ -22,7 +22,7 @@ it('renders a combobox button, a listbox and options wired to the field', functi
 it('marks invalid selects and passes attributes to the trigger and the binding to the root', function () {
     $html = Blade::render('<x-ui.field label="Bank" name="bank" error="Choose a bank."><x-ui.select wire:model="bank" aria-label="Payout bank" data-fk="bank" x-on:change="touched = true" :options="[\'gtb\' => \'GTBank\']" /></x-ui.field>');
 
-    expect($html)->toContain('aria-invalid="true"')->toContain('aria-describedby="field-bank-error"')->toContain('border-red-600')
+    expect($html)->toContain('aria-invalid="true"')->toContain('aria-describedby="field-bank-error"')->toContain('border-danger')
         ->toMatch('/<button[^>]*aria-label="Payout bank"[^>]*data-fk="bank"[^>]*x-on:change="touched = true"/')
         ->toContain('aria-label="Payout bank" ')->toMatch('/<div role="listbox"[^>]*aria-label="Payout bank"/')
         ->and(substr_count($html, 'wire:model="bank"'))->toBe(1);

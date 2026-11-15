@@ -36,7 +36,7 @@
     <div class="flex min-w-0 flex-col">
         {{ $slot }}
         @if ($message)
-            <p @if ($controlId) id="{{ FormControl::errorId($controlId) }}" @endif class="type-caption text-red-700! mt-1" aria-live="polite">{{ $message }}</p>
+            <p @if ($controlId) id="{{ FormControl::errorId($controlId) }}" @endif class="type-caption text-danger-text! mt-1" aria-live="polite">{{ $message }}</p>
         @endif
     </div>
 </div>
@@ -51,7 +51,7 @@
     {{ $slot }}
 
     @if ($message)
-        <p @if ($controlId) id="{{ FormControl::errorId($controlId) }}" @endif class="type-caption text-red-700! mt-1" aria-live="polite">{{ $message }}</p>
+        <p @if ($controlId) id="{{ FormControl::errorId($controlId) }}" @endif class="type-caption text-danger-text! mt-1" aria-live="polite">{{ $message }}</p>
     @elseif ($hint)
         <p @if ($controlId) id="{{ FormControl::hintId($controlId) }}" @endif class="type-caption mt-1">{{ $hint }}</p>
     @endif

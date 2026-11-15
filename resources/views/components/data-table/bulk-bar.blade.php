@@ -14,7 +14,7 @@
     $canSelectAll = ! $table->selectAllMatching && $table->total !== null && $table->total > $table->selectedCount;
 @endphp
 
-<div x-data x-init="const set = () => document.documentElement.style.setProperty('--dt-bulk-h', $el.offsetHeight + 'px'); set(); $el._dtRo = new ResizeObserver(set); $el._dtRo.observe($el)" data-dt-bulk-measure class="sticky bottom-0 z-20 mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line bg-white py-2.5 shadow-bar" wire:key="{{ $table->name }}-bulk-bar" data-dt-bulk-bar>
+<div x-data x-init="const set = () => document.documentElement.style.setProperty('--dt-bulk-h', $el.offsetHeight + 'px'); set(); $el._dtRo = new ResizeObserver(set); $el._dtRo.observe($el)" data-dt-bulk-measure class="sticky bottom-0 z-20 mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line bg-surface py-2.5 shadow-bar" wire:key="{{ $table->name }}-bulk-bar" data-dt-bulk-bar>
     <p class="type-body flex flex-wrap items-center gap-x-2">
         <span class="type-body-strong tabular-nums">{{ $table->selectAllMatching ? 'All '.number_format($table->selectedCount) : number_format($table->selectedCount) }} selected</span>
         @if ($canSelectAll)

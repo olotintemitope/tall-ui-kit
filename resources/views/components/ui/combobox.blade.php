@@ -54,9 +54,9 @@
     data-combobox
 >
     <div @class([
-        'flex items-stretch overflow-hidden rounded-md border bg-white transition-[border-color,box-shadow] duration-100',
+        'flex items-stretch overflow-hidden rounded-md border bg-surface transition-[border-color,box-shadow] duration-100',
         $size === 'sm' ? 'h-8' : 'h-9',
-        'border-red-600 focus-within:ring-2 focus-within:ring-red-600/20' => $isInvalid,
+        'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
         'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed',
     ]) data-control-box>
@@ -107,7 +107,7 @@
         x-transition:leave="transition ease-motion-out duration-100"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="absolute inset-x-0 top-full z-40 mt-1.5 max-h-64 overflow-y-auto rounded-lg border border-panel-border bg-white p-1 shadow-popover"
+        class="absolute inset-x-0 top-full z-40 mt-1.5 max-h-64 overflow-y-auto rounded-lg border border-panel-border bg-popover p-1 shadow-popover"
         data-combobox-listbox
     >
         <template x-for="(option, index) in results" :key="option.value">

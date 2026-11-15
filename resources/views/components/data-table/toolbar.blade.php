@@ -99,7 +99,7 @@
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="{{ $table->name }}-sheet-title"
-                class="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-panel-border bg-white shadow-dialog"
+                class="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-panel-border bg-popover shadow-dialog"
             >
                 <div class="flex items-center justify-between border-b border-line px-4 py-3">
                     <h2 id="{{ $table->name }}-sheet-title" class="type-heading">{{ $table->filters === [] ? 'View' : 'Filters' }}</h2>

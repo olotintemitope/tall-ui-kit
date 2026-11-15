@@ -17,7 +17,7 @@
 >
     {{ $slot }}
     <span
-        @class(['pointer-events-none absolute right-0 top-0 rounded-md border border-line bg-white p-1', 'hidden' => ! $busy, 'flex' => $busy])
+        @class(['pointer-events-none absolute right-0 top-0 rounded-md border border-line bg-popover p-1', 'hidden' => ! $busy, 'flex' => $busy])
         @unless ($busy) wire:loading.delay.short.flex @if ($target) wire:target="{{ $target }}" @endif @endunless
     >
         <x-ui.spinner size="sm" :label="$label" />

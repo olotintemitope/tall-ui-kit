@@ -14,10 +14,10 @@
 
 @php
     $tones = [
-        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-800',
-        'error' => 'border-red-200 bg-red-50 text-red-800',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-900',
-        'info' => 'border-blue-200 bg-blue-50 text-blue-800',
+        'success' => 'border-success-edge bg-success-tint text-success-strong',
+        'error' => 'border-danger-edge bg-danger-tint text-danger-strong',
+        'warning' => 'border-warning-edge bg-warning-tint text-warning-strong',
+        'info' => 'border-info-edge bg-info-tint text-info-strong',
         'neutral' => 'border-line bg-panel-footer text-ink',
         'loading' => 'border-line bg-panel-footer text-ink',
     ];
@@ -44,7 +44,7 @@
                 <button type="button" x-on:click="$store.toasts.run({{ $b }})" class="-ml-1 mt-1 inline-flex min-h-6 items-center rounded-sm px-1 font-body text-body-strong text-current underline underline-offset-3 hover:no-underline focus-ring" x-text="{{ $b }}.action.label" data-toast-action></button>
             </template>
         </div>
-        <button type="button" x-show="{{ $b }}.dismissible" x-on:click="$store.toasts.dismiss({{ $b }}.id)" x-bind:aria-label="'Dismiss: ' + {{ $b }}.title" class="flex size-6 shrink-0 items-center justify-center rounded-sm text-current hover:bg-black/[0.05] focus-ring">
+        <button type="button" x-show="{{ $b }}.dismissible" x-on:click="$store.toasts.dismiss({{ $b }}.id)" x-bind:aria-label="'Dismiss: ' + {{ $b }}.title" class="flex size-6 shrink-0 items-center justify-center rounded-sm text-current hover:bg-ink/[0.06] focus-ring">
             <x-ui.icon name="x" class="size-3.5" />
         </button>
     </div>
@@ -67,7 +67,7 @@
             @endif
         </div>
         @if ($dismissible && $variant !== 'loading')
-            <button type="button" aria-label="Dismiss: {{ $title }}" class="flex size-6 shrink-0 items-center justify-center rounded-sm text-current hover:bg-black/[0.05] focus-ring" x-data x-on:click="$el.closest('[data-toast]').remove()">
+            <button type="button" aria-label="Dismiss: {{ $title }}" class="flex size-6 shrink-0 items-center justify-center rounded-sm text-current hover:bg-ink/[0.06] focus-ring" x-data x-on:click="$el.closest('[data-toast]').remove()">
                 <x-ui.icon name="x" class="size-3.5" />
             </button>
         @endif

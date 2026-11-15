@@ -38,7 +38,7 @@
     <ul
         id="{{ $id }}"
         aria-label="{{ $label }}"
-        @class(['ui-sortable min-w-0 divide-y divide-line', 'rounded-lg border border-line bg-white' => $bordered])
+        @class(['ui-sortable min-w-0 divide-y divide-line', 'rounded-lg border border-line bg-surface' => $bordered])
         data-sortable
         @if ($action) data-sortable-action="{{ $action }}" @endif
         @if ($disabled) data-sortable-disabled @endif

@@ -30,12 +30,12 @@
     $state = $fixed && $storageKey
         ? 'collapsed: $persist(false).as('.\Illuminate\Support\Js::from($storageKey).')'
         : 'collapsed: '.\Illuminate\Support\Js::from((bool) $collapsed);
-    $edge = $variant === 'light' ? 'border-r border-line' : '';
+    $edge = $variant === 'light' ? 'border-r border-line' : 'dark:border-r dark:border-line';
     $persistKey = $fixed && $persist ? ($persist === true ? 'sidebar-'.($area ?? 'shell') : (string) $persist) : null;
     // The class sets navigate.js swaps when the current item changes after wire:navigate.
     $groupRail = $variant === 'dark'
         ? 'rail:bg-white/[0.10] rail:ring-1 rail:ring-inset rail:ring-white/40'
-        : 'rail:bg-black/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
+        : 'rail:bg-ink/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
     $navTones = [
         'item' => $tone['item'],
         'itemActive' => $tone['itemActive'],

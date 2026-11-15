@@ -22,8 +22,8 @@
     }
     $tone = match (true) {
         $direction === 0 => 'text-ink-muted',
-        ($direction > 0) === $upIsGood => 'text-emerald-700',
-        default => 'text-red-700',
+        ($direction > 0) === $upIsGood => 'text-success-text',
+        default => 'text-danger-text',
     };
 @endphp
 

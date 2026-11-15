@@ -24,8 +24,8 @@
 >
     @if ($selectable)
         <span class="relative z-10 flex h-5 w-4 shrink-0 items-center justify-center">
-            <input type="checkbox" wire:model.live="{{ $selectable }}" value="{{ $id }}" aria-label="Select: {{ $title }}" data-ui="checkbox" class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-white checked:border-secondary checked:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus forced-colors:appearance-auto" data-notification-select>
-            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-checked:opacity-100 forced-colors:hidden" />
+            <input type="checkbox" wire:model.live="{{ $selectable }}" value="{{ $id }}" aria-label="Select: {{ $title }}" data-ui="checkbox" class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-surface checked:border-secondary checked:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus forced-colors:appearance-auto" data-notification-select>
+            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-checked:opacity-100 forced-colors:hidden" />
         </span>
     @endif
     <span @class(['mt-[7px] size-2 shrink-0 rounded-full', 'bg-primary-text' => ! $read, 'bg-transparent' => $read]) aria-hidden="true" data-unread-dot></span>

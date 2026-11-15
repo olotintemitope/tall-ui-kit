@@ -1,5 +1,6 @@
 {{--
-    Sidebar header: the logo (white on dark, black on light), the collapse toggle (the
+    Sidebar header: the logo (logo_dark on the dark sidebar and, in the dark colour
+    scheme, on the light and inset ones too; logo_light otherwise), the collapse toggle (the
     rail; "Close menu" in the mobile drawer) and the Cmd+K search trigger, which
     dispatches `open-command-palette`. Props: home (logo link), search (true),
     searchLabel (Search), and a `logo` slot that replaces the configured logo
@@ -15,6 +16,10 @@
     <a href="{{ $home }}" @if ($navigate) wire:navigate @endif class="flex items-center rounded-sm focus-ring rail:hidden">
         @if ($logo)
             {{ $logo }}
+        @elseif ($tone['logo'] && $tone['logoDarkScheme'])
+            {{-- Light and inset sidebars turn dark with the colour scheme: the light-ground logo in light, logo_dark in dark. --}}
+            <img src="{{ $tone['logo'] }}" alt="{{ config('tall-ui-kit.brand.name') }}" width="104" height="24" class="h-[22px] w-auto dark:hidden">
+            <img src="{{ $tone['logoDarkScheme'] }}" alt="{{ config('tall-ui-kit.brand.name') }}" width="104" height="24" class="hidden h-[22px] w-auto dark:block">
         @elseif ($tone['logo'])
             <img src="{{ $tone['logo'] }}" alt="{{ config('tall-ui-kit.brand.name') }}" width="104" height="24" class="h-[22px] w-auto">
         @else

@@ -44,7 +44,7 @@
                 x-bind:aria-describedby="reasonError && reason === '' ? '{{ $errorId }}' : null"
                 data-reason-select
             />
-            <p id="{{ $errorId }}" x-show="reasonError && reason === ''" x-cloak class="type-caption text-red-700!" x-text="reasonError"></p>
+            <p id="{{ $errorId }}" x-show="reasonError && reason === ''" x-cloak class="type-caption text-danger-text!" x-text="reasonError"></p>
         </div>
 
         <div x-show="reason === 'other'" x-cloak class="flex flex-col gap-1.5">
@@ -60,9 +60,9 @@
                 x-bind:aria-describedby="reasonError && reason === 'other' ? @js($errorId.'-other') : null"
                 data-ui="textarea"
                 data-reason-other
-                class="w-full rounded-md border border-control bg-white px-3 py-2 type-body text-ink focus-visible:border-focus focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-invalid:border-red-600"
+                class="w-full rounded-md border border-control bg-surface px-3 py-2 type-body text-ink focus-visible:border-focus focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-invalid:border-danger"
             ></textarea>
-            <p id="{{ $errorId }}-other" x-show="reasonError && reason === 'other'" x-cloak class="type-caption text-red-700!" x-text="reasonError"></p>
+            <p id="{{ $errorId }}-other" x-show="reasonError && reason === 'other'" x-cloak class="type-caption text-danger-text!" x-text="reasonError"></p>
         </div>
     </div>
 

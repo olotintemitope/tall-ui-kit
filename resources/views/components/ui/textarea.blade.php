@@ -24,9 +24,9 @@
     'data-ui' => 'textarea',
     'data-control-box' => true,
 ])->class([
-    'block min-h-[76px] resize-y rounded-md border bg-white px-3 py-2 font-body text-body text-ink placeholder:text-ink-muted outline-none transition-[border-color,box-shadow] duration-100',
+    'block min-h-[76px] resize-y rounded-md border bg-surface px-3 py-2 font-body text-body text-ink placeholder:text-ink-muted outline-none transition-[border-color,box-shadow] duration-100',
     FormControl::width($width, 'full'),
     'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:text-ink-muted',
-    'border-red-600 focus:ring-2 focus:ring-red-600/20' => $isInvalid,
+    'border-danger focus:ring-2 focus:ring-danger/20' => $isInvalid,
     'border-control hover:border-control-hover focus:border-focus focus:ring-2 focus:ring-primary/20' => ! $isInvalid,
 ]) }}>{{ $slot }}</textarea>

@@ -83,6 +83,6 @@
         x-transition.opacity.duration.100ms
         x-anchor.right.offset.10.fixed="$refs.link"
         role="tooltip"
-        class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-white pointer-events-none ring-1 ring-white/10"
-    >{{ $text }}@if ($count !== null) <span class="font-mono text-white/70">{{ number_format($count) }}</span>@endif</span>
+        class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-on-secondary pointer-events-none ring-1 ring-on-secondary/10"
+    >{{ $text }}@if ($count !== null) <span class="font-mono text-on-secondary/70">{{ number_format($count) }}</span>@endif</span>
 </li>

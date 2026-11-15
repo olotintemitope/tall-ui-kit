@@ -4,7 +4,9 @@ namespace TallUiKit\Support;
 
 /**
  * Class strings for each x-ui.sidebar variant (dark, light, inset) and the active-link
- * rule. Every pair is measured in SidebarContrast. The logo per variant comes from
+ * rule. The dark variant sits on the `sidebar` token, which stays dark in the dark
+ * colour scheme too (with a 1px `line` edge there, so it never melts into the page);
+ * light and inset follow the scheme through their tokens. Every pair is measured in SidebarContrast. The logo per variant comes from
  * config('tall-ui-kit.brand'); with no logo the brand name prints as text.
  */
 class SidebarTones
@@ -16,7 +18,7 @@ class SidebarTones
     {
         if ($variant === 'dark') {
             return [
-                'surface' => 'bg-secondary',
+                'surface' => 'bg-sidebar',
                 'line' => 'border-white/[0.08]',
                 'label' => 'text-white/65',
                 'item' => 'text-white/70 hover:bg-white/[0.06] hover:text-white',
@@ -34,6 +36,7 @@ class SidebarTones
                 'chevron' => 'text-white/60',
                 'kbd' => 'dark',
                 'logo' => config('tall-ui-kit.brand.logo_dark'),
+                'logoDarkScheme' => null,
             ];
         }
 
@@ -41,21 +44,23 @@ class SidebarTones
             'surface' => $variant === 'inset' ? 'bg-page-muted' : 'bg-panel-footer',
             'line' => 'border-line',
             'label' => 'text-ink-muted',
-            'item' => 'text-ink-muted hover:bg-black/[0.04] hover:text-ink',
-            'itemActive' => 'bg-black/[0.06] text-ink font-medium ring-1 ring-inset ring-control-hover',
+            'item' => 'text-ink-muted hover:bg-ink/[0.04] hover:text-ink',
+            'itemActive' => 'bg-ink/[0.06] text-ink font-medium ring-1 ring-inset ring-control-hover',
             'itemDisabled' => 'text-ink-muted cursor-not-allowed',
             'icon' => 'text-ink-muted group-hover/nav:text-ink',
             'iconActive' => 'text-ink',
             'iconDisabled' => 'text-ink-muted',
             'count' => 'text-ink-muted',
             'tag' => 'border-control text-ink',
-            'control' => 'text-ink-muted hover:bg-black/[0.04] hover:text-ink',
-            'search' => 'border-control bg-white text-ink-muted hover:border-control-hover hover:text-ink',
+            'control' => 'text-ink-muted hover:bg-ink/[0.04] hover:text-ink',
+            'search' => 'border-control bg-surface text-ink-muted hover:border-control-hover hover:text-ink',
             'name' => 'text-ink',
             'meta' => 'text-ink-muted',
             'chevron' => 'text-ink-muted',
             'kbd' => 'light',
             'logo' => config('tall-ui-kit.brand.logo_light'),
+            // In the dark colour scheme a light or inset sidebar is dark too.
+            'logoDarkScheme' => config('tall-ui-kit.brand.logo_dark'),
         ];
     }
 

@@ -87,9 +87,9 @@
                 x-on:paste.prevent="fill({{ $i }}, $event.clipboardData.getData('text'))"
                 x-on:focus="$event.target.select()"
                 @class([
-                    'h-12 w-full min-w-0 max-w-12 flex-1 rounded-md border bg-white text-center font-body text-xl font-semibold text-ink tabular-nums outline-none transition-[border-color,box-shadow] duration-100',
+                    'h-12 w-full min-w-0 max-w-12 flex-1 rounded-md border bg-surface text-center font-body text-xl font-semibold text-ink tabular-nums outline-none transition-[border-color,box-shadow] duration-100',
                     'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:text-ink-muted',
-                    'border-red-600 focus:ring-2 focus:ring-red-600/20' => $error,
+                    'border-danger focus:ring-2 focus:ring-danger/20' => $error,
                     'border-control hover:border-control-hover focus:border-focus focus:ring-2 focus:ring-primary/20' => ! $error,
                 ])
             />
@@ -97,6 +97,6 @@
     </div>
 
     @if ($error)
-        <p id="{{ $errorId }}" class="type-caption text-red-700! mt-1" aria-live="polite">{{ $error }}</p>
+        <p id="{{ $errorId }}" class="type-caption text-danger-text! mt-1" aria-live="polite">{{ $error }}</p>
     @endif
 </fieldset>

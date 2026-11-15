@@ -24,7 +24,7 @@
     x-data="uiAudio({ duration: {{ (float) $duration }}, title: @js($title) })"
     role="group"
     aria-label="{{ $title }} preview"
-    {{ $attributes->class(['flex min-h-12 min-w-0 items-center gap-3 rounded-lg border border-line bg-white px-2 py-1.5']) }}
+    {{ $attributes->class(['flex min-h-12 min-w-0 items-center gap-3 rounded-lg border border-line bg-card px-2 py-1.5']) }}
     data-audio
     x-bind:data-state="failed ? 'error' : (loading ? 'loading' : (playing ? 'playing' : 'paused'))"
     data-state="paused"
@@ -34,7 +34,7 @@
 
     <button
         type="button"
-        class="relative flex size-8 shrink-0 items-center justify-center rounded-md border border-control bg-white text-ink transition-colors duration-100 focus-ring state-hover:bg-surface-subtle state-active:bg-surface-muted aria-pressed:bg-surface-muted aria-disabled:cursor-not-allowed aria-disabled:border-dashed aria-disabled:bg-surface-subtle aria-disabled:text-ink-muted"
+        class="relative flex size-8 shrink-0 items-center justify-center rounded-md border border-control bg-surface text-ink transition-colors duration-100 focus-ring state-hover:bg-surface-subtle state-active:bg-surface-muted aria-pressed:bg-surface-muted aria-disabled:cursor-not-allowed aria-disabled:border-dashed aria-disabled:bg-surface-subtle aria-disabled:text-ink-muted"
         aria-label="Play {{ $title }}"
         aria-pressed="false"
         x-bind:aria-pressed="playing ? 'true' : 'false'"
@@ -60,7 +60,7 @@
             </p>
             <p class="type-numeric shrink-0 text-ink-muted" aria-hidden="true"><span x-text="elapsed">0:00</span> / <span x-text="total">{{ $total }}</span></p>
         </div>
-        <p x-show="failed" x-cloak class="type-caption text-red-700!" role="status">Preview unavailable.</p>
+        <p x-show="failed" x-cloak class="type-caption text-danger-text!" role="status">Preview unavailable.</p>
         <div x-show="! failed" class="relative -my-1 h-6" data-audio-seek-track>
             <div class="pointer-events-none absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-sm bg-control" aria-hidden="true"></div>
             <div class="pointer-events-none absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-sm bg-secondary" aria-hidden="true" x-bind:style="`width: ${duration ? Math.min(100, current / duration * 100) : 0}%`" style="width: 0"></div>

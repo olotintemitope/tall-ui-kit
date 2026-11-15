@@ -9,7 +9,7 @@
     @if ($sticky) x-show="dirty" x-cloak x-transition.opacity.duration.150ms @endif
     {{ $attributes->class([
         'flex items-center justify-end gap-2 border-t border-panel-border max-sm:[&>*]:flex-1',
-        'sticky bottom-0 z-20 -mx-4 bg-white px-4 py-3 shadow-bar md:-mx-6 md:px-6 lg:-mx-8 lg:px-8' => $sticky,
+        'sticky bottom-0 z-20 -mx-4 bg-surface px-4 py-3 shadow-bar md:-mx-6 md:px-6 lg:-mx-8 lg:px-8' => $sticky,
         'pt-4' => ! $sticky,
     ]) }}
     data-form-actions

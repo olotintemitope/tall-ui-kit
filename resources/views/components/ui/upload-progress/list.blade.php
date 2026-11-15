@@ -38,7 +38,7 @@
                 <div class="flex min-w-0 flex-1 flex-col gap-1.5">
                     <div class="flex flex-wrap items-baseline justify-between gap-x-3">
                         <p class="type-body min-w-0 wrap-anywhere text-ink" x-text="file.name"></p>
-                        <p class="type-meta" x-bind:class="file.status === 'failed' && 'text-red-700!'" x-text="meta(file)"></p>
+                        <p class="type-meta" x-bind:class="file.status === 'failed' && 'text-danger-text!'" x-text="meta(file)"></p>
                     </div>
                     <div class="ui-progress-track relative h-1 overflow-hidden rounded-sm" x-show="file.status !== 'done'" x-bind:data-tone="file.status === 'failed' ? 'danger' : 'default'">
                         <progress class="ui-progress" max="100" x-bind:value="file.progress" x-bind:aria-label="'Upload of ' + file.name" x-bind:aria-valuetext="word(file)"></progress>

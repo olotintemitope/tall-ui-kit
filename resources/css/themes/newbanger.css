@@ -8,7 +8,12 @@
  * Contrast (against white unless stated): ink 15.81, ink-body 11.64, ink-muted 5.85,
  * ink on primary 5.32 (the fill is 2.97, so the primary button is edged in
  * primary-hover, 3.70), primary-text 5.21, control 3.65, focus 4.12.
- * `composer contrast newbanger` measures every pair the kit uses.
+ *
+ * Dark scheme: the `@variant dark` block at the end. #FF614D stays the accent: the
+ * primary fill, its edge, accent text and the money series (accent text 5.44:1 at
+ * its lowest, on the hover fill). Only the focus outline takes a deeper tint,
+ * #E0563F, because #FF614D falls to 2.3:1 beside the light chosen-day fill.
+ * `composer contrast newbanger` measures every pair in both schemes.
  */
 @theme {
     --color-primary: #FF614D;
@@ -16,10 +21,13 @@
     --color-primary-text: #BC4530;
     --color-primary-fill-hover: #FF7462;
     --color-primary-fill-active: #F0573F;
+    --color-on-primary: #212322;
     --color-secondary: #212322;
     --color-secondary-light: #2E3130;
     --color-neutral-900: #111211;
+    --color-on-secondary: #FFFFFF;
 
+    --color-surface: #FFFFFF;
     --color-ink: #212322;
     --color-ink-body: #373938;
     --color-ink-muted: #646564;
@@ -34,8 +42,32 @@
     --color-control-hover: #6F706F;
     --color-focus: #DB4C37;
     --color-scrim: rgb(33 35 34 / 0.4);
+    --color-skeleton: #EEEEEE;
+    --color-sidebar: #212322;
 
-    /* Older shadcn-style names some kit class strings still use. */
+    /* Status tones: alerts, toasts, banners, badges, field errors, progress. */
+    --color-danger: #E7000B;
+    --color-danger-hover: #C10007;
+    --color-danger-active: #9F0712;
+    --color-on-danger: #FFFFFF;
+    --color-danger-text: #C10007;
+    --color-danger-strong: #9F0712;
+    --color-danger-tint: #FEF2F2;
+    --color-danger-edge: #FFC9C9;
+    --color-success-text: #007A55;
+    --color-success-strong: #006045;
+    --color-success-tint: #ECFDF5;
+    --color-success-edge: #A4F4CF;
+    --color-warning-text: #973C00;
+    --color-warning-strong: #7B3306;
+    --color-warning-tint: #FFFBEB;
+    --color-warning-edge: #FEE685;
+    --color-info-text: #1447E6;
+    --color-info-strong: #193CB8;
+    --color-info-tint: #EFF6FF;
+    --color-info-edge: #BEDBFF;
+
+    /* Panels, popovers (menus, dialogs, sheets, toasts) and their text. */
     --color-card: #FFFFFF;
     --color-card-foreground: #212322;
     --color-popover: #FFFFFF;
@@ -55,4 +87,85 @@
     --color-chart-grid: #F0F1F1;
     --color-chart-axis: #E5E6E5;
     --color-chart-tick: #646564;
+}
+
+/*
+ * Dark scheme. A calm near-black page (#121312, the brand grey's hue, never #000);
+ * panels and popovers one and two steps lighter, 1px borders carrying every edge.
+ */
+@layer theme {
+    :root {
+        @variant dark {
+            color-scheme: dark;
+
+            --color-primary: #FF614D;
+            --color-primary-hover: #FF614D;
+            --color-primary-text: #FF614D;
+            --color-primary-fill-hover: #FF7462;
+            --color-primary-fill-active: #F0573F;
+            --color-on-primary: #121312;
+            --color-secondary: #E6E7E6;
+            --color-secondary-light: #F3F3F3;
+            --color-neutral-900: #CDCECD;
+            --color-on-secondary: #121312;
+
+            --color-surface: #121312;
+            --color-ink: #EDEEED;
+            --color-ink-body: #D0D1D0;
+            --color-ink-muted: #A2A3A2;
+            --color-line: #282928;
+            --color-line-strong: #353735;
+            --color-surface-subtle: #202120;
+            --color-surface-muted: #292A29;
+            --color-page-muted: #0D0E0D;
+            --color-panel-border: #2B2C2B;
+            --color-panel-footer: #171817;
+            --color-control: #707270;
+            --color-control-hover: #8B8D8B;
+            --color-focus: #E0563F;
+            --color-scrim: rgb(0 0 0 / 0.6);
+            --color-skeleton: #242524;
+            --color-sidebar: #181918;
+
+            --color-danger: #D9343B;
+            --color-danger-hover: #C42A31;
+            --color-danger-active: #AD2229;
+            --color-on-danger: #FFFFFF;
+            --color-danger-text: #FF8D8A;
+            --color-danger-strong: #FFB0AD;
+            --color-danger-tint: #2A1517;
+            --color-danger-edge: #5C2629;
+            --color-success-text: #4CC38A;
+            --color-success-strong: #8CDDB5;
+            --color-success-tint: #0F2219;
+            --color-success-edge: #1F4A36;
+            --color-warning-text: #E9A23B;
+            --color-warning-strong: #F4C77E;
+            --color-warning-tint: #261C0E;
+            --color-warning-edge: #574018;
+            --color-info-text: #79A6FF;
+            --color-info-strong: #A9C5FF;
+            --color-info-tint: #111C33;
+            --color-info-edge: #263D6E;
+
+            --color-card: #191A19;
+            --color-card-foreground: #EDEEED;
+            --color-popover: #1D1E1D;
+            --color-popover-foreground: #EDEEED;
+
+            --color-chart-accent: #FF614D;
+            --color-chart-1: #D6D7D6;
+            --color-chart-2: #A2A3A2;
+            --color-chart-3: #767876;
+            --color-chart-grid: #202120;
+            --color-chart-axis: #2D2E2D;
+            --color-chart-tick: #A2A3A2;
+
+            --shadow-panel: none;
+            --shadow-popover: 0 4px 12px rgb(0 0 0 / 0.32);
+            --shadow-dialog: 0 12px 32px rgb(0 0 0 / 0.4);
+            --shadow-thumb: none;
+            --shadow-bar: none;
+        }
+    }
 }

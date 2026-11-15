@@ -18,7 +18,7 @@
                         href="#{{ $id }}"
                         x-on:click="go($event, @js($id))"
                         x-bind:aria-current="current === @js($id) ? 'true' : null"
-                        x-bind:class="current === @js($id) ? 'text-ink lg:bg-black/6' : 'text-ink-muted'"
+                        x-bind:class="current === @js($id) ? 'text-ink lg:bg-ink/6' : 'text-ink-muted'"
                         class="block rounded-md py-1 text-body transition-colors duration-100 hover:text-ink focus-ring lg:px-2.5 aria-[current=true]:font-medium"
                     >{{ $text }}</a>
                 </li>

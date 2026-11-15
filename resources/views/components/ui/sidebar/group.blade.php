@@ -18,7 +18,7 @@
     $open ??= $active;
     $railActive = $variant === 'dark'
         ? 'rail:bg-white/[0.10] rail:ring-1 rail:ring-inset rail:ring-white/40'
-        : 'rail:bg-black/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
+        : 'rail:bg-ink/[0.06] rail:ring-1 rail:ring-inset rail:ring-control-hover';
 @endphp
 
 <li x-data="{ open: @js((bool) $open), tip: false }" x-id="['sidebar-group']" data-nav-group @if ($active) data-active @endif @if ($matched) data-nav-match @endif>
@@ -51,7 +51,7 @@
         <x-ui.icon name="chevron-right" :class="\Illuminate\Support\Arr::toCssClasses(['motion-chevron size-3.5 shrink-0 rail:hidden', $tone['chevron']])" />
     </button>
 
-    <span x-show="tip" x-cloak x-transition.opacity.duration.100ms x-anchor.right.offset.10.fixed="$refs.link" role="tooltip" class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-white pointer-events-none ring-1 ring-white/10">{{ $label }}</span>
+    <span x-show="tip" x-cloak x-transition.opacity.duration.100ms x-anchor.right.offset.10.fixed="$refs.link" role="tooltip" class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-on-secondary pointer-events-none ring-1 ring-on-secondary/10">{{ $label }}</span>
 
     <ul x-bind:id="$id('sidebar-group')" x-show="open && ! railed($el)" x-collapse.duration.150ms @unless ($open) x-cloak @endunless class="mt-px flex flex-col gap-px" aria-label="{{ $label }}">
         {{ $slot }}

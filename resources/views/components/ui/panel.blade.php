@@ -5,7 +5,7 @@
     Slots: default (body, children 16px apart), footer (action bar: #FAFAFA, top border,
     right-aligned; buttons go full width side by side on mobile).
 --}}
-<div {{ $attributes->class(['rounded-lg border border-panel-border bg-white shadow-panel']) }} data-panel>
+<div {{ $attributes->class(['rounded-lg border border-panel-border bg-card shadow-panel']) }} data-panel>
     <div class="flex flex-col gap-4 p-4 sm:p-5">{{ $slot }}</div>
 
     @isset($footer)

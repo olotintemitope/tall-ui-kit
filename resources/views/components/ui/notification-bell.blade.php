@@ -23,6 +23,6 @@
 >
     <x-ui.icon name="bell" class="size-4" />
     @if ($count > 0)
-        <span aria-hidden="true" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full border border-primary-hover bg-primary px-1 font-body text-caption font-medium leading-none tabular-nums text-ink" data-unread-pill>{{ $count > 9 ? '9+' : $count }}</span>
+        <span aria-hidden="true" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full border border-primary-hover bg-primary px-1 font-body text-caption font-medium leading-none tabular-nums text-on-primary" data-unread-pill>{{ $count > 9 ? '9+' : $count }}</span>
     @endif
 </button>

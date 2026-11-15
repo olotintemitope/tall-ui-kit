@@ -5,7 +5,7 @@
 --}}
 @props(['href', 'title', 'meta' => null])
 
-<a href="{{ $href }}" {{ $attributes->class(['group flex min-w-0 items-center gap-3 rounded-lg border border-line bg-white p-4 transition-colors duration-100 hover:bg-surface-subtle focus-ring']) }} data-card-link>
+<a href="{{ $href }}" {{ $attributes->class(['group flex min-w-0 items-center gap-3 rounded-lg border border-line bg-card p-4 transition-colors duration-100 hover:bg-surface-subtle focus-ring']) }} data-card-link>
     <span class="min-w-0 flex-1">
         <span class="type-body-strong block wrap-anywhere">{{ $title }}</span>
         @if ($meta)

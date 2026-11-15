@@ -102,7 +102,7 @@
 @endphp
 
 @if ($loading)
-    <div {{ $attributes->class(['min-w-0 rounded-lg border border-line bg-white']) }} role="status" data-checklist-loading>
+    <div {{ $attributes->class(['min-w-0 rounded-lg border border-line bg-card']) }} role="status" data-checklist-loading>
         <span class="sr-only">Loading {{ $title }}</span>
         <div aria-hidden="true">
             <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 border-b border-line px-4 py-3">
@@ -125,7 +125,7 @@
     </div>
 @elseif (! $dismissed)
     <section
-        {{ $attributes->class(['min-w-0 rounded-lg border border-line bg-white']) }}
+        {{ $attributes->class(['min-w-0 rounded-lg border border-line bg-card']) }}
         id="{{ $id }}"
         aria-labelledby="{{ $id }}-title"
         x-data="uiChecklist(@js(['name' => $name, 'persist' => $persist, 'collapsed' => $collapsed]))"

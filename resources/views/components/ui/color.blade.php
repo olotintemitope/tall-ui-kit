@@ -23,10 +23,10 @@
     x-modelable="value"
     {{ $attributes->whereStartsWith(['wire:model', 'x-model']) }}
     {{ $attributes->only('class')->class([
-        'flex items-center gap-2 overflow-hidden rounded-md border bg-white pl-1 transition-[border-color,box-shadow] duration-100',
+        'flex items-center gap-2 overflow-hidden rounded-md border bg-surface pl-1 transition-[border-color,box-shadow] duration-100',
         FormControl::width($width, 'sm'),
         $size === 'sm' ? 'h-8' : 'h-9',
-        'border-red-600' => $message,
+        'border-danger' => $message,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $message,
     ]) }}
     data-control-box

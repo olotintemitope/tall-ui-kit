@@ -36,7 +36,7 @@ describe('tabs', function () {
             ->toContain('gap-1.5')
             ->toContain('class="shrink-0 size-4"')
             ->toContain('<span class="type-numeric" data-tab-count>1,204</span>')
-            ->toContain('bg-red-50 text-red-700')
+            ->toContain('bg-danger-tint text-danger-text')
             ->toMatch('/data-tab="old"[^>]*disabled/s')
             ->not->toContain('rounded-full px-3')
             ->not->toContain('bg-primary')

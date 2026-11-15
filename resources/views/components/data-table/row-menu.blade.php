@@ -25,7 +25,7 @@
     x-transition:enter-end="opacity-100"
     role="menu"
     x-bind:aria-label="menu.label"
-    class="fixed z-50 w-max min-w-48 max-w-[calc(100vw-1rem)] rounded-lg border border-line bg-white p-1 shadow-popover"
+    class="fixed z-50 w-max min-w-48 max-w-[calc(100vw-1rem)] rounded-lg border border-line bg-popover p-1 shadow-popover"
     wire:key="{{ $table->name }}-row-menu"
     data-dt-row-menu
 >
@@ -33,7 +33,7 @@
         @php
             $classes = [
                 'flex min-h-8 w-full items-center gap-2 rounded-md px-2 py-1.5 text-left font-body text-body outline-none transition-colors duration-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus [&_svg]:size-4',
-                'text-red-700 hover:bg-red-50 focus:bg-red-50' => $action->destructive,
+                'text-danger-text hover:bg-danger-tint focus:bg-danger-tint' => $action->destructive,
                 'text-ink hover:bg-surface-subtle focus:bg-surface-subtle [&_svg]:text-ink-muted' => ! $action->destructive,
             ];
         @endphp

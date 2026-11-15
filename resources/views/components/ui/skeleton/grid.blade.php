@@ -13,7 +13,7 @@
     <span class="sr-only">{{ $label }}</span>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 {{ $lg }}" aria-hidden="true">
         @for ($i = 0; $i < $count; $i++)
-            <div class="rounded-lg border border-line bg-white p-4">
+            <div class="rounded-lg border border-line bg-card p-4">
                 <x-ui.skeleton.line role="label" width="w-20" />
                 <x-ui.skeleton.line role="figure" width="w-28" class="mt-1" />
                 <x-ui.skeleton.line role="meta" width="w-24" class="mt-1" />

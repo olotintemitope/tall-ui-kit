@@ -67,7 +67,7 @@
         x-bind:aria-busy="busy ? 'true' : null"
         data-dialog="{{ $kind }}"
         data-dialog-size="{{ $kind === 'sheet' ? $sheetSize : $size }}"
-        {{ $attributes->except(['wire:key'])->class(['bg-white p-0 text-ink shadow-dialog', ...$frame]) }}
+        {{ $attributes->except(['wire:key'])->class(['bg-popover p-0 text-ink shadow-dialog', ...$frame]) }}
     >
         <div class="flex max-h-[inherit] flex-col {{ $kind === 'dialog' ? '' : 'h-full' }}">
             <div class="flex shrink-0 items-start gap-3 border-b border-line px-5 py-4">
@@ -93,7 +93,7 @@
             </div>
 
             @isset($footer)
-                <div class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-line bg-white px-5 py-3" data-dialog-footer>{{ $footer }}</div>
+                <div class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-line bg-popover px-5 py-3" data-dialog-footer>{{ $footer }}</div>
             @endisset
         </div>
     </dialog>

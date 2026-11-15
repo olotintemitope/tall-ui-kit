@@ -11,9 +11,9 @@
 
 @php
     $tones = [
-        'danger' => 'border-red-200 bg-red-50 text-red-800',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-900',
-        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-800',
+        'danger' => 'border-danger-edge bg-danger-tint text-danger-strong',
+        'warning' => 'border-warning-edge bg-warning-tint text-warning-strong',
+        'success' => 'border-success-edge bg-success-tint text-success-strong',
         'neutral' => 'border-line bg-panel-footer text-ink',
     ];
 @endphp

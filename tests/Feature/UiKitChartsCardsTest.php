@@ -87,7 +87,7 @@ describe('cards', function () {
             ->toContain('<dt class="type-meta">Musician</dt>')
             ->toContain('type-numeric text-ink')
             ->toContain('In review')
-            ->toContain('bg-amber-50');
+            ->toContain('bg-warning-tint');
     });
 
     it('renders a link card as a single anchor with the focus ring', function () {

@@ -141,7 +141,7 @@ function uiChart(Alpine) {
                     dots.replaceChildren(
                         ...d.series.map((s) => {
                             const dot = document.createElement('span');
-                            dot.className = 'absolute left-0 top-0 -ml-[5px] -mt-[5px] size-2.5 rounded-full border-2 border-white';
+                            dot.className = 'absolute left-0 top-0 -ml-[5px] -mt-[5px] size-2.5 rounded-full border-2 border-surface';
                             dot.style.backgroundColor = `var(--color-${s.color})`;
                             dot.style.transform = `translate(${x}px, ${s.y[index]}px)`;
 

@@ -41,7 +41,7 @@ it('renders a copy button with both icons stacked, every label reserved and a po
         ->toContain("setAttribute('aria-describedby', \$id('copy-hint'))")
         // Status and the copied colour.
         ->toMatch('/<span class="sr-only" aria-live="polite" x-text="message" data-copy-status><\/span>/')
-        ->toContain('&#039;text-emerald-700&#039;: copied')
+        ->toContain('&#039;text-success-text&#039;: copied')
         ->not->toContain('opacity-50')
         ->not->toContain('toast');
 });
@@ -80,7 +80,7 @@ it('matches the button sizes', function () {
 it('draws forced states for the gallery and never copies from them', function () {
     $copied = Blade::render('<x-ui.copy-button value="a" data-force="copied" />');
     expect($copied)->toContain('data-copy-state="copied"')
-        ->toContain('text-emerald-700')
+        ->toContain('text-success-text')
         ->toContain('\u0022force\u0022:\u0022copied\u0022')
         ->toContain('<span class="" x-bind:class="{ invisible: ! copied }">Copied</span>');
 

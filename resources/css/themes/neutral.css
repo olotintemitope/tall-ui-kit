@@ -1,11 +1,15 @@
 /*
  * Neutral theme for tall-ui-kit (the default). True greys plus one muted slate accent.
- * The primary button is a light slate fill carrying ink text and edged in
+ * The primary button is a light slate fill carrying `on-primary` text and edged in
  * primary-hover, the same structure as every kit theme, so no component changes.
  * System fonts: no web font to load.
  *
- * Every pair the kit uses meets 4.5:1 for text and 3:1 for boundaries and marks;
- * `composer contrast neutral` measures them (scripts/contrast.php).
+ * Two colour schemes: light (the @theme block) and dark (the `@variant dark` block
+ * at the end, applied by html[data-color-scheme="dark"], or "system" / no attribute
+ * while the OS asks for dark). Every light colour token has a dark value; a test
+ * compares the two lists. Every pair the kit uses meets 4.5:1 for text and 3:1 for
+ * boundaries and marks in both schemes; `composer contrast neutral` measures them
+ * (scripts/contrast.php).
  */
 @theme {
     --color-primary: #AFC0D1;
@@ -13,10 +17,13 @@
     --color-primary-text: #3D5A78;
     --color-primary-fill-hover: #BFCDDB;
     --color-primary-fill-active: #9FB2C6;
+    --color-on-primary: #1F2021;
     --color-secondary: #1F2021;
     --color-secondary-light: #2E3032;
     --color-neutral-900: #111213;
+    --color-on-secondary: #FFFFFF;
 
+    --color-surface: #FFFFFF;
     --color-ink: #1F2021;
     --color-ink-body: #393A3C;
     --color-ink-muted: #606264;
@@ -31,8 +38,32 @@
     --color-control-hover: #6A6C6E;
     --color-focus: #5B7A99;
     --color-scrim: rgb(31 32 33 / 0.4);
+    --color-skeleton: #EDEDEE;
+    --color-sidebar: #1F2021;
 
-    /* Older shadcn-style names some kit class strings still use. */
+    /* Status tones: alerts, toasts, banners, badges, field errors, progress. */
+    --color-danger: #E7000B;
+    --color-danger-hover: #C10007;
+    --color-danger-active: #9F0712;
+    --color-on-danger: #FFFFFF;
+    --color-danger-text: #C10007;
+    --color-danger-strong: #9F0712;
+    --color-danger-tint: #FEF2F2;
+    --color-danger-edge: #FFC9C9;
+    --color-success-text: #007A55;
+    --color-success-strong: #006045;
+    --color-success-tint: #ECFDF5;
+    --color-success-edge: #A4F4CF;
+    --color-warning-text: #973C00;
+    --color-warning-strong: #7B3306;
+    --color-warning-tint: #FFFBEB;
+    --color-warning-edge: #FEE685;
+    --color-info-text: #1447E6;
+    --color-info-strong: #193CB8;
+    --color-info-tint: #EFF6FF;
+    --color-info-edge: #BEDBFF;
+
+    /* Panels, popovers (menus, dialogs, sheets, toasts) and their text. */
     --color-card: #FFFFFF;
     --color-card-foreground: #1F2021;
     --color-popover: #FFFFFF;
@@ -52,4 +83,88 @@
     --color-chart-grid: #F0F0F1;
     --color-chart-axis: #E4E5E6;
     --color-chart-tick: #606264;
+}
+
+/*
+ * Dark scheme. A calm near-black page (#111213, never #000); panels and popovers one
+ * and two steps lighter, so elevation reads from the surface, with 1px borders
+ * carrying every edge (panel shadows off, popover and dialog shadows faint). The
+ * dark fill (`secondary`) turns light so checked controls, chosen days and tooltips
+ * still stand out; the dark sidebar keeps its own `sidebar` surface.
+ */
+@layer theme {
+    :root {
+        @variant dark {
+            color-scheme: dark;
+
+            --color-primary: #AFC0D1;
+            --color-primary-hover: #C3D1DF;
+            --color-primary-text: #A9BED3;
+            --color-primary-fill-hover: #C3D1DF;
+            --color-primary-fill-active: #9AAEC3;
+            --color-on-primary: #111213;
+            --color-secondary: #E6E7E8;
+            --color-secondary-light: #F3F3F4;
+            --color-neutral-900: #CDCED0;
+            --color-on-secondary: #111213;
+
+            --color-surface: #111213;
+            --color-ink: #ECEDEE;
+            --color-ink-body: #CFD0D2;
+            --color-ink-muted: #A0A2A6;
+            --color-line: #27282B;
+            --color-line-strong: #34363A;
+            --color-surface-subtle: #1F2023;
+            --color-surface-muted: #28292C;
+            --color-page-muted: #0C0D0E;
+            --color-panel-border: #2A2B2E;
+            --color-panel-footer: #16171A;
+            --color-control: #6F7276;
+            --color-control-hover: #8A8D91;
+            --color-focus: #6383A1;
+            --color-scrim: rgb(0 0 0 / 0.6);
+            --color-skeleton: #232427;
+            --color-sidebar: #17181A;
+
+            --color-danger: #D9343B;
+            --color-danger-hover: #C42A31;
+            --color-danger-active: #AD2229;
+            --color-on-danger: #FFFFFF;
+            --color-danger-text: #FF8D8A;
+            --color-danger-strong: #FFB0AD;
+            --color-danger-tint: #2A1517;
+            --color-danger-edge: #5C2629;
+            --color-success-text: #4CC38A;
+            --color-success-strong: #8CDDB5;
+            --color-success-tint: #0F2219;
+            --color-success-edge: #1F4A36;
+            --color-warning-text: #E9A23B;
+            --color-warning-strong: #F4C77E;
+            --color-warning-tint: #261C0E;
+            --color-warning-edge: #574018;
+            --color-info-text: #79A6FF;
+            --color-info-strong: #A9C5FF;
+            --color-info-tint: #111C33;
+            --color-info-edge: #263D6E;
+
+            --color-card: #18191B;
+            --color-card-foreground: #ECEDEE;
+            --color-popover: #1C1D20;
+            --color-popover-foreground: #ECEDEE;
+
+            --color-chart-accent: #8FAACB;
+            --color-chart-1: #D5D7DA;
+            --color-chart-2: #A0A2A6;
+            --color-chart-3: #75787C;
+            --color-chart-grid: #1F2023;
+            --color-chart-axis: #2C2D30;
+            --color-chart-tick: #A0A2A6;
+
+            --shadow-panel: none;
+            --shadow-popover: 0 4px 12px rgb(0 0 0 / 0.32);
+            --shadow-dialog: 0 12px 32px rgb(0 0 0 / 0.4);
+            --shadow-thumb: none;
+            --shadow-bar: none;
+        }
+    }
 }

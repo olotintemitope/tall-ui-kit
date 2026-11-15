@@ -19,12 +19,12 @@
 @php
     $variants = [
         'neutral' => 'bg-surface-muted text-ink',
-        'success' => 'bg-emerald-50 text-emerald-800',
-        'warning' => 'bg-amber-50 text-amber-800',
-        'danger' => 'bg-red-50 text-red-700',
-        'info' => 'bg-blue-50 text-blue-700',
+        'success' => 'bg-success-tint text-success-strong',
+        'warning' => 'bg-warning-tint text-warning-text',
+        'danger' => 'bg-danger-tint text-danger-text',
+        'info' => 'bg-info-tint text-info-text',
         'accent' => 'bg-primary/10 text-primary-text',
-        'outline' => 'bg-white text-ink-muted ring-1 ring-inset ring-line-strong',
+        'outline' => 'bg-surface text-ink-muted ring-1 ring-inset ring-line-strong',
     ];
 @endphp
 

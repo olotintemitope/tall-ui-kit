@@ -53,13 +53,13 @@
     <div class="flex min-w-0 flex-1 flex-col gap-1.5">
         <div class="flex flex-wrap items-baseline justify-between gap-x-3">
             <p class="type-body min-w-0 wrap-anywhere text-ink">{{ $name }}</p>
-            <p @class(['type-meta', 'text-red-700!' => $status === 'failed'])>@if ($bytes($size)){{ $bytes($size) }} · @endif{{ $word }}</p>
+            <p @class(['type-meta', 'text-danger-text!' => $status === 'failed'])>@if ($bytes($size)){{ $bytes($size) }} · @endif{{ $word }}</p>
         </div>
         @if ($status !== 'done')
             <x-ui.progress :label="'Upload of '.$name" :value="$status === 'queued' ? 0 : $progress" label-position="hidden" :tone="$status === 'failed' ? 'danger' : 'default'" :value-text="$word" />
         @endif
         @if ($status === 'failed' && $error)
-            <p class="type-caption text-red-700! wrap-anywhere">{{ $error }}</p>
+            <p class="type-caption text-danger-text! wrap-anywhere">{{ $error }}</p>
         @endif
     </div>
     <div class="flex shrink-0 items-center gap-1" @if (collect($buttons)->contains(fn ($b) => ! $b[3])) x-data @endif>

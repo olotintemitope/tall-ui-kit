@@ -67,9 +67,9 @@
     data-tag-input
 >
     <div @class([
-        'flex flex-wrap items-center gap-1 rounded-md border bg-white px-1 py-1 transition-[border-color,box-shadow] duration-100',
+        'flex flex-wrap items-center gap-1 rounded-md border bg-surface px-1 py-1 transition-[border-color,box-shadow] duration-100',
         $size === 'sm' ? 'min-h-8' : 'min-h-9',
-        'border-red-600 focus-within:ring-2 focus-within:ring-red-600/20' => $isInvalid,
+        'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
     ]) x-on:click.self="$refs.input.focus()" data-control-box>
         {{-- Server-rendered chips for the first paint; Alpine's list replaces them on init. --}}
@@ -141,7 +141,7 @@
             x-transition:leave="transition ease-motion-out duration-100"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="absolute inset-x-0 top-full z-40 mt-1.5 max-h-64 overflow-y-auto rounded-lg border border-panel-border bg-white p-1 shadow-popover"
+            class="absolute inset-x-0 top-full z-40 mt-1.5 max-h-64 overflow-y-auto rounded-lg border border-panel-border bg-popover p-1 shadow-popover"
             data-tag-listbox
         >
             <template x-for="(option, index) in results" :key="option.value">
@@ -165,7 +165,7 @@
     @endif
 
     <div class="flex items-start justify-between gap-3">
-        <p id="{{ $controlId }}-status" class="type-caption min-w-0 wrap-anywhere" x-bind:class="problem && 'text-red-700!'" aria-live="polite" x-text="status" data-tag-status></p>
+        <p id="{{ $controlId }}-status" class="type-caption min-w-0 wrap-anywhere" x-bind:class="problem && 'text-danger-text!'" aria-live="polite" x-text="status" data-tag-status></p>
         @if ($max)
             <p id="{{ $controlId }}-count" class="type-caption shrink-0 whitespace-nowrap" x-text="tags.length + ' of ' + {{ (int) $max }}" data-tag-count>{{ count($tags) }} of {{ (int) $max }}</p>
         @endif

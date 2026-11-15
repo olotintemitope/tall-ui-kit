@@ -2,7 +2,7 @@
     Spinner: a 1.5px ring, an `ink-muted` track at 25% and an `ink` arc (15.8:1, so the
     arc clears 3:1 as meaningful non-text), turning once every 0.7s. Under
     prefers-reduced-motion it pulses slowly instead of turning.
-    Sizes xs 12, sm 14, default 16, lg 20. Tone `inverse` draws a white arc on a white
+    Sizes xs 12, sm 14, default 16, lg 20. Tone `inverse` draws the arc in the text colour (white or `on-secondary`) on a
     track for dark fills (secondary and destructive buttons).
     On its own it is role="status" with a visually hidden label ("Loading"). Inside
     something that already says it is busy (a button with aria-busy, a region with
@@ -13,8 +13,8 @@
 
 @php
     $px = ['xs' => 12, 'sm' => 14, 'default' => 16, 'lg' => 20][$size] ?? 16;
-    $track = $tone === 'inverse' ? 'stroke-white/30' : 'stroke-ink-muted/25';
-    $arc = $tone === 'inverse' ? 'stroke-white' : 'stroke-ink';
+    $track = $tone === 'inverse' ? 'stroke-current/30' : 'stroke-ink-muted/25';
+    $arc = $tone === 'inverse' ? 'stroke-current' : 'stroke-ink';
 @endphp
 
 <span

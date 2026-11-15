@@ -4,7 +4,9 @@ namespace TallUiKit\Support;
 
 /**
  * Measured contrast of every x-ui.sidebar state on the dark, light and inset
- * surfaces (docs/ui-kit.md "Sidebar"). Colours are layered as rendered: a
+ * surfaces (docs/components/navigation.md "Sidebar"), in the active theme and colour
+ * scheme (KitContrast::useTheme). The dark variant sits on the `sidebar` token, which
+ * stays dark in both schemes. Colours are layered as rendered: a
  * translucent fill over the sidebar surface, then translucent text over that.
  * Text needs 4.5:1; the active ring and icons 3:1.
  */
@@ -21,15 +23,15 @@ class SidebarContrast
         $t = fn (string $name): string => KitContrast::hex($name);
         $light = fn (string $surface): array => [
             'surface' => $t($surface),
-            'item' => [$t('ink-muted'), 1.0], 'hover' => [$t('ink'), 1.0], 'hoverFill' => ['#000000', 0.04],
-            'active' => [$t('ink'), 1.0], 'activeFill' => ['#000000', 0.06], 'ring' => [$t('control-hover'), 1.0],
+            'item' => [$t('ink-muted'), 1.0], 'hover' => [$t('ink'), 1.0], 'hoverFill' => [$t('ink'), 0.04],
+            'active' => [$t('ink'), 1.0], 'activeFill' => [$t('ink'), 0.06], 'ring' => [$t('control-hover'), 1.0],
             'label' => [$t('ink-muted'), 1.0], 'count' => [$t('ink-muted'), 1.0], 'icon' => [$t('ink-muted'), 1.0],
             'disabled' => [$t('ink-muted'), 1.0], 'tag' => [$t('ink'), 1.0], 'meta' => [$t('ink-muted'), 1.0],
         ];
 
         return [
             'dark' => [
-                'surface' => $t('secondary'),
+                'surface' => $t('sidebar'),
                 'item' => ['#ffffff', 0.70], 'hover' => ['#ffffff', 1.0], 'hoverFill' => ['#ffffff', 0.06],
                 'active' => ['#ffffff', 1.0], 'activeFill' => ['#ffffff', 0.10], 'ring' => ['#ffffff', 0.40],
                 'label' => ['#ffffff', 0.65], 'count' => ['#ffffff', 0.65], 'icon' => ['#ffffff', 0.60],

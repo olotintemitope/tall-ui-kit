@@ -48,8 +48,8 @@
             @php $optionId = $groupId.'-'.\Illuminate\Support\Str::slug($option['value'] === '' ? 'none' : $option['value']); @endphp
             <label for="{{ $optionId }}" @class([
                 'group flex cursor-pointer items-start gap-3 has-disabled:cursor-not-allowed',
-                'rounded-md border bg-white p-3 transition-colors duration-100 has-checked:border-primary-text! has-checked:bg-primary/5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus' => $cards,
-                'border-red-600' => $cards && $isInvalid,
+                'rounded-md border bg-surface p-3 transition-colors duration-100 has-checked:border-primary-text! has-checked:bg-primary/5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus' => $cards,
+                'border-danger' => $cards && $isInvalid,
                 'border-control hover:border-control-hover' => $cards && ! $isInvalid,
             ])>
                 <span class="relative flex h-5 w-4 shrink-0 items-center justify-center">
@@ -64,16 +64,16 @@
                         @if ($option['description']) aria-describedby="{{ $optionId }}-description" @endif
                         {{ $binding }}
                         @class([
-                            'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto rounded-full border bg-white transition-colors duration-100',
+                            'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto rounded-full border bg-surface transition-colors duration-100',
                             'checked:border-secondary checked:bg-secondary',
                             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus' => ! $cards,
                             'focus-visible:outline-none' => $cards,
                             'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted',
-                            'border-red-600' => $isInvalid,
+                            'border-danger' => $isInvalid,
                             'border-control group-hover:border-control-hover' => ! $isInvalid,
                         ])
                     />
-                    <span class="pointer-events-none absolute size-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 forced-colors:hidden" aria-hidden="true"></span>
+                    <span class="pointer-events-none absolute size-1.5 rounded-full bg-on-secondary opacity-0 peer-checked:opacity-100 forced-colors:hidden" aria-hidden="true"></span>
                 </span>
                 <span class="flex min-w-0 flex-col group-has-disabled:[&>span]:text-ink-muted">
                     <span class="type-body-strong select-none">{{ $option['label'] }}</span>
@@ -86,7 +86,7 @@
     </div>
 
     @if ($message)
-        <p id="{{ FormControl::errorId($groupId) }}" class="type-caption text-red-700! mt-1" aria-live="polite">{{ $message }}</p>
+        <p id="{{ FormControl::errorId($groupId) }}" class="type-caption text-danger-text! mt-1" aria-live="polite">{{ $message }}</p>
     @elseif ($hint)
         <p id="{{ FormControl::hintId($groupId) }}" class="type-caption mt-1">{{ $hint }}</p>
     @endif

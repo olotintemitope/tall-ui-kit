@@ -25,7 +25,7 @@
 @endphp
 
 <label for="{{ $id }}" {{ $attributes->except(array_merge(array_keys($binding->getAttributes()), ['id']))->class([
-    'group flex items-start gap-3 rounded-lg border bg-white p-3 transition-colors duration-100',
+    'group flex items-start gap-3 rounded-lg border bg-card p-3 transition-colors duration-100',
     'has-checked:border-primary-text has-checked:bg-primary/5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus',
     'cursor-pointer border-control hover:border-control-hover' => ! $disabled,
     'cursor-not-allowed border-dashed border-control bg-surface-subtle' => $disabled,
@@ -42,15 +42,15 @@
             @if ($metaId || $reasonId) aria-describedby="{{ trim($metaId.' '.$reasonId) }}" @endif
             {{ $binding }}
             @class([
-                'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto border border-control bg-white transition-colors duration-100 group-hover:border-control-hover checked:border-secondary checked:bg-secondary focus-visible:outline-none disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted',
+                'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto border border-control bg-surface transition-colors duration-100 group-hover:border-control-hover checked:border-secondary checked:bg-secondary focus-visible:outline-none disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted',
                 'rounded-full' => $isRadio,
                 'rounded-sm' => ! $isRadio,
             ])
         />
         @if ($isRadio)
-            <span class="pointer-events-none absolute size-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100 forced-colors:hidden" aria-hidden="true"></span>
+            <span class="pointer-events-none absolute size-1.5 rounded-full bg-on-secondary opacity-0 peer-checked:opacity-100 forced-colors:hidden" aria-hidden="true"></span>
         @else
-            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-checked:opacity-100 forced-colors:hidden" />
+            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-checked:opacity-100 forced-colors:hidden" />
         @endif
     </span>
     <span class="flex min-w-0 flex-1 flex-col">

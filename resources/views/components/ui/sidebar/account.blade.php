@@ -35,7 +35,7 @@
             @class([
                 'flex w-full items-center gap-2.5 rounded-md p-1.5 text-left transition-colors duration-100 focus-ring rail:justify-center',
                 'hover:bg-white/[0.06]' => $dark,
-                'hover:bg-black/[0.04]' => ! $dark,
+                'hover:bg-ink/[0.04]' => ! $dark,
             ])
         >
             <x-ui.avatar :name="$name" :initials="$initials" :tone="$dark ? 'dark' : 'light'" />

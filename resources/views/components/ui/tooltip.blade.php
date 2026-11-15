@@ -27,6 +27,6 @@
         x-anchor.{{ $position }}.offset.6.fixed="$refs.trigger"
         x-bind:id="$id('tooltip')"
         role="tooltip"
-        class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-white pointer-events-none"
+        class="z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-on-secondary pointer-events-none"
     >{{ $content ?? $text }}</span>
 </span>

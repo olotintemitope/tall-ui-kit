@@ -20,10 +20,10 @@
     $isInvalid = $invalid ?? (bool) $message;
 
     $box = [
-        'flex items-stretch overflow-hidden rounded-md border bg-white transition-[border-color,box-shadow] duration-100',
+        'flex items-stretch overflow-hidden rounded-md border bg-surface transition-[border-color,box-shadow] duration-100',
         FormControl::width($width, in_array($type, ['date', 'time', 'month', 'week'], true) ? 'date' : ($type === 'datetime-local' ? 'datetime' : 'md')),
         $size === 'sm' ? 'h-8' : 'h-9',
-        'border-red-600 focus-within:ring-2 focus-within:ring-red-600/20' => $isInvalid,
+        'border-danger focus-within:ring-2 focus-within:ring-danger/20' => $isInvalid,
         'border-control hover:border-control-hover focus-within:border-focus focus-within:ring-2 focus-within:ring-primary/20' => ! $isInvalid,
         'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:hover:border-control',
     ];

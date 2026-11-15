@@ -30,16 +30,16 @@
                 'x-init' => $indeterminate ? '$el.indeterminate = true' : null,
                 'data-indeterminate' => $indeterminate ? 'true' : null,
             ])->class([
-                'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto rounded-sm border bg-white transition-colors duration-100',
+                'peer size-4 cursor-pointer appearance-none forced-colors:appearance-auto rounded-sm border bg-surface transition-colors duration-100',
                 'checked:border-secondary checked:bg-secondary indeterminate:border-secondary indeterminate:bg-secondary',
                 'disabled:indeterminate:border-solid disabled:indeterminate:border-ink-muted disabled:indeterminate:bg-ink-muted',
                 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
                 'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted',
-                'border-red-600' => $isInvalid,
+                'border-danger' => $isInvalid,
                 'border-control group-hover:border-control-hover' => ! $isInvalid,
             ]) }} />
-            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-checked:opacity-100 peer-indeterminate:opacity-0! forced-colors:hidden" />
-            <x-ui.icon name="minus" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-indeterminate:opacity-100 forced-colors:hidden" data-checkbox-dash />
+            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-checked:opacity-100 peer-indeterminate:opacity-0! forced-colors:hidden" />
+            <x-ui.icon name="minus" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-indeterminate:opacity-100 forced-colors:hidden" data-checkbox-dash />
         </span>
 
         @if ($label || $description)
@@ -55,6 +55,6 @@
     </label>
 
     @if ($message)
-        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-red-700! mt-1 pl-7" aria-live="polite">{{ $message }}</p>
+        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-danger-text! mt-1 pl-7" aria-live="polite">{{ $message }}</p>
     @endif
 </div>

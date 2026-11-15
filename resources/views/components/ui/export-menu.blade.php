@@ -184,7 +184,7 @@
                         <x-ui.date id="{{ $name }}-range-to" x-model="draftTo" width="full" x-bind:aria-invalid="rangeError ? 'true' : null" aria-describedby="{{ $name }}-range-error" />
                     </div>
                 </div>
-                <p id="{{ $name }}-range-error" class="type-caption text-red-700!" x-show="rangeError" x-text="rangeError" aria-live="polite"></p>
+                <p id="{{ $name }}-range-error" class="type-caption text-danger-text!" x-show="rangeError" x-text="rangeError" aria-live="polite"></p>
             </div>
             <x-slot:footer>
                 <x-ui.button variant="outline" size="sm" x-on:click="$dispatch('close-dialog', dialogs.range)">Cancel</x-ui.button>

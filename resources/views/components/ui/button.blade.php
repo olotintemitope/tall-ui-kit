@@ -24,17 +24,17 @@
     Unavailable buttons use aria-disabled, never the `disabled` attribute, so a focused
     button keeps focus; a capture-phase click guard blocks mouse and keyboard activation.
       toggle on aria-pressed="true": surface-muted fill, ink text and a 1px control border
-    The accent fill carries ink text in every state: 5.32:1, hover 5.97:1, pressed 4.62:1.
+    The accent fill carries `on-primary` text (ink in light) in every state: 5.32:1, hover 5.97:1, pressed 4.62:1.
 --}}
 @props(['variant' => 'default', 'size' => 'default', 'href' => null, 'type' => 'button', 'loading' => null, 'busy' => false, 'disabled' => false, 'pressed' => null])
 
 @php
     $variants = [
-        'default' => 'bg-primary text-ink border border-primary-hover state-hover:bg-primary-fill-hover state-active:bg-primary-fill-active',
-        'secondary' => 'bg-secondary text-white border border-secondary state-hover:bg-secondary-light state-hover:border-secondary-light state-active:bg-neutral-900 state-active:border-neutral-900',
-        'outline' => 'border border-control bg-white text-ink state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted state-active:border-control-hover',
+        'default' => 'bg-primary text-on-primary border border-primary-hover state-hover:bg-primary-fill-hover state-active:bg-primary-fill-active',
+        'secondary' => 'bg-secondary text-on-secondary border border-secondary state-hover:bg-secondary-light state-hover:border-secondary-light state-active:bg-neutral-900 state-active:border-neutral-900',
+        'outline' => 'border border-control bg-surface text-ink state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted state-active:border-control-hover',
         'ghost' => 'border border-transparent text-ink-body state-hover:bg-surface-subtle state-hover:text-ink state-active:bg-surface-muted state-active:text-ink',
-        'destructive' => 'bg-red-600 text-white border border-red-600 state-hover:bg-red-700 state-hover:border-red-700 state-active:bg-red-800 state-active:border-red-800',
+        'destructive' => 'bg-danger text-on-danger border border-danger state-hover:bg-danger-hover state-hover:border-danger-hover state-active:bg-danger-active state-active:border-danger-active',
         'link' => 'text-primary-text underline-offset-4 state-hover:underline state-active:text-ink state-active:underline',
     ];
     $variants['primary'] = $variants['default'];
@@ -69,7 +69,7 @@
     // Unavailable buttons stay focusable: aria-disabled (never `disabled`, which drops a
     // focused button to <body>) and a capture-phase guard that swallows the click.
     $guard = 'if ($el.getAttribute(\'aria-disabled\') === \'true\' || $el.getAttribute(\'aria-busy\') === \'true\') { $event.preventDefault(); $event.stopImmediatePropagation() }';
-    $spinner = $variant === 'secondary' || $variant === 'destructive' ? 'inverse' : 'default';
+    $spinner = in_array($variant, ['default', 'primary', 'secondary', 'destructive'], true) ? 'inverse' : 'default';
 @endphp
 
 @if ($href)

@@ -10,7 +10,7 @@
     $classes = [
         'relative flex w-full min-h-8 py-1.5 select-none items-center gap-2 wrap-anywhere rounded-md px-2 font-body text-body text-left outline-none transition-colors duration-100',
         'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-muted [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
-        'text-red-700 hover:bg-red-50 focus:bg-red-50 [&_svg]:text-red-700' => $variant === 'danger',
+        'text-danger-text hover:bg-danger-tint focus:bg-danger-tint [&_svg]:text-danger-text' => $variant === 'danger',
         'text-ink hover:bg-surface-subtle focus:bg-surface-subtle [&_svg]:text-ink-muted' => $variant !== 'danger',
     ];
     $role = in_array($role, ['menuitem', 'menuitemradio', 'menuitemcheckbox'], true) ? $role : 'menuitem';

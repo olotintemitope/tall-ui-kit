@@ -11,7 +11,7 @@
     $handlers = $attributes->filter(fn ($v, $key) => str_starts_with($key, 'wire:click') || str_starts_with($key, 'x-on:click') || str_starts_with($key, '@click'));
 @endphp
 
-<span {{ $attributes->except(array_keys($handlers->getAttributes()))->class(['type-body inline-flex min-h-7 py-0.5 wrap-anywhere max-w-full items-center gap-0.5 rounded-md border border-control bg-white pl-2 pr-0.5 text-ink']) }} data-filter-token>
+<span {{ $attributes->except(array_keys($handlers->getAttributes()))->class(['type-body inline-flex min-h-7 py-0.5 wrap-anywhere max-w-full items-center gap-0.5 rounded-md border border-control bg-surface pl-2 pr-0.5 text-ink']) }} data-filter-token>
     <span class="wrap-anywhere">{{ $label }}</span>
     <button
         type="button"

@@ -46,10 +46,10 @@
     $isDismissed = $dismissible && (bool) ($dismissed ?? ($persist === 'server' ? app(\TallUiKit\Support\Dismiss\DismissStore::class)->dismissed($key) : false));
     $id ??= 'banner-'.($name ? \Illuminate\Support\Str::slug($name) : substr(md5((string) $title.$tone), 0, 6));
     $tones = [
-        'info' => 'border-blue-200 bg-blue-50 text-blue-700',
-        'success' => 'border-emerald-200 bg-emerald-50 text-emerald-800',
-        'warning' => 'border-amber-200 bg-amber-50 text-amber-900',
-        'danger' => 'border-red-200 bg-red-50 text-red-800',
+        'info' => 'border-info-edge bg-info-tint text-info-text',
+        'success' => 'border-success-edge bg-success-tint text-success-strong',
+        'warning' => 'border-warning-edge bg-warning-tint text-warning-strong',
+        'danger' => 'border-danger-edge bg-danger-tint text-danger-strong',
     ];
     $tone = array_key_exists($tone, $tones) ? $tone : 'info';
     // A named region (landmark) when it has a title or label; a plain block otherwise, so
@@ -79,7 +79,7 @@
         @endif
     </div>
     @if ($dismissible)
-        <button type="button" class="-my-0.5 -mr-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-current hover:bg-white focus-ring" aria-label="{{ $dismissLabel }}" x-on:click="dismiss()" data-banner-dismiss>
+        <button type="button" class="-my-0.5 -mr-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md text-current hover:bg-surface focus-ring" aria-label="{{ $dismissLabel }}" x-on:click="dismiss()" data-banner-dismiss>
             <x-ui.icon name="x" class="size-4" />
         </button>
     @endif

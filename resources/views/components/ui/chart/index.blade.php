@@ -279,7 +279,7 @@
                             'absolute inset-x-0 top-0 flex *:flex *:flex-1 *:items-end *:justify-center *:gap-[4%]',
                             // Stacks: up to 3 segments upwards from the first series, a 1px white gap under
                             // each segment with another above it, only the top one rounded.
-                            '*:*:flex *:*:w-[72%] *:*:max-w-6 *:*:flex-col-reverse *:*:*:not-last:border-t *:*:*:border-white *:*:*:last:rounded-t-xs' => $type === 'stacked-bar',
+                            '*:*:flex *:*:w-[72%] *:*:max-w-6 *:*:flex-col-reverse *:*:*:not-last:border-t *:*:*:border-surface *:*:*:last:rounded-t-xs' => $type === 'stacked-bar',
                             // Single or grouped bars, each at most 24px with 2px top corners; a single series
                             // darkens to chart-1 under the pointer (the script marks the slot data-active).
                             '*:*:max-w-6 *:*:rounded-t-xs '.$barWidth => $type === 'bar',
@@ -295,8 +295,8 @@
                         <div x-ref="dots"></div>
                     </div>
                     {{-- The empty message sits on the plot above the zero line; pointer-events off so hover still works. --}}
-                    <p class="type-caption pointer-events-none absolute left-1/2 top-[38%] w-max max-w-[90%] -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-center" @unless ($isEmpty) hidden @endunless data-chart-empty>{{ $isEmpty ? $empty : '' }}</p>
-                    <div wire:ignore x-ref="tooltip" class="pointer-events-none absolute z-10 min-w-24 rounded-md border border-panel-border bg-white px-2 py-1.5 opacity-0 shadow-popover transition-opacity duration-100" aria-hidden="true" data-chart-tooltip></div>
+                    <p class="type-caption pointer-events-none absolute left-1/2 top-[38%] w-max max-w-[90%] -translate-x-1/2 -translate-y-1/2 bg-surface px-2 text-center" @unless ($isEmpty) hidden @endunless data-chart-empty>{{ $isEmpty ? $empty : '' }}</p>
+                    <div wire:ignore x-ref="tooltip" class="pointer-events-none absolute z-10 min-w-24 rounded-md border border-panel-border bg-popover px-2 py-1.5 opacity-0 shadow-popover transition-opacity duration-100" aria-hidden="true" data-chart-tooltip></div>
                 </div>
                 <div class="@container relative col-start-2 *:type-caption *:absolute *:top-1 *:-translate-x-1/2 *:whitespace-nowrap" aria-hidden="true" data-chart-xticks>{!! $xTicksHtml !!}</div>
             </div>

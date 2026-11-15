@@ -15,6 +15,6 @@
     'type-'.$role,
     'min-w-0 wrap-anywhere',
     'text-ink-muted' => $tone === 'muted',
-    'text-red-700' => $tone === 'danger',
-    'text-emerald-700' => $tone === 'success',
+    'text-danger-text' => $tone === 'danger',
+    'text-success-text' => $tone === 'success',
 ]) }}>{{ $slot }}</{{ $as }}>

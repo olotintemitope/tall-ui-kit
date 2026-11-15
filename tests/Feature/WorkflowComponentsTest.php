@@ -188,10 +188,10 @@ describe('banner', function () {
     it('renders each tone with AA text, an action link and a dismiss button', function () {
         $html = wf('<x-ui.banner tone="danger" title="Card failed." action-label="Update" action-href="/billing" dismissible persist="none">Plan active.</x-ui.banner>');
 
-        expect($html)->toContain('<section')->toContain('aria-label="Card failed."')->toContain('bg-red-50 text-red-800')
+        expect($html)->toContain('<section')->toContain('aria-label="Card failed."')->toContain('bg-danger-tint text-danger-strong')
             ->toContain('href="/billing"')->toContain('aria-label="Dismiss announcement"')->toContain('uiBanner')
             ->not->toContain('role="alert"');
-        expect(wf('<x-ui.banner>Note.</x-ui.banner>'))->toContain('bg-blue-50 text-blue-700')->not->toContain('<section')->not->toContain('aria-label=');
+        expect(wf('<x-ui.banner>Note.</x-ui.banner>'))->toContain('bg-info-tint text-info-text')->not->toContain('<section')->not->toContain('aria-label=');
     });
 
     it('hides a locally dismissed banner before first paint', function () {

@@ -24,7 +24,7 @@
     </x-slot:footer>
 
     <x-slot:after>
-        <dialog x-ref="discard" wire:ignore.self role="alertdialog" aria-labelledby="dialog-{{ $name }}-discard-title" aria-describedby="dialog-{{ $name }}-discard-description" x-on:cancel.prevent="keepEditing()" class="ui-dialog mx-auto mt-[16vh] h-fit w-[calc(100%-2rem)] max-w-[400px] rounded-lg border border-panel-border bg-white p-0 shadow-dialog" data-dialog-discard>
+        <dialog x-ref="discard" wire:ignore.self role="alertdialog" aria-labelledby="dialog-{{ $name }}-discard-title" aria-describedby="dialog-{{ $name }}-discard-description" x-on:cancel.prevent="keepEditing()" class="ui-dialog mx-auto mt-[16vh] h-fit w-[calc(100%-2rem)] max-w-[400px] rounded-lg border border-panel-border bg-popover p-0 shadow-dialog" data-dialog-discard>
             <div class="px-5 pt-5 pb-4">
                 <h2 id="dialog-{{ $name }}-discard-title" class="type-heading">Discard changes?</h2>
                 <p id="dialog-{{ $name }}-discard-description" class="type-body mt-1.5">Your edits in "{{ $title }}" will be lost.</p>

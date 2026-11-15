@@ -44,7 +44,7 @@
         $joined === 'inline' => ['size-6 rounded-sm focus-ring state-hover:bg-surface-subtle'],
         $variant === 'icon' => ['rounded-md border border-transparent focus-ring state-hover:bg-surface-subtle state-active:bg-surface-muted', $small ? 'size-8' : 'size-9'],
         $variant === 'link' => ['rounded-sm underline-offset-4 focus-ring state-hover:underline', $small ? 'text-meta font-medium' : 'text-body-strong'],
-        default => ['rounded-md border border-control bg-white focus-ring state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted', $small ? 'h-8 px-2.5 text-meta font-medium' : 'h-9 px-3 text-body-strong'],
+        default => ['rounded-md border border-control bg-surface focus-ring state-hover:bg-surface-subtle state-hover:border-control-hover state-active:bg-surface-muted', $small ? 'h-8 px-2.5 text-meta font-medium' : 'h-9 px-3 text-body-strong'],
     };
 
     // Idle colour per variant (icons ink-muted 5.86:1, link primary-text 5.21:1); copied is emerald-700 (5.48:1) everywhere.
@@ -53,11 +53,11 @@
         $variant === 'icon' => ['text-ink-muted', 'state-hover:text-ink'],
         default => ['text-ink'],
     };
-    $binding = '{ '.collect(['text-emerald-700' => 'copied', ...array_fill_keys($idleTone, '! copied')])->map(fn ($when, $class) => "'{$class}': {$when}")->implode(', ').' }';
+    $binding = '{ '.collect(['text-success-text' => 'copied', ...array_fill_keys($idleTone, '! copied')])->map(fn ($when, $class) => "'{$class}': {$when}")->implode(', ').' }';
     if ($extra = $attributes->get('x-bind:class')) {
         $binding = "Object.assign({$binding}, {$extra})";
     }
-    $buttonAttributes = $attributes->except(['x-bind:class'])->class([$base, ...$look, ...($state === 'copied' ? ['text-emerald-700'] : $idleTone)]);
+    $buttonAttributes = $attributes->except(['x-bind:class'])->class([$base, ...$look, ...($state === 'copied' ? ['text-success-text'] : $idleTone)]);
 @endphp
 
 @if ($scoped)
@@ -105,7 +105,7 @@
             x-anchor.bottom-start.offset.6.fixed="$el.previousElementSibling"
             x-bind:id="$id('copy-hint')"
             x-effect="failed ? $el.previousElementSibling.setAttribute('aria-describedby', $id('copy-hint')) : $el.previousElementSibling.removeAttribute('aria-describedby')"
-            class="pointer-events-none z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-white"
+            class="pointer-events-none z-[60] w-max max-w-xs wrap-anywhere rounded-md bg-secondary px-2 py-1 font-body text-caption font-medium text-on-secondary"
             data-copy-hint
         >Press <span x-text="shortcut">Ctrl+C</span> to copy</span>
     @endif

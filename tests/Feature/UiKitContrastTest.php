@@ -9,23 +9,23 @@ use TallUiKit\Support\SidebarContrast;
 | The NewBanger theme must also match the ratios documented for it.
 */
 
-afterEach(fn () => KitContrast::useTheme('neutral'));
+afterEach(fn () => KitContrast::useTheme('neutral', 'light'));
 
 $pairs = fn (): array => collect(KitContrast::pairs())->mapWithKeys(fn (array $pair): array => [$pair[0].' ('.$pair[1].' on '.$pair[2].')' => $pair])->all();
 
-it('meets the required ratio in every theme', function (string $theme) {
-    KitContrast::useTheme($theme);
+it('meets the required ratio in every theme and colour scheme', function (string $theme, string $mode) {
+    KitContrast::useTheme($theme, $mode);
 
     foreach (KitContrast::pairs() as [$use, $fg, $bg, $kind, $min]) {
-        expect(KitContrast::ratio($fg, $bg))->toBeGreaterThanOrEqual($min, "{$theme}: {$use}");
+        expect(KitContrast::ratio($fg, $bg))->toBeGreaterThanOrEqual($min, "{$theme} {$mode}: {$use}");
     }
 
     foreach (SidebarContrast::rows() as $row) {
         foreach (['dark', 'light', 'inset'] as $variant) {
-            expect($row[$variant])->toBeGreaterThanOrEqual($row['min'], "{$theme}: sidebar {$variant} {$row['state']}");
+            expect($row[$variant])->toBeGreaterThanOrEqual($row['min'], "{$theme} {$mode}: sidebar {$variant} {$row['state']}");
         }
     }
-})->with(KitContrast::THEMES);
+})->with(KitContrast::THEMES)->with(KitContrast::MODES);
 
 it('matches the documented NewBanger ratios', function (string $use, string $fg, string $bg, string $kind, float $min, float $documented) {
     KitContrast::useTheme('newbanger');
@@ -55,4 +55,32 @@ it('defines the same colour tokens in every theme', function () {
     $tokens = fn (string $theme): array => (preg_match_all('/--color-([a-z0-9-]+):/', file_get_contents(KitContrast::themePath($theme)), $m) ? array_values(array_unique($m[1])) : []);
 
     expect($tokens('neutral'))->toEqualCanonicalizing($tokens('newbanger'));
+});
+
+it('gives every light colour token a dark value in every theme', function (string $theme) {
+    $names = KitContrast::declaredNames($theme);
+
+    expect($names['dark'])->not->toBe([])
+        ->and(array_values(array_diff($names['light'], $names['dark'])))->toBe([], "{$theme}: light tokens with no dark value")
+        ->and(array_values(array_diff($names['dark'], $names['light'])))->toBe([], "{$theme}: dark tokens with no light value");
+})->with(KitContrast::THEMES);
+
+it('reads dark tokens from the dark block and keeps the page near-black, never pure black', function (string $theme) {
+    KitContrast::useTheme($theme, 'dark');
+
+    expect(KitContrast::hex('surface'))->not->toBe('#000000')
+        ->and(KitContrast::ratio('surface', 'black'))->toBeGreaterThan(1.05)
+        ->and(KitContrast::ratio('ink', 'surface'))->toBeGreaterThan(12.0);
+
+    // Panels and popovers sit one and two steps above the page.
+    $lum = fn (string $t): float => KitContrast::ratio($t, 'black');
+    expect($lum('card'))->toBeGreaterThan($lum('surface'))
+        ->and($lum('popover'))->toBeGreaterThanOrEqual($lum('card'));
+})->with(KitContrast::THEMES);
+
+it('keeps the NewBanger accent as the dark fill and accent text', function () {
+    KitContrast::useTheme('newbanger', 'dark');
+
+    expect(KitContrast::hex('primary'))->toBe('#ff614d')
+        ->and(KitContrast::hex('primary-text'))->toBe('#ff614d');
 });

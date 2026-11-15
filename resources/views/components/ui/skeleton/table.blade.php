@@ -5,7 +5,7 @@
 --}}
 @props(['rows' => 5, 'columns' => 4, 'label' => 'Loading', 'flush' => false])
 
-<div {{ $attributes->class(['overflow-hidden bg-white', 'rounded-lg border border-line' => ! $flush]) }} role="status" data-skeleton="table">
+<div {{ $attributes->class(['overflow-hidden bg-surface', 'rounded-lg border border-line' => ! $flush]) }} role="status" data-skeleton="table">
     <span class="sr-only">{{ $label }}</span>
     <div aria-hidden="true">
         <div class="flex h-9 items-center gap-4 border-b border-line bg-panel-footer px-4">

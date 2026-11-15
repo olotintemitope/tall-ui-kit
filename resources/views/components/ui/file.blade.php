@@ -56,10 +56,10 @@
 >
     <div
         @class([
-            'relative flex flex-col items-start gap-1 rounded-md border border-dashed bg-white px-4 py-4 transition-colors duration-100',
+            'relative flex flex-col items-start gap-1 rounded-md border border-dashed bg-surface px-4 py-4 transition-colors duration-100',
             'has-focus-visible:border-focus has-focus-visible:ring-2 has-focus-visible:ring-primary/20',
             'has-disabled:bg-surface-subtle has-disabled:cursor-not-allowed',
-            'border-red-600' => $isInvalid,
+            'border-danger' => $isInvalid,
             'border-control hover:border-control-hover' => ! $isInvalid,
         ])
         x-bind:class="dragging && 'border-secondary! bg-surface-subtle'"
@@ -98,7 +98,7 @@
                     <div class="relative aspect-square overflow-hidden rounded-lg border border-line bg-surface-subtle">
                         <img x-show="file.url" x-bind:src="file.url" x-bind:alt="file.name" class="size-full object-cover" decoding="async" />
                         <x-ui.icon name="file" class="absolute inset-0 m-auto size-6 text-ink-muted" x-show="! file.url" />
-                        <button type="button" class="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md border border-control bg-white text-ink focus-ring hover:bg-surface-subtle" x-on:click="remove(index)" x-bind:aria-label="'Remove ' + file.name" data-file-remove>
+                        <button type="button" class="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md border border-control bg-surface text-ink focus-ring hover:bg-surface-subtle" x-on:click="remove(index)" x-bind:aria-label="'Remove ' + file.name" data-file-remove>
                             <x-ui.icon name="x" class="size-3.5" />
                         </button>
                     </div>
@@ -119,6 +119,6 @@
     @endisset
 
     @if ($message)
-        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-red-700! mt-2">{{ $message }}</p>
+        <p id="{{ FormControl::errorId($controlId) }}" class="type-caption text-danger-text! mt-2">{{ $message }}</p>
     @endif
 </div>

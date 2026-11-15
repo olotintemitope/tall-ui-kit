@@ -39,13 +39,13 @@
                     'relative inline-flex shrink-0 items-center rounded-full border transition-colors duration-150 focus-ring',
                     'disabled:cursor-not-allowed disabled:border-dashed disabled:border-control! disabled:bg-surface-subtle!',
                     $small ? 'h-4 w-7' : 'h-5 w-9',
-                    'border-red-600' => $isInvalid,
+                    'border-danger' => $isInvalid,
                 ]) }}
                 x-bind:class="on ? 'bg-secondary border-secondary' : 'bg-surface-muted border-control'"
             >
                 <span
-                    @class(['pointer-events-none block rounded-full bg-white shadow-thumb transition-transform duration-150 motion-reduce:transition-none forced-colors:bg-[CanvasText]', $small ? 'size-3' : 'size-4'])
-                    x-bind:class="on ? '{{ $small ? 'translate-x-[13px]' : 'translate-x-[17px]' }}' : 'translate-x-px'"
+                    @class(['pointer-events-none block rounded-full shadow-thumb transition-transform duration-150 motion-reduce:transition-none forced-colors:bg-[CanvasText]', $small ? 'size-3' : 'size-4'])
+                    x-bind:class="on ? 'bg-on-secondary {{ $small ? 'translate-x-[13px]' : 'translate-x-[17px]' }}' : 'bg-surface translate-x-px'"
                 ></span>
             </button>
         </span>

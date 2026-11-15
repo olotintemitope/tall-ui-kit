@@ -15,11 +15,11 @@
 @endphp
 
 @if ($messages->count() > $min)
-    <div {{ $attributes->class(['rounded-md border border-red-200 bg-red-50 px-3 py-2.5 focus-ring']) }} role="alert" aria-labelledby="error-summary-title" tabindex="-1" data-error-summary>
+    <div {{ $attributes->class(['rounded-md border border-danger-edge bg-danger-tint px-3 py-2.5 focus-ring']) }} role="alert" aria-labelledby="error-summary-title" tabindex="-1" data-error-summary>
         <p id="error-summary-title" class="type-body-strong">{{ $messages->count() }} fields need attention</p>
         <ul class="mt-1 flex flex-col gap-0.5">
             @foreach ($messages as $item)
-                <li class="type-meta"><a href="{{ $item['href'] }}" class="text-red-700 underline underline-offset-2 hover:no-underline rounded-sm focus-ring">{{ $item['label'] }}</a>: {{ $item['message'] }}</li>
+                <li class="type-meta"><a href="{{ $item['href'] }}" class="text-danger-text underline underline-offset-2 hover:no-underline rounded-sm focus-ring">{{ $item['label'] }}</a>: {{ $item['message'] }}</li>
             @endforeach
         </ul>
     </div>

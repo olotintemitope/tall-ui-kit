@@ -133,14 +133,14 @@
                 <span class="relative flex h-5 w-4 shrink-0 items-center justify-center">
                     <input
                         type="checkbox"
-                        class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-white transition-colors duration-100 checked:border-secondary checked:bg-secondary indeterminate:border-secondary indeterminate:bg-secondary group-hover:border-control-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                        class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-surface transition-colors duration-100 checked:border-secondary checked:bg-secondary indeterminate:border-secondary indeterminate:bg-secondary group-hover:border-control-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                         x-bind:checked="allChecked"
                         x-effect="$el.indeterminate = someChecked && ! allChecked"
                         x-on:change="toggleAll($event.target.checked)"
                         data-select-all
                     />
-                    <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-checked:opacity-100 peer-indeterminate:opacity-0" />
-                    <span class="pointer-events-none absolute h-0.5 w-2 rounded-sm bg-white opacity-0 peer-indeterminate:opacity-100" aria-hidden="true"></span>
+                    <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-checked:opacity-100 peer-indeterminate:opacity-0" />
+                    <span class="pointer-events-none absolute h-0.5 w-2 rounded-sm bg-on-secondary opacity-0 peer-indeterminate:opacity-100" aria-hidden="true"></span>
                 </span>
                 <span class="type-body-strong select-none">Select all</span>
             </label>
@@ -178,13 +178,13 @@
                         <span class="relative flex h-5 w-4 shrink-0 items-center justify-center">
                             <input
                                 type="checkbox"
-                                class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-white transition-colors duration-100 checked:border-secondary checked:bg-secondary group-hover:border-control-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted"
+                                class="peer size-4 cursor-pointer appearance-none rounded-sm border border-control bg-surface transition-colors duration-100 checked:border-secondary checked:bg-secondary group-hover:border-control-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:checked:border-solid disabled:checked:border-ink-muted disabled:checked:bg-ink-muted"
                                 x-bind:id="'{{ $name }}-col-' + column.key"
                                 x-model="column.checked"
                                 x-bind:disabled="column.required"
                                 x-bind:aria-describedby="column.description || column.required ? '{{ $name }}-col-' + column.key + '-meta' : null"
                             />
-                            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-white opacity-0 peer-checked:opacity-100" />
+                            <x-ui.icon name="check" :stroke-width="3" class="pointer-events-none absolute size-3 text-on-secondary opacity-0 peer-checked:opacity-100" />
                         </span>
                         <span class="flex min-w-0 flex-col">
                             <span class="type-body-strong select-none" x-text="column.heading"></span>

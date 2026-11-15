@@ -178,7 +178,7 @@ describe('segmented', function () {
 
     it('selects with a white, control-edged segment and no hover box', function () {
         expect(kit('<x-ui.segmented :options="[\'a\' => \'A\']" />'))
-            ->toContain('aria-checked:border-control aria-checked:bg-white')
+            ->toContain('aria-checked:border-control aria-checked:bg-surface')
             ->toContain('state-hover:text-ink')
             ->not->toContain('state-hover:not-aria-checked:bg')
             ->toContain('x-bind:data-segmented-indicator');

@@ -128,11 +128,11 @@
         'aria-describedby' => $describedBy,
         'data-ui' => 'select',
     ])->class([
-        'relative [grid-area:1/1] flex w-full items-center rounded-md border bg-white pl-3 pr-9 text-left font-body text-body text-ink outline-none transition-[border-color,box-shadow] duration-100 cursor-default',
+        'relative [grid-area:1/1] flex w-full items-center rounded-md border bg-surface pl-3 pr-9 text-left font-body text-body text-ink outline-none transition-[border-color,box-shadow] duration-100 cursor-default',
         'min-h-8 py-1' => $size === 'sm',
         'min-h-9 py-1.5' => $size !== 'sm',
         'disabled:cursor-not-allowed disabled:border-dashed disabled:bg-surface-subtle disabled:text-ink-muted',
-        'border-red-600 focus:ring-2 focus:ring-red-600/20' => $isInvalid,
+        'border-danger focus:ring-2 focus:ring-danger/20' => $isInvalid,
         'border-control enabled:hover:border-control-hover focus:border-focus focus:ring-2 focus:ring-primary/20 aria-expanded:border-focus' => ! $isInvalid,
     ]) }} x-ref="trigger" x-bind:aria-expanded="open ? 'true' : 'false'" x-bind:aria-activedescendant="activeId" x-on:click="toggle()" x-on:keydown="key($event)" x-on:keyup.space.prevent x-on:blur="blurred($event)">
         <span class="min-w-0 flex-1 wrap-anywhere" data-select-label @if ($multiple) data-none="{{ $placeholder ?? 'None selected' }}" @endif x-text="text">{{ $label }}</span>

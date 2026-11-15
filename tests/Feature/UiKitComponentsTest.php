@@ -370,12 +370,12 @@ describe('metrics and lists', function () {
             ->toContain('class="'.($numeric ? 'type-numeric ' : '').$tone.'">'.$text.'</span> vs prior 30d</span>')
             ->and(substr_count($html, 'type-numeric'))->toBe($numeric ? 1 : 0);
     })->with([
-        'rise' => [1124, 1000, true, '+12%', 'text-emerald-700'],
-        'small rise keeps a decimal' => [1050, 1000, true, '+5.0%', 'text-emerald-700'],
-        'fall' => [500, 1000, true, "\u{2212}50%", 'text-red-700'],
-        'rise that is bad' => [1124, 1000, false, '+12%', 'text-red-700'],
+        'rise' => [1124, 1000, true, '+12%', 'text-success-text'],
+        'small rise keeps a decimal' => [1050, 1000, true, '+5.0%', 'text-success-text'],
+        'fall' => [500, 1000, true, "\u{2212}50%", 'text-danger-text'],
+        'rise that is bad' => [1124, 1000, false, '+12%', 'text-danger-text'],
         'flat' => [10, 10, true, 'No change', 'text-ink-muted'],
-        'from zero' => [5, 0, true, 'New', 'text-emerald-700'],
+        'from zero' => [5, 0, true, 'New', 'text-success-text'],
     ]);
 
     it('renders key and value rows with a sub line', function () {
@@ -415,7 +415,7 @@ describe('metrics and lists', function () {
     it('renders an alert with a 1px tinted border, a light fill, tone text and no icon', function () {
         $this->blade('<x-ui.alert tone="danger">Failed.</x-ui.alert>')
             ->assertSee('role="alert"', false)
-            ->assertSee('rounded-md border px-3 py-2.5 border-red-200 bg-red-50 text-red-800', false)
+            ->assertSee('rounded-md border px-3 py-2.5 border-danger-edge bg-danger-tint text-danger-strong', false)
             ->assertSee('Failed.')
             ->assertDontSee('border-l-', false)
             ->assertDontSee('<svg', false);
@@ -453,7 +453,7 @@ describe('segmented control', function () {
             ->toContain('x-modelable="value"')
             ->toContain('data-segmented="text"')
             ->toContain('border border-line bg-surface-subtle')
-            ->toContain('aria-checked:border-control aria-checked:bg-white aria-checked:text-ink')
+            ->toContain('aria-checked:border-control aria-checked:bg-surface aria-checked:text-ink')
             ->not->toContain('<svg')
             ->and(substr_count($html, 'role="radio"'))->toBe(2)
             ->and($html)->toMatch('/data-value="30"[^>]*aria-checked="true"[^>]*tabindex="0"/s')

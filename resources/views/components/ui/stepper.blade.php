@@ -94,7 +94,7 @@
                     <span class="text-ink-muted" aria-hidden="true">·</span>
                 @endif
                 @php
-                    $inner = '<span class="type-numeric">'.$s['n'].'</span> '.e($s['label']).($s['state'] === 'complete' ? ' <span class="text-emerald-700">Done</span>' : '').($s['state'] === 'error' ? ' <span class="text-red-700">Error</span>' : '');
+                    $inner = '<span class="type-numeric">'.$s['n'].'</span> '.e($s['label']).($s['state'] === 'complete' ? ' <span class="text-success-text">Done</span>' : '').($s['state'] === 'error' ? ' <span class="text-danger-text">Error</span>' : '');
                 @endphp
                 @if ($canClick($s) && $s['href'])
                     <a href="{{ $s['href'] }}" class="rounded-sm type-meta text-ink-body hover:text-ink focus-ring">{!! $inner !!}</a>
@@ -115,10 +115,10 @@
                 $last = $s['n'] === $total;
                 $tag = $canClick($s) ? ($s['href'] ? 'a' : 'button') : 'div';
                 $marker = [
-                    'complete' => 'border border-secondary bg-white text-ink',
-                    'current' => 'bg-secondary text-white',
-                    'upcoming' => 'border border-control bg-white text-ink-muted',
-                    'error' => 'border border-red-700 bg-white text-red-700',
+                    'complete' => 'border border-secondary bg-surface text-ink',
+                    'current' => 'bg-secondary text-on-secondary',
+                    'upcoming' => 'border border-control bg-surface text-ink-muted',
+                    'error' => 'border border-danger-text bg-surface text-danger-text',
                 ][$s['state']];
             @endphp
             <li @class(['relative flex min-w-0 gap-3', 'pb-5' => ! $last, '@2xl:flex-1 @2xl:items-start @2xl:gap-2 @2xl:pb-0' => ! $vertical]) data-step-state="{{ $s['state'] }}" @if ($s['state'] === 'current') aria-current="step" @endif>
@@ -155,11 +155,11 @@
                             'type-body-strong text-ink' => $s['state'] === 'current',
                             'type-body text-ink-body' => $s['state'] === 'complete',
                             'type-body text-ink-muted' => $s['state'] === 'upcoming',
-                            'type-body-strong text-red-700' => $s['state'] === 'error',
+                            'type-body-strong text-danger-text' => $s['state'] === 'error',
                             'group-hover:underline underline-offset-3' => $tag !== 'div',
                         ])><span class="sr-only">{{ $words[$s['state']] }}: </span>{{ $s['label'] }}</span>
                         @if ($s['description'])
-                            <span @class(['type-meta wrap-anywhere', 'text-red-700!' => $s['state'] === 'error'])>{{ $s['description'] }}</span>
+                            <span @class(['type-meta wrap-anywhere', 'text-danger-text!' => $s['state'] === 'error'])>{{ $s['description'] }}</span>
                         @endif
                     </span>
                 </{{ $tag }}>

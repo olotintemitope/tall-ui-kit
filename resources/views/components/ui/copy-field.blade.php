@@ -38,7 +38,7 @@
     x-data="uiCopy(@js((object) $options))"
     x-on:focusout="leave($event)"
     {{ $attributes->except('data-force')->class([
-        'relative flex items-stretch overflow-hidden rounded-md border border-control bg-white transition-colors duration-100 has-[input:focus-visible]:border-focus has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-primary/20',
+        'relative flex items-stretch overflow-hidden rounded-md border border-control bg-surface transition-colors duration-100 has-[input:focus-visible]:border-focus has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-primary/20',
         $small ? 'h-8' : 'h-9',
         $widths[$width] ?? $widths['full'],
     ]) }}

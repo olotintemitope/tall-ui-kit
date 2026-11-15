@@ -106,7 +106,7 @@
                     @if ($option['force']) data-force="{{ $option['force'] }}" @endif
                     @class([
                         'inline-flex shrink-0 items-center justify-center rounded-sm border border-transparent text-ink-muted transition-colors duration-100 focus-ring',
-                        'state-hover:text-ink aria-checked:border-control aria-checked:bg-white aria-checked:text-ink',
+                        'state-hover:text-ink aria-checked:border-control aria-checked:bg-surface aria-checked:text-ink',
                         'disabled:cursor-not-allowed disabled:border-dashed disabled:border-control disabled:text-ink-muted',
                         $small ? 'size-6.5' : 'size-7.5',
                     ])
@@ -127,7 +127,7 @@
                 @if ($option['force']) data-force="{{ $option['force'] }}" @endif
                 @class([
                     'inline-flex items-center justify-center gap-1.5 rounded-sm border border-transparent px-2.5 font-body text-meta font-medium leading-none text-ink-muted transition-colors duration-100 focus-ring',
-                    'state-hover:text-ink aria-checked:border-control aria-checked:bg-white aria-checked:text-ink',
+                    'state-hover:text-ink aria-checked:border-control aria-checked:bg-surface aria-checked:text-ink',
                     'disabled:cursor-not-allowed disabled:text-ink-muted disabled:underline disabled:decoration-control disabled:decoration-dashed disabled:underline-offset-4',
                     $small ? 'h-6.5' : 'h-7.5',
                 ])
