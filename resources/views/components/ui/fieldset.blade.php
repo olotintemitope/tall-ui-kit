@@ -3,14 +3,16 @@
     the field-label role (or the subheading role with `size="subheading"` for a section
     of a form); an optional description in meta sits under it and is linked to the
     group with aria-describedby. No border or box: grouping comes from the legend and
-    16px spacing. Props: legend, description, size (field | subheading), hideLegend
-    (keep it for assistive tech only), disabled (disables every control inside, natively),
+    16px spacing. Props: legend (`label` is an alias, as on x-ui.field), description, size (field |
+    subheading), hideLegend (keep it for assistive tech only; `hideLabel` is an alias), disabled (disables every control inside, natively),
     invalid (data-invalid for the error summary), id.
 --}}
-@props(['legend', 'description' => null, 'size' => 'field', 'hideLegend' => false, 'disabled' => false, 'id' => null])
+@props(['legend' => null, 'label' => null, 'description' => null, 'size' => 'field', 'hideLegend' => false, 'hideLabel' => false, 'disabled' => false, 'id' => null])
 
 @php
-    $id = $id ?? 'fieldset-'.\Illuminate\Support\Str::slug($legend);
+    $legend ??= $label;
+    $hideLegend = $hideLegend || $hideLabel;
+    $id = $id ?? 'fieldset-'.\Illuminate\Support\Str::slug((string) $legend);
 @endphp
 
 <fieldset {{ $attributes->class(['min-w-0']) }} @disabled($disabled) @if ($description) aria-describedby="{{ $id }}-description" @endif id="{{ $id }}" data-fieldset>

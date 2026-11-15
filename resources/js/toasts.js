@@ -10,7 +10,8 @@
  * Older calls keep working: `type` is read as `variant` and `message` as `title`
  * ($store.toasts.push({ type, message }) and $dispatch('toast', {...})).
  *
- * Options: variant (success | error | warning | info | neutral | loading), title,
+ * Options: variant (success | error | warning | info | neutral | loading; `tone` is an
+ * alias and `danger` is read as error), title,
  * description, action ({ label, method, params, url, component }), dismissible
  * (default true), duration (ms; default 4000; 0 is sticky), id (pushing an id that
  * is already shown updates that toast, which is how a loading toast resolves).
@@ -26,7 +27,11 @@ const VARIANTS = ['success', 'error', 'warning', 'info', 'neutral', 'loading'];
 
 function normalise(input = {}, extra = {}, defaultDuration = DEFAULT_DURATION) {
     const options = typeof input === 'string' ? { title: input, ...extra } : { ...input, ...extra };
-    let variant = options.variant ?? options.type ?? 'neutral';
+    // `tone` and `danger` are accepted so toasts share the badge and alert vocabulary.
+    let variant = options.variant ?? options.tone ?? options.type ?? 'neutral';
+    if (variant === 'danger') {
+        variant = 'error';
+    }
     if (!VARIANTS.includes(variant)) {
         variant = 'neutral';
     }

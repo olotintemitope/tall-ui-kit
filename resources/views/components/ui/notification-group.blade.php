@@ -1,9 +1,11 @@
 {{--
     A day group of notification rows: Today, Yesterday or Earlier (see
     App\Services\Notifications\NotificationService::group). Props: label, level (3:
-    the heading level; 2 on the full page). Slot: x-ui.notification-item rows.
+    the heading level; 2 on the full page; `headingLevel` is an alias, as on x-ui.checklist). Slot: x-ui.notification-item rows.
 --}}
-@props(['label', 'level' => 3])
+@props(['label', 'level' => 3, 'headingLevel' => null])
+
+@php $level = (int) ($headingLevel ?? $level); @endphp
 
 @php $headingId = 'notification-group-'.\Illuminate\Support\Str::slug($label).'-'.substr(md5(uniqid('', true)), 0, 6); @endphp
 

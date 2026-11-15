@@ -2,7 +2,8 @@
     Status pill: soft fill, darker text, Inter 12/16 500, sentence case. The only
     rounded-full element in the kit. No dot, no icon, no border.
     Props: variant (neutral|success|warning|danger|info|accent; `outline` is a
-    non-status tag with a hairline border), size (default | sm 11/14 for dense rows).
+    non-status tag with a hairline border; `tone` is an alias of `variant`, and `error`
+    is read as danger, matching x-ui.alert and toasts), size (default | sm 11/14 for dense rows).
     AA ratios (text on fill): success 7.29, warning 6.84, danger 5.91, info 6.16,
     neutral 13.63, accent 4.67, outline 5.85.
     lean: the same look from one class (.ui-badge in app.css, tone and size as data
@@ -10,7 +11,12 @@
     One line, always: the pill never breaks onto a second line and never shrinks;
     it takes the width its label needs, so nothing is cut either.
 --}}
-@props(['variant' => 'neutral', 'size' => 'default', 'lean' => false])
+@props(['variant' => 'neutral', 'size' => 'default', 'lean' => false, 'tone' => null])
+
+@php
+    $variant = $tone ?? $variant;
+    $variant = $variant === 'error' ? 'danger' : $variant;
+@endphp
 
 @if ($lean)
 <span class="ui-badge" @if ($variant !== 'neutral') data-tone="{{ $variant }}" @endif @if ($size === 'sm') data-size="sm" @endif {{ $attributes }}>{{ $slot }}</span>@php return; @endphp

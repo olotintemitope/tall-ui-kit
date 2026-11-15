@@ -2,7 +2,8 @@
     One toast, styled like x-ui.alert: a 1px tinted border, a light fill and tone text.
     No icon tile, no edge bar. Normally drawn by x-ui.toaster from the `toasts` store
     (resources/js/toasts.js); render it directly only for previews.
-    Props: variant (success | error | warning | info | neutral | loading), title,
+    Props: variant (success | error | warning | info | neutral | loading; `danger` is read
+    as error; `tone` is an alias of `variant`), title,
     description, action (['label' => 'Undo', 'method' => 'undo'] or ['label' => 'View',
     'url' => '/admin/payouts']), dismissible (true), duration (ms, 0 sticky; previews
     ignore it). `bind` (a JS expression, e.g. "toast") renders the bound version the
@@ -10,9 +11,11 @@
     Ratios on their fills: emerald-800 7.23, red-800 7.64, amber-900 8.73, blue-800
     8.43, ink on panel-footer 15.15.
 --}}
-@props(['variant' => 'neutral', 'title' => '', 'description' => null, 'action' => null, 'dismissible' => true, 'duration' => 4000, 'bind' => null])
+@props(['variant' => 'neutral', 'tone' => null, 'title' => '', 'description' => null, 'action' => null, 'dismissible' => true, 'duration' => 4000, 'bind' => null])
 
 @php
+    $variant = $tone ?? $variant;
+    $variant = $variant === 'danger' ? 'error' : $variant;
     $tones = [
         'success' => 'border-success-edge bg-success-tint text-success-strong',
         'error' => 'border-danger-edge bg-danger-tint text-danger-strong',

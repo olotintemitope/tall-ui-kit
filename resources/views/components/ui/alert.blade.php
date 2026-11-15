@@ -4,16 +4,20 @@
     AA tone (danger red-800 on red-50, warning amber-900 on amber-50, success
     emerald-800 on emerald-50, neutral ink on panel-footer). No coloured edge; the
     same convention as toasts.
-    Props: tone (danger | warning | success | neutral). Slot: message, may include
+    Props: tone (danger | warning | success | info | neutral; `error` is read as danger;
+    `variant` is an alias of `tone`, matching x-ui.badge and toasts). Slot: message, may include
     an x-ui.button variant="link" action. Danger is role="alert", the rest "status".
 --}}
-@props(['tone' => 'neutral'])
+@props(['tone' => 'neutral', 'variant' => null])
 
 @php
+    $tone = $variant ?? $tone;
+    $tone = $tone === 'error' ? 'danger' : $tone;
     $tones = [
         'danger' => 'border-danger-edge bg-danger-tint text-danger-strong',
         'warning' => 'border-warning-edge bg-warning-tint text-warning-strong',
         'success' => 'border-success-edge bg-success-tint text-success-strong',
+        'info' => 'border-info-edge bg-info-tint text-info-strong',
         'neutral' => 'border-line bg-panel-footer text-ink',
     ];
 @endphp
