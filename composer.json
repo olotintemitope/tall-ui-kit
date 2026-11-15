@@ -1,0 +1,61 @@
+{
+    "name": "olotintemitope/tall-ui-kit",
+    "description": "A flat, dense, accessible TALL-stack UI kit: Blade components, Tailwind 4 tokens and Alpine behaviour for Livewire 4 apps.",
+    "type": "library",
+    "license": "proprietary",
+    "keywords": ["laravel", "livewire", "blade", "tailwind", "alpine", "ui-kit", "components"],
+    "authors": [
+        {
+            "name": "Temitope Olotin"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "laravel/framework": "^13.0",
+        "livewire/livewire": "^4.4",
+        "mallardduck/blade-lucide-icons": "1.23.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.4",
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "laravel/pint": "^1.27"
+    },
+    "autoload": {
+        "psr-4": {
+            "TallUiKit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TallUiKit\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TallUiKit\\TallUiKitServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/pest",
+        "contrast": "@php scripts/contrast.php",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
