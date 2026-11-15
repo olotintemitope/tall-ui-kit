@@ -9,7 +9,10 @@
  *   - flashes a row whose [data-motion-flash] version changes on a morph (CSS
  *     keyframes on a pseudo-element, opacity only);
  *   - cross-fades a [data-motion="crossfade"] element (a status badge) whose text
- *     changes on a morph (Web Animations, opacity only).
+ *     changes on a morph (Web Animations, opacity only);
+ *   - plays a chart's entrance once, the first time its plot ([data-motion-enter],
+ *     x-ui.chart) comes into view: one shared IntersectionObserver, CSS keyframes
+ *     (app.css "Chart entrance"), never again on a morph.
  *
  * GSAP core and Flip are imported lazily (dynamic import, their own chunk) the
  * first time an indicator slides or a figure counts, so most pages never load
@@ -271,6 +274,87 @@ export function crossfade(el) {
     el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' });
 }
 
+/* --- Chart entrance ---------------------------------------------------------------- */
+
+/*
+ * x-ui.chart renders data-motion-enter on its plot frame. The first time the frame is
+ * at least a quarter in view, its lines draw in and its bars rise (CSS keyframes keyed
+ * on the attribute's state); after that it is 'done' for as long as the element lives,
+ * and morph.updating carries the state across every Livewire morph, so a data refresh
+ * or a period switch updates the chart at once. One observer for every chart; its
+ * callback only reads one width and writes custom properties, so it never makes a long
+ * task. Reduced motion, data-motion-static and browsers without IntersectionObserver
+ * go straight to 'done' (the CSS never hides anything outside 'wait').
+ */
+const ENTER = 'data-motion-enter';
+let entranceObserver = null;
+
+/* A line's on-screen length: x stretches with the plot, y is in real pixels. */
+function lineLength(path, scaleX) {
+    const n = (path.getAttribute('d') ?? '').match(/-?\d*\.?\d+/g)?.map(Number) ?? [];
+    let length = 0;
+    for (let i = 2; i + 1 < n.length; i += 2) length += Math.hypot((n[i] - n[i - 2]) * scaleX, n[i + 1] - n[i - 1]);
+
+    return length;
+}
+
+function clearProperty(el, name) {
+    el.style.removeProperty(name);
+    if (!el.style.length) el.removeAttribute('style');
+}
+
+function finishEntrance(frame) {
+    frame.querySelectorAll('[data-chart-line]').forEach((path) => clearProperty(path, '--motion-length'));
+    frame.querySelectorAll('[data-chart-bars] > *').forEach((slot) => clearProperty(slot, '--motion-delay'));
+    if (frame.hasAttribute(ENTER)) frame.setAttribute(ENTER, 'done');
+}
+
+function playEntrance(frame) {
+    if (!frame.isConnected || frame.getAttribute(ENTER) !== 'wait') return;
+    if (reduced(frame)) {
+        finishEntrance(frame);
+
+        return;
+    }
+    const svg = frame.querySelector('[data-chart-svg]');
+    const scaleX = svg ? svg.getBoundingClientRect().width / (svg.viewBox.baseVal?.width || 1) : 1;
+    frame.querySelectorAll('[data-chart-line]').forEach((path) => {
+        path.style.setProperty('--motion-length', `${Math.ceil(lineLength(path, scaleX)) + 2}px`);
+    });
+    const slots = frame.querySelectorAll('[data-chart-bars] > *');
+    const step = slots.length > 1 ? Math.min(20, 150 / (slots.length - 1)) : 0;
+    slots.forEach((slot, i) => slot.style.setProperty('--motion-delay', `${Math.round(i * step)}ms`));
+    frame.setAttribute(ENTER, 'run');
+    // 400ms draw or 300ms rise plus at most 150ms of stagger; a timer, not animationend,
+    // so a frame hidden mid-way still finishes.
+    setTimeout(() => {
+        if (frame.getAttribute(ENTER) === 'run') finishEntrance(frame);
+    }, 500);
+}
+
+function watchEntrances(root = document) {
+    if (!root?.querySelectorAll) return;
+    const frames = [...root.querySelectorAll(`[${ENTER}]`)];
+    if (root.matches?.(`[${ENTER}]`)) frames.unshift(root);
+    for (const frame of frames) {
+        const state = frame.getAttribute(ENTER);
+        if (state === 'done') continue;
+        if (state === 'run' || reduced(frame) || frame.closest('[data-motion-static]') || typeof IntersectionObserver !== 'function') {
+            finishEntrance(frame);
+            continue;
+        }
+        frame.setAttribute(ENTER, 'wait');
+        entranceObserver ??= new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                if (!entry.isIntersecting && entry.target.isConnected) continue;
+                entranceObserver.unobserve(entry.target);
+                playEntrance(entry.target);
+            }
+        }, { threshold: 0.25 });
+        entranceObserver.observe(frame);
+    }
+}
+
 /* --- Livewire morph hooks ---------------------------------------------------------- */
 
 let hooked = false;
@@ -284,6 +368,12 @@ function hookLivewire() {
         if (!(el instanceof HTMLElement) || !(toEl instanceof HTMLElement)) return;
         // A morph replaces what a tween was doing: revert it so no inline style is left.
         if (running.has(el)) stop(el);
+        // A chart's entrance plays once: the morph keeps its state (a playing one ends now),
+        // and a plot that gains data in a morph (it was the empty plot) shows it at once.
+        if (toEl.hasAttribute(ENTER)) {
+            if (el.getAttribute(ENTER) === 'run') finishEntrance(el);
+            toEl.setAttribute(ENTER, el.hasAttribute(ENTER) ? el.getAttribute(ENTER) : 'done');
+        }
         if (el.hasAttribute('data-motion-count') && el.dataset.motionCount !== toEl.dataset.motionCount) {
             pending.set(el, { type: 'count', from: numberIn(el) });
         } else if (el.hasAttribute('data-motion-flash') && el.dataset.motionFlash !== toEl.dataset.motionFlash) {
@@ -291,6 +381,11 @@ function hookLivewire() {
         } else if (el.getAttribute('data-motion') === 'crossfade' && el.textContent.trim() !== toEl.textContent.trim()) {
             pending.set(el, { type: 'crossfade' });
         }
+    });
+
+    // A chart that arrives with a morph (a lazy section's first render) waits to be seen.
+    window.Livewire.hook('morph.added', ({ el }) => {
+        if (el instanceof Element) watchEntrances(el);
     });
 
     window.Livewire.hook('morph.updated', ({ el }) => {
@@ -308,9 +403,14 @@ document.addEventListener('livewire:init', hookLivewire);
 
 if (document.body) {
     watchIndicators();
+    watchEntrances();
 } else {
-    document.addEventListener('DOMContentLoaded', watchIndicators, { once: true });
+    document.addEventListener('DOMContentLoaded', () => {
+        watchIndicators();
+        watchEntrances();
+    }, { once: true });
 }
+document.addEventListener('livewire:navigated', () => watchEntrances());
 
 /* For the gallery's replay buttons and for page code. */
-window.uiMotion = { loadGsap, slideIndicator, countUp, flash, crossfade, reduced, running: () => running.size };
+window.uiMotion = { loadGsap, slideIndicator, countUp, flash, crossfade, reduced, watchEntrances, running: () => running.size };

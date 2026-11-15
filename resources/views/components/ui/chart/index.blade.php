@@ -31,7 +31,10 @@
       period ("Last 30 days"), label (accessible name; defaults to the title), total
       (defaults to the sum of the points when there is a title), previous (prior
       period total, for the delta), deltaPeriod ("30d"), upIsGood, legend (bool),
-      toggle (chart/table switch), loading, error (message), alpine (component name).
+      toggle (chart/table switch), loading, error (message), alpine (component name),
+      motion (enter | none: line and bar plots draw in once, the first time they come
+      into view; `none`, or data-motion-static on the chart or an ancestor, shows them
+      at once. Never replayed by a morph; resources/js/motion.js, "Chart entrance").
     Slots: actions, summary.
     More than 3 series, or an unknown type, throws in local and testing.
 --}}
@@ -57,6 +60,7 @@
     'loading' => false,
     'error' => null,
     'alpine' => 'uiChart',
+    'motion' => 'enter',
 ])
 
 @php
@@ -133,6 +137,8 @@
     $showLegend = $legend && $normalised->count() > 1 && $plotted;
     $hasHeader = $title !== null || isset($actions) || $toggle;
     $hasSummary = isset($summary) || ($title !== null && $total !== null);
+    // The entrance hook: plotted, with data, and not opted out. The empty plot never animates.
+    $enters = $plotted && ! $isEmpty && $motion !== 'none' && ! $attributes->has('data-motion-static');
 @endphp
 
 @if ($type === 'sparkline')
@@ -251,7 +257,7 @@
                 non-scaling strokes. Ticks are page text (caption role) placed in percentages and
                 thinned with container queries, so nothing is measured or redrawn on resize.
             --}}
-            <div class="{{ $heightClass }} grid grid-cols-[auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_20px] forced-color-adjust-none {{ $hasHeader || $hasSummary || $showLegend ? 'mt-3' : '' }}" x-show="view === 'chart'" data-chart-frame>
+            <div class="{{ $heightClass }} grid grid-cols-[auto_minmax(0,1fr)] grid-rows-[minmax(0,1fr)_20px] forced-color-adjust-none {{ $hasHeader || $hasSummary || $showLegend ? 'mt-3' : '' }}" x-show="view === 'chart'" data-chart-frame @if ($enters) data-motion-enter @endif>
                 <div class="grid content-start pr-1.5 *:type-caption *:col-start-1 *:row-start-1 *:justify-self-end *:whitespace-nowrap{!! $money ? ' [html[data-privacy=hidden]_&]:invisible' : '' !!}" aria-hidden="true" data-chart-yticks>{!! $yTicksHtml !!}</div>
                 <div
                     x-ref="plot"

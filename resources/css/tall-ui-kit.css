@@ -837,6 +837,109 @@ html[data-motion-preview='reduced'] [data-toast] {
     animation-duration: 0s !important;
 }
 
+/*
+ * Page cross-fade. `wire:transition.navigate` on the shell's <main> (Livewire 4.4,
+ * livewire.laravel.com/docs/4.x/navigate, "Animating page visits with view
+ * transitions") names it `livewire-navigate` for the swap; Livewire turns the root
+ * animation off, so the sidebar, top bar and the rest of the page swap at once and
+ * hold still (the root group does not tween either). The region's group keeps its geometry (no width, height or transform
+ * tween): the old and new snapshots cross-fade in place, opacity only, 150ms
+ * ease-motion-out. The toaster has its own name so it stays above the region's
+ * snapshots and never fades. Livewire swaps instantly under prefers-reduced-motion,
+ * without the View Transitions API, and with a dialog or popover open; the gallery's
+ * reduced preview turns the animation off. Pointer events pass through the
+ * pseudo-elements, so a click during the fade reaches the new page. Untyped
+ * selectors, so Firefox (which ignores transition types) gets the same fade.
+ */
+::view-transition {
+    pointer-events: none;
+}
+
+::view-transition-group(root),
+::view-transition-group(livewire-navigate) {
+    animation-name: none;
+}
+
+::view-transition-old(livewire-navigate),
+::view-transition-new(livewire-navigate) {
+    animation-duration: var(--motion-sm);
+    animation-timing-function: var(--motion-ease-out);
+}
+
+[data-toast-region] {
+    view-transition-name: ui-toaster;
+}
+
+::view-transition-group(ui-toaster),
+::view-transition-image-pair(ui-toaster),
+::view-transition-old(ui-toaster),
+::view-transition-new(ui-toaster) {
+    animation: none;
+}
+
+::view-transition-old(ui-toaster) {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
+
+html[data-motion-preview='reduced']::view-transition-group(*),
+html[data-motion-preview='reduced']::view-transition-old(*),
+html[data-motion-preview='reduced']::view-transition-new(*) {
+    animation: none !important;
+}
+
+/*
+ * Chart entrance (x-ui.chart puts data-motion-enter on the plot frame; motion.js
+ * runs one shared IntersectionObserver). States: '' as rendered, 'wait' (observed,
+ * marks hidden until it scrolls into view), 'run' (playing), 'done'. Lines draw in
+ * with stroke-dashoffset over their measured on-screen length (--motion-length:
+ * the strokes are non-scaling, so the length is measured in screen pixels), 400ms;
+ * the dashed third series fades instead, so its dash pattern is kept. Bars and
+ * stacks rise from the baseline with scaleY, 300ms, each slot delayed by
+ * --motion-delay (150ms at most in total). Everything is ease-motion-out and only
+ * on screen with motion allowed, so print, reduced motion and the gallery's
+ * reduced preview always show the finished chart. A morph never replays it.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+    html:not([data-motion-preview='reduced']) [data-motion-enter='wait'] [data-chart-line],
+    html:not([data-motion-preview='reduced']) [data-motion-enter='wait'] [data-chart-bars] > * > * {
+        opacity: 0;
+    }
+
+    html:not([data-motion-preview='reduced']) [data-motion-enter='run'] [data-chart-line]:not([stroke-dasharray]) {
+        stroke-dasharray: var(--motion-length) var(--motion-length);
+        animation: motion-draw calc(var(--motion-md) * 2) var(--motion-ease-out) backwards;
+    }
+
+    html:not([data-motion-preview='reduced']) [data-motion-enter='run'] [data-chart-line][stroke-dasharray] {
+        animation: motion-fade calc(var(--motion-md) * 2) var(--motion-ease-out) backwards;
+    }
+
+    html:not([data-motion-preview='reduced']) [data-motion-enter='run'] [data-chart-bars] > * > * {
+        transform-origin: 50% 100%;
+        animation: motion-rise var(--motion-lg) var(--motion-ease-out) var(--motion-delay, 0ms) backwards;
+    }
+}
+
+@keyframes motion-draw {
+    from { stroke-dashoffset: var(--motion-length); }
+}
+
+@keyframes motion-rise {
+    from { transform: scaleY(0); }
+}
+
+@keyframes motion-fade {
+    from { opacity: 0; }
+}
+
 @layer components {
     /*
      * Native <dialog> (x-ui.dialog, x-ui.confirm, x-ui.alert-dialog, x-ui.sheet).
