@@ -53,6 +53,8 @@ class TallUiKitServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            $this->commands([Console\PruneChunkedUploads::class]);
+
             $this->publishes([
                 __DIR__.'/../config/tall-ui-kit.php' => config_path('tall-ui-kit.php'),
             ], 'tall-ui-kit-config');

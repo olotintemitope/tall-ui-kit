@@ -48,6 +48,10 @@ document.addEventListener('alpine:init', () => {
                 if (!chosen.length) return;
                 this.pending = chosen;
             });
+            // x-ui.file sends the files it accepted (after its own checks, or before a chunked upload).
+            on('ui-upload-files', (event) => {
+                this.pending = [...(event.detail?.files ?? [])];
+            });
             on('livewire-upload-start', () => {
                 const batch = this.pending.map((file) => ({ id: ++seq, name: file.name, size: file.size, progress: 0, status: 'uploading', file }));
                 this.files = multiple ? [...this.files.filter((f) => f.status === 'done'), ...batch] : batch;
@@ -104,17 +108,37 @@ document.addEventListener('alpine:init', () => {
             return { uploading: `Uploading, ${file.progress}%`, done: 'Uploaded', failed: 'Failed' }[file.status] ?? '';
         },
 
+        type(file) {
+            const m = /\.([a-z0-9]{1,8})$/i.exec(file.name ?? '');
+            const ext = m?.[1].toLowerCase();
+
+            return ext === 'jpeg' ? 'JPG' : ext && ext.length <= 4 ? ext.toUpperCase() : 'FILE';
+        },
+
         meta(file) {
             return `${formatBytes(file.size)} · ${this.word(file)}`;
         },
 
+        /* The bound input, when it uploads in chunks (x-ui.file chunked): Cancel and Retry go to it. */
+        chunkedInput() {
+            return [...document.querySelectorAll('input[type=file][data-chunked]')].find((el) => modelOf(el) === model) ?? null;
+        },
+
         cancel() {
-            this.$wire.cancelUpload(model);
+            const chunked = this.chunkedInput();
+            if (chunked) chunked.dispatchEvent(new CustomEvent('ui-chunk-cancel'));
+            else this.$wire.cancelUpload(model);
         },
 
         retry() {
             const failed = this.files.filter((f) => f.status === 'failed');
             if (!failed.length) return;
+            const chunked = this.chunkedInput();
+            if (chunked) {
+                chunked.dispatchEvent(new CustomEvent('ui-chunk-retry'));
+
+                return;
+            }
             failed.forEach((f) => {
                 f.status = 'uploading';
                 f.progress = 0;

@@ -34,7 +34,7 @@
     <ul aria-label="{{ $label }}" class="divide-y divide-line" x-show="files.length" x-cloak>
         <template x-for="(file, index) in files" :key="file.id">
             <li class="flex min-w-0 items-start gap-3 py-3" data-upload-row x-bind:data-status="file.status">
-                <x-ui.icon name="file" class="mt-0.5 size-4 shrink-0 text-ink-muted" />
+                <span class="ui-file-type mt-0.5" aria-hidden="true" x-text="type(file)" data-upload-type></span>
                 <div class="flex min-w-0 flex-1 flex-col gap-1.5">
                     <div class="flex flex-wrap items-baseline justify-between gap-x-3">
                         <p class="type-body min-w-0 wrap-anywhere text-ink" x-text="file.name"></p>

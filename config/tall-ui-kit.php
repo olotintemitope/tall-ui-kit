@@ -72,4 +72,21 @@ return [
         'pdf_suggest_csv_after' => 12,
     ],
 
+    /*
+    | x-ui.file `chunked` (docs/components/forms.md, "Chunked uploads"): the endpoint the
+    | app registers with TallUiKit\Uploads\ChunkedUploads::routes() keeps each upload in
+    | its own folder on a LOCAL disk until ChunkedUploads::find($id)->store() moves it.
+    |   chunk_size    bytes per request (raw PATCH bodies; keep it under the web server's
+    |                 body limit)
+    |   max_size      the largest file accepted
+    |   expire_after  hours before tall-ui-kit:prune-uploads deletes an upload
+    */
+    'chunked_uploads' => [
+        'disk' => env('TALL_UI_CHUNK_DISK', 'local'),
+        'directory' => 'tall-ui-kit-chunks',
+        'chunk_size' => 2 * 1024 * 1024,
+        'max_size' => 2 * 1024 * 1024 * 1024,
+        'expire_after' => 24,
+    ],
+
 ];

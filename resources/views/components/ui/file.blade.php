@@ -10,8 +10,32 @@
     the next thumbnail's Remove, else the drop area. `accept` defaults to image/* there.
     A `files` slot can replace the client-side list, e.g. with the server's temporary
     uploads (`$file->temporaryUrl()`).
+
+    Additive props (v0.9; without any of them the field works exactly as before):
+      maxSize        bytes or "10MB" per file; maxFiles; maxTotalSize (bytes or "50MB")
+      validate       check each file's type against `accept` (on with any limit above)
+                     Each refused file is listed under the chosen ones with its reason
+                     ("Larger than 10 MB.") and is never sent; the rest upload as usual.
+      hint           when not given and there are limits, it is written from `accept` and
+                     them: "PDF or images, up to 10 MB each. At most 5 files."
+      reorder        the chosen files are a sortable list (drag, Up / Down, or Space and
+                     the arrows on the grip); reorderAction (Livewire) gets the indexes
+                     in their old order, e.g. [2, 0, 1]
+      removeAction   Livewire method called with the index when a file is removed
+                     (otherwise the temporary upload is removed with $wire.removeUpload)
+      paste          files on the clipboard are added while focus is in the field
+      capture        "environment" (rear camera) or "user" (front) on phones
+      chunked        the URL of the app's ChunkedUploadController routes: files go up in
+                     pieces (chunkSize, default from the server), resume after a network
+                     drop, and the upload ids are set on the wire:model property (see
+                     docs/components/forms.md, "Chunked uploads")
+    The behaviour of these loads lazily (resources/js/file-core.js).
 --}}
-@props(['multiple' => false, 'hint' => null, 'invalid' => null, 'variant' => 'list'])
+@props([
+    'multiple' => false, 'hint' => null, 'invalid' => null, 'variant' => 'list',
+    'maxSize' => null, 'maxFiles' => null, 'maxTotalSize' => null, 'validate' => false, 'reorder' => false, 'reorderAction' => null,
+    'removeAction' => null, 'paste' => false, 'capture' => null, 'chunked' => null, 'chunkSize' => null,
+])
 @aware(['name' => null, 'id' => null, 'error' => null, 'required' => false])
 
 @php
@@ -22,7 +46,23 @@
     $message = FormControl::error($errors ?? null, $fieldName ? preg_replace('/\.\*$/', '', $fieldName) : null, $error);
     $isInvalid = $invalid ?? (bool) $message;
     $areaHintId = $controlId.'-area';
+
+    $maxBytes = \TallUiKit\Support\Files::parseSize($maxSize);
+    $totalBytes = \TallUiKit\Support\Files::parseSize($maxTotalSize);
+    $enhanced = $maxBytes || $maxFiles || $totalBytes || $validate || $reorder || $paste || $chunked;
+    if ($enhanced && $hint === null) {
+        $hint = \TallUiKit\Support\Files::hint($attributes->get('accept') ?? ($variant === 'images' ? 'image/*' : null), $maxBytes, $maxFiles ? (int) $maxFiles : null, $totalBytes, (bool) $multiple);
+    }
+    if ($paste && $hint !== null) {
+        $hint = rtrim($hint).' You can also paste '.($multiple ? 'files' : 'a file').'.';
+    }
+    $captureValue = $capture === true ? 'environment' : (in_array($capture, ['user', 'environment'], true) ? $capture : null);
 @endphp
+
+@if ($enhanced)
+    @include('tall-ui-kit::partials.file-enhanced')
+    @php return; @endphp
+@endif
 
 <div
     x-data="{
@@ -71,6 +111,7 @@
             id="{{ $controlId }}"
             data-ui="file"
             @if ($multiple) multiple @endif
+            @if ($captureValue) capture="{{ $captureValue }}" @endif
             @if ($isInvalid) aria-invalid="true" @endif
             @if ($required) aria-required="true" @endif
             aria-describedby="{{ trim($areaHintId.' '.FormControl::describedBy($controlId, false, (bool) $message)) }}"

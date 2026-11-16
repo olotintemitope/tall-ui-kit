@@ -201,6 +201,26 @@ class KitContrast
             ['Progress danger fill against its buffer', 'danger-text', 'line-strong', 'ui', 3.0, 4.28],
             ['Upload failed status and error', 'danger-text', 'surface', 'text', 4.5, 6.42],
 
+            // Files: x-ui.file-card, x-ui.attachment-list, x-ui.file-manager, x-ui.file-preview, x-ui.file
+            ['File type label', 'ink-muted', 'surface', 'text', 4.5, 5.85],
+            ['File type label in a card or thumbnail box', 'ink-muted', 'surface-subtle', 'text', 4.5, 5.42],
+            ['File type label on a selected item', 'ink-muted', 'surface-muted', 'text', 4.5, 5.05],
+            ['File name and size on a hovered item', 'ink', 'surface-subtle', 'text', 4.5, 14.63],
+            ['File manager selected item name', 'ink', 'surface-muted', 'text', 4.5, 13.63],
+            ['File manager selected item edge', 'control-hover', 'surface-muted', 'ui', 3.0, 4.29],
+            ['File manager check box', 'control', 'surface', 'ui', 3.0, 3.65],
+            ['File manager checked box', 'secondary', 'surface', 'ui', 3.0, 15.81],
+            ['File manager check mark', 'on-secondary', 'secondary', 'ui', 3.0, 15.81],
+            ['File manager focus outline', 'focus', 'surface', 'ui', 3.0, 4.12],
+            ['File manager focus outline on a selected item', 'focus', 'surface-muted', 'ui', 3.0, 3.55],
+            ['File manager drop target edge', 'secondary', 'surface-muted', 'ui', 3.0, 13.63],
+            ['File manager drop area edge', 'control', 'surface-subtle', 'ui', 3.0, 3.38],
+            ['File manager drop hint', 'ink', 'surface-subtle', 'text', 4.5, 14.63],
+            ['File manager rename field border', 'control', 'surface', 'ui', 3.0, 3.65],
+            ['File manager rename error', 'danger-text', 'surface-muted', 'text', 4.5, 5.53],
+            ['File field refused file reason', 'danger-text', 'surface', 'text', 4.5, 6.42],
+            ['File preview zoom level and details', 'ink-muted', 'surface', 'text', 4.5, 5.85],
+
             // Chat and community: x-ui.chat, x-ui.chat.inbox, x-ui.post, x-ui.reactions, x-ui.poll,
             // x-ui.channel-list, x-ui.leaderboard, x-ui.follow-button
             ['Chat sent bubble text', 'ink', 'surface-subtle', 'text', 4.5, 14.63],

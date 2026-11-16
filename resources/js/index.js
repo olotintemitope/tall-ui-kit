@@ -17,3 +17,4 @@ import './motion';
 import './widgets';
 import './chat';
 import './community';
+import './files';

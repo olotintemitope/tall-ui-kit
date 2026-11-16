@@ -3,10 +3,11 @@
     radius, scrolls sideways (the scroll area takes focus so keyboards can scroll it).
     Props: label (caption above the code, e.g. "Webhook payload"), copy (an
     x-ui.copy-button in the caption row: the same copied and failed states as every
-    other copy in the kit, focus stays on it). Print the code in the slot with {{ }}
-    so Blade escapes it.
+    other copy in the kit, focus stays on it), maxHeight (a CSS length such as "60vh":
+    the code scrolls down inside the box as well, still by keyboard). Print the code in
+    the slot with {{ }} so Blade escapes it.
 --}}
-@props(['label' => null, 'copy' => false])
+@props(['label' => null, 'copy' => false, 'maxHeight' => null])
 
 <div
     {{ $attributes->class(['overflow-hidden rounded-lg border border-line bg-panel-footer']) }}
@@ -23,6 +24,7 @@
     <pre
         tabindex="0"
         @if ($label) aria-label="{{ $label }}" @endif
+        @if ($maxHeight) style="max-height: {{ preg_replace('/[^0-9a-z.%]/i', '', (string) $maxHeight) }}; overflow-y: auto" @endif
         class="overflow-x-auto p-3 type-numeric leading-5 text-ink focus-visible:outline-2 focus-visible:outline-focus focus-visible:-outline-offset-2"
     ><code>{{ $slot }}</code></pre>
 </div>

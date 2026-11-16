@@ -2678,6 +2678,11 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
         .ui-tree-item[aria-selected='true'] > .ui-tree-row {
             outline: 1px solid Highlight;
         }
+
+        .ui-fm-folder {
+            forced-color-adjust: none;
+            background-color: CanvasText;
+        }
     }
 }
 
@@ -3000,6 +3005,385 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
 
         [aria-pressed='true'] > .ui-like-icon {
             fill: Highlight;
+        }
+    }
+}
+
+/*
+ * File components (docs/components/files.md): the type label shared by x-ui.file-card,
+ * x-ui.file-manager, x-ui.upload-progress and x-ui.file; the file manager's grid and list
+ * views, selection, drop targets and inline rename; the preview's zoom box. 1px borders,
+ * tokens only; transitions use the motion tokens (instant under reduced motion).
+ */
+@layer components {
+    /* "PDF", "JPG": a mono caption in ink-muted, no tile behind it. */
+    .ui-file-type {
+        display: inline-flex;
+        min-width: 2.25rem;
+        flex-shrink: 0;
+        justify-content: flex-start;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        line-height: 16px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        color: var(--color-ink-muted);
+    }
+
+    .ui-file-type[data-size='lg'] {
+        min-width: 0;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    /* File manager: one listbox; [data-view] on the manager picks the layout. */
+    .ui-fm-list {
+        display: grid;
+        min-width: 0;
+        gap: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li) {
+        position: relative;
+        display: grid;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+        gap: 4px;
+        border: 1px solid var(--color-line);
+        border-radius: 8px;
+        background-color: var(--color-surface);
+        padding: 8px 8px 10px;
+        cursor: default;
+        user-select: none;
+        transition: background-color var(--motion-xs) var(--motion-ease-out), border-color var(--motion-xs) var(--motion-ease-out);
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li):hover {
+        background-color: var(--color-surface-subtle);
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li):focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li)[aria-selected='true'] {
+        border-color: var(--color-control-hover);
+        background-color: var(--color-surface-muted);
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li)[aria-disabled='true'] {
+        color: var(--color-ink-muted);
+        cursor: not-allowed;
+    }
+
+    /* The selection check: drawn by the item itself (no element per item). */
+    .ui-fm-list > li::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 1;
+        width: 16px;
+        height: 16px;
+        border: 1px solid var(--color-control);
+        border-radius: 4px;
+        background-color: var(--color-surface);
+        cursor: pointer;
+    }
+
+    .ui-fm-list > li[aria-selected='true']::before {
+        border-color: var(--color-secondary);
+        background-color: var(--color-secondary);
+    }
+
+    .ui-fm-list > li[aria-selected='true']::after {
+        content: '';
+        position: absolute;
+        top: 11px;
+        left: 13.5px;
+        z-index: 1;
+        width: 5px;
+        height: 9px;
+        border: solid var(--color-on-secondary);
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .ui-fm-visual {
+        display: flex;
+        aspect-ratio: 4 / 3;
+        min-width: 0;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 6px;
+        color: var(--color-ink-muted);
+    }
+
+    /* The Lucide folder (2px stroke), drawn in currentColor without an SVG per item. */
+    .ui-fm-folder {
+        display: block;
+        width: 32px;
+        height: 32px;
+        background-color: currentColor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+
+    .ui-fm-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 1px solid var(--color-line);
+        border-radius: 6px;
+    }
+
+    .ui-fm-visual .ui-file-type {
+        min-width: 0;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .ui-fm-name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink);
+    }
+
+    .ui-fm-meta {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        column-gap: 8px;
+        font-size: var(--text-meta);
+        line-height: var(--text-meta--line-height);
+        color: var(--color-ink-muted);
+    }
+
+    .ui-fm-meta .ui-fm-kind,
+    .ui-fm-head {
+        display: none;
+    }
+
+    [data-view='list'] .ui-fm-list {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        border-top: 1px solid var(--color-line);
+    }
+
+    [data-view='list'] :is(.ui-fm-item, .ui-fm-list > li) {
+        grid-template-columns: 16px 24px minmax(0, 1fr);
+        align-items: center;
+        column-gap: 12px;
+        border-width: 0 0 1px;
+        border-radius: 0;
+        padding: 8px;
+        min-height: 40px;
+    }
+
+    [data-view='list'] :is(.ui-fm-item, .ui-fm-list > li)[aria-selected='true'] {
+        border-color: var(--color-line);
+    }
+
+    [data-view='list'] :is(.ui-fm-item, .ui-fm-list > li):focus-visible {
+        outline-offset: -2px;
+    }
+
+    [data-view='list'] .ui-fm-list > li::before {
+        position: static;
+    }
+
+    [data-view='list'] .ui-fm-list > li[aria-selected='true']::after {
+        top: calc(50% - 6px);
+    }
+
+    [data-view='list'] .ui-fm-visual {
+        aspect-ratio: 1;
+        width: 24px;
+    }
+
+    [data-view='list'] .ui-fm-folder {
+        width: 16px;
+        height: 16px;
+    }
+
+    [data-view='list'] .ui-fm-visual .ui-file-type {
+        font-size: 10px;
+        line-height: 14px;
+        letter-spacing: 0;
+    }
+
+    [data-view='list'] .ui-fm-meta {
+        grid-column: 3;
+    }
+
+    /* Phones: name over meta in column 3; the check and the icon sit centred across both rows. */
+    [data-view='list'] .ui-fm-list > li::before,
+    [data-view='list'] .ui-fm-visual {
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    @media (min-width: 768px) {
+        [data-view='list'] :is(.ui-fm-item, .ui-fm-list > li),
+        [data-view='list'] .ui-fm-head {
+            grid-template-columns: 16px 24px minmax(0, 1fr) minmax(0, 22rem);
+        }
+
+        [data-view='list'] .ui-fm-list > li::before,
+        [data-view='list'] .ui-fm-visual {
+            grid-row: 1;
+        }
+
+        [data-view='list'] .ui-fm-meta {
+            display: grid;
+            grid-row: 1;
+            grid-column: 4;
+            grid-template-columns: 4rem 5.5rem minmax(0, 1fr);
+            column-gap: 12px;
+        }
+
+        [data-view='list'] .ui-fm-meta .ui-fm-kind {
+            display: block;
+        }
+
+        [data-view='list'] .ui-fm-meta .ui-fm-size {
+            font-variant-numeric: tabular-nums;
+        }
+
+        [data-view='list'] .ui-fm-head {
+            display: grid;
+            column-gap: 12px;
+            padding: 0 8px 6px;
+            font-size: var(--text-meta);
+            line-height: var(--text-meta--line-height);
+            font-weight: 500;
+            color: var(--color-ink-muted);
+        }
+
+        [data-view='list'] .ui-fm-head .ui-fm-meta {
+            font-weight: 500;
+        }
+    }
+
+    /* Drag and drop from the desktop: the whole manager, or one folder. */
+    .ui-fm-drop {
+        position: relative;
+        min-width: 0;
+        border: 1px dashed transparent;
+        border-radius: 8px;
+    }
+
+    .ui-fm[data-dragging] .ui-fm-drop {
+        border-color: var(--color-control);
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-fm-drop-hint {
+        display: none;
+        padding: 12px 8px 4px;
+        overflow-wrap: anywhere;
+        color: var(--color-ink);
+    }
+
+    .ui-fm[data-dragging] .ui-fm-drop-hint {
+        display: block;
+    }
+
+    :is(.ui-fm-item, .ui-fm-list > li)[data-drop-target] {
+        border-color: var(--color-secondary);
+        background-color: var(--color-surface-muted);
+    }
+
+    .ui-fm-rename {
+        width: 100%;
+        min-width: 0;
+        min-height: 32px;
+        border: 1px solid var(--color-control);
+        border-radius: 6px;
+        background-color: var(--color-surface);
+        padding: 4px 8px;
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink);
+        user-select: text;
+    }
+
+    .ui-fm-rename:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 0;
+    }
+
+    .ui-fm-rename[aria-invalid='true'] {
+        border-color: var(--color-danger);
+    }
+
+    .ui-fm-rename-error {
+        color: var(--color-danger-text);
+        overflow-wrap: anywhere;
+    }
+
+    [data-view='list'] .ui-fm-rename,
+    [data-view='list'] .ui-fm-rename-error {
+        grid-column: 3;
+    }
+
+    /* File preview: an image fitted to its box, or zoomed and scrolled inside it. */
+    .ui-file-zoom {
+        display: flex;
+        max-height: 70vh;
+        min-height: 12rem;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+        border: 1px solid var(--color-line);
+        border-radius: 8px;
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-file-zoom:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    .ui-file-zoom-image {
+        display: block;
+        max-width: 100%;
+        max-height: calc(70vh - 2px);
+        object-fit: contain;
+    }
+
+    .ui-file-zoom[data-zoomed] {
+        display: block;
+    }
+
+    .ui-file-zoom[data-zoomed] .ui-file-zoom-image {
+        width: calc(var(--zoom, 1) * 100%);
+        max-width: none;
+        max-height: none;
+    }
+
+    /* x-ui.file: a reorderable list of chosen files and their per-file errors. */
+    .ui-file-row[data-invalid] {
+        background-color: var(--color-danger-tint);
+    }
+
+    @media (forced-colors: active) {
+        :is(.ui-fm-item, .ui-fm-list > li)[aria-selected='true'],
+        :is(.ui-fm-item, .ui-fm-list > li)[data-drop-target] {
+            border-color: Highlight;
+            outline: 1px solid Highlight;
+        }
+
+        .ui-fm-folder {
+            forced-color-adjust: none;
+            background-color: CanvasText;
         }
     }
 }

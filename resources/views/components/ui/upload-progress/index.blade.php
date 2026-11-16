@@ -1,5 +1,6 @@
 {{--
-    One file's upload (docs/components/workflow.md, "Upload progress"): the file name
+    One file's upload (docs/components/workflow.md, "Upload progress"): the type label
+    (the x-ui.file-card one: "PDF", "ZIP"), the file name
     (body, never cut: long names wrap anywhere), its size and status (meta), a linear
     x-ui.progress (label hidden but kept for assistive tech), and the actions for its
     state: Cancel while uploading, Retry and Remove when it failed, Remove when done.
@@ -49,7 +50,7 @@
 @endphp
 
 <{{ $tag }} {{ $attributes->class(['flex min-w-0 items-start gap-3 py-3']) }} data-upload-row data-status="{{ $status }}">
-    <x-ui.icon name="file" class="mt-0.5 size-4 shrink-0 text-ink-muted" />
+    <span class="ui-file-type mt-0.5" aria-hidden="true" data-upload-type>{{ \TallUiKit\Support\Files::typeLabel($name) }}</span>
     <div class="flex min-w-0 flex-1 flex-col gap-1.5">
         <div class="flex flex-wrap items-baseline justify-between gap-x-3">
             <p class="type-body min-w-0 wrap-anywhere text-ink">{{ $name }}</p>
