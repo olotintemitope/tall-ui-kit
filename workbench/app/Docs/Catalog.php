@@ -90,6 +90,17 @@ final class Catalog
             'tree' => ['Tree', ['ui.tree', 'ui.tree.node']],
             'sortable' => ['Sortable', ['ui.sortable', 'ui.sortable.item']],
         ],
+        'Community' => [
+            'chat' => ['Chat', ['ui.chat', 'ui.chat.message', 'ui.chat.day', 'ui.chat.typing', 'ui.chat.composer']],
+            'chat-inbox' => ['Inbox', ['ui.chat.inbox']],
+            'post' => ['Post', ['ui.post']],
+            'comment-thread' => ['Comment thread', ['ui.comment-thread', 'ui.comment-thread.comment']],
+            'reactions' => ['Reactions', ['ui.reactions']],
+            'member-card' => ['Member card and profile header', ['ui.member-card', 'ui.profile-header', 'ui.follow-button']],
+            'poll' => ['Poll', ['ui.poll']],
+            'channel-list' => ['Channel list', ['ui.channel-list']],
+            'leaderboard' => ['Leaderboard', ['ui.leaderboard']],
+        ],
         'Content' => [
             'typography' => ['Typography', ['ui.heading', 'ui.text', 'ui.section-label', 'ui.list', 'ui.blockquote', 'ui.prose']],
             'code' => ['Code', ['ui.code', 'ui.code-block']],

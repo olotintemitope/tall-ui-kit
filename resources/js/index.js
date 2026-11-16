@@ -15,3 +15,5 @@ import './dialogs';
 import './ui';
 import './motion';
 import './widgets';
+import './chat';
+import './community';

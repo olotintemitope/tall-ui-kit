@@ -2680,3 +2680,326 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
         }
     }
 }
+
+/*
+ * Chat and community (docs/components/community.md): x-ui.chat, x-ui.post, x-ui.reactions,
+ * x-ui.comment-thread. Links in user text are underlined (never colour alone); mentions and
+ * hashtags without a URL are medium-weight accent text. The typing dots fade in turn
+ * (opacity only, motion tokens) and hold still under reduced motion.
+ */
+@layer components {
+    /*
+     * Lean classes for controls repeated per item (a post's actions, a comment's Reply,
+     * reaction toggles and picker options), so a long feed carries one class instead of
+     * a dozen utilities per button: the same look as an x-ui.button ghost sm (32px).
+     */
+    .ui-act {
+        display: inline-flex;
+        min-height: 2rem;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        padding: 0 8px;
+        font-family: var(--font-body);
+        font-size: var(--text-meta);
+        line-height: var(--text-meta--line-height);
+        font-weight: 500;
+        color: var(--color-ink-body);
+        text-decoration: none;
+        transition: background-color var(--motion-xs), color var(--motion-xs);
+    }
+
+    .ui-act svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        pointer-events: none;
+    }
+
+    .ui-act:hover,
+    .ui-act[aria-pressed='true'],
+    .ui-act[aria-expanded='true'] {
+        color: var(--color-ink);
+    }
+
+    .ui-act:hover {
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-act:active {
+        background-color: var(--color-surface-muted);
+    }
+
+    .ui-act[data-link] {
+        padding: 0;
+        color: var(--color-primary-text);
+    }
+
+    .ui-act[data-link]:hover {
+        background-color: transparent;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .ui-act[aria-busy='true'] {
+        cursor: progress;
+    }
+
+    .ui-act:focus-visible,
+    .ui-reaction:focus-visible,
+    .ui-reaction-add:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    .ui-reaction {
+        display: inline-flex;
+        height: 2.25rem;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        padding: 0 8px;
+        color: var(--color-ink);
+    }
+
+    .ui-reaction:hover {
+        border-color: var(--color-control-hover);
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-reaction[aria-pressed='true'] {
+        border-color: var(--color-control-hover);
+        background-color: var(--color-surface-muted);
+    }
+
+    .ui-reaction-add {
+        display: inline-flex;
+        width: 2.25rem;
+        height: 2.25rem;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        color: var(--color-ink-muted);
+    }
+
+    .ui-reaction-add:hover,
+    .ui-reaction-add[aria-expanded='true'] {
+        border-color: var(--color-line);
+        background-color: var(--color-surface-subtle);
+        color: var(--color-ink);
+    }
+
+    [data-size='sm'] > .ui-reaction,
+    [data-size='sm'] > .ui-reaction-add {
+        height: 2rem;
+    }
+
+    [data-size='sm'] > .ui-reaction-add {
+        width: 2rem;
+    }
+
+    .ui-reaction-option {
+        display: flex;
+        min-width: 3.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        border-radius: var(--radius-md);
+        padding: 6px;
+        color: var(--color-ink);
+    }
+
+    .ui-reaction-option:hover,
+    .ui-reaction-option:focus-visible {
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-reaction-option:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: -2px;
+    }
+
+    /* x-ui.chat.message bubbles: received on `surface` with a 1px `line` edge, sent on `surface-subtle`. */
+    .ui-chat-bubble {
+        min-width: 0;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-surface);
+        padding: 8px 12px;
+        font-family: var(--font-body);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .ui-chat-bubble[data-mine] {
+        border-color: transparent;
+        background-color: var(--color-surface-subtle);
+    }
+
+    .ui-chat-bubble[data-deleted] {
+        border-style: dashed;
+        border-color: var(--color-line-strong);
+        background-color: transparent;
+        color: var(--color-ink-muted);
+        font-size: var(--text-meta);
+        line-height: var(--text-meta--line-height);
+    }
+
+    /* x-ui.chat.composer's textarea: the kit's control look, 32/36/40px tall at one row. */
+    .ui-composer-input {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        flex: 1 1 0%;
+        min-height: 2.25rem;
+        resize: none;
+        border: 1px solid var(--color-control);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        padding: 6px 12px;
+        font-family: var(--font-body);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        color: var(--color-ink);
+        outline: none;
+        transition: border-color var(--motion-xs), box-shadow var(--motion-xs);
+    }
+
+    .ui-composer-input[data-size='sm'] {
+        min-height: 2rem;
+        padding-block: 4px;
+    }
+
+    .ui-composer-input[data-size='lg'] {
+        min-height: 2.5rem;
+        padding-block: 8px;
+    }
+
+    .ui-composer-input::placeholder {
+        color: var(--color-ink-muted);
+    }
+
+    .ui-composer-input:hover {
+        border-color: var(--color-control-hover);
+    }
+
+    .ui-composer-input:focus {
+        border-color: var(--color-focus);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    }
+
+    .ui-composer-input[aria-invalid='true'] {
+        border-color: var(--color-danger);
+    }
+
+    .ui-composer-input:disabled {
+        cursor: not-allowed;
+        border-style: dashed;
+        background-color: var(--color-surface-subtle);
+        color: var(--color-ink-muted);
+    }
+
+    .ui-chat-scroll {
+        /* chat-core.js keeps the reading position itself when older messages load. */
+        overflow-anchor: none;
+    }
+
+    .ui-rich-link,
+    a.ui-rich-mention,
+    a.ui-rich-tag {
+        color: var(--color-primary-text);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        border-radius: var(--radius-sm);
+    }
+
+    .ui-rich-link:hover,
+    a.ui-rich-mention:hover,
+    a.ui-rich-tag:hover {
+        color: var(--color-ink);
+    }
+
+    .ui-rich-link:focus-visible,
+    a.ui-rich-mention:focus-visible,
+    a.ui-rich-tag:focus-visible {
+        outline: 2px solid var(--color-focus);
+        outline-offset: 2px;
+    }
+
+    span.ui-rich-mention,
+    span.ui-rich-tag {
+        color: var(--color-primary-text);
+        font-weight: 500;
+    }
+
+    .ui-typing-dots > span {
+        width: 4px;
+        height: 4px;
+        border-radius: 9999px;
+        background-color: var(--color-ink-muted);
+        animation: ui-typing calc(var(--motion-lg) * 4) var(--motion-ease-in-out) infinite;
+    }
+
+    .ui-typing-dots > span:nth-child(2) {
+        animation-delay: var(--motion-lg);
+    }
+
+    .ui-typing-dots > span:nth-child(3) {
+        animation-delay: calc(var(--motion-lg) * 2);
+    }
+
+    @keyframes ui-typing {
+        0%, 60%, 100% {
+            opacity: 0.35;
+        }
+
+        30% {
+            opacity: 1;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ui-typing-dots > span {
+            animation: none;
+        }
+    }
+
+    [data-motion-preview='reduced'] .ui-typing-dots > span,
+    html[data-motion-preview='reduced'] .ui-typing-dots > span {
+        animation: none;
+    }
+
+    [aria-pressed='true'] > .ui-like-icon {
+        color: var(--color-primary-text);
+        fill: currentColor;
+    }
+
+    .ui-reaction[hidden] {
+        display: none !important;
+    }
+
+    .ui-reaction-picker:not(:popover-open) {
+        display: none;
+    }
+
+    .ui-thread li.ui-comment:last-child > [data-thread-rail] {
+        display: none;
+    }
+
+    @media (forced-colors: active) {
+        .ui-typing-dots > span {
+            background-color: CanvasText;
+        }
+
+        [aria-pressed='true'] > .ui-like-icon {
+            fill: Highlight;
+        }
+    }
+}

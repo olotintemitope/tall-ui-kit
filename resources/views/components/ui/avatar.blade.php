@@ -3,7 +3,7 @@
     words; the photo's alt text), initials (override), src (a photo: fixed size,
     object-cover, lazy, decoded async; if it fails to load the initials show instead),
     alt (overrides the alt text; "" when the name is printed beside the avatar),
-    size (xs 20 | sm 24 | default 28 | lg 36), tone (light|dark, for the dark admin sidebar).
+    size (xs 20 | sm 24 | default 28 | lg 36 | xl 48, for profile headers), tone (light|dark, for the dark admin sidebar).
     Without src the avatar is decorative (aria-hidden): the name is always printed beside it.
 --}}
 @props(['name' => '', 'initials' => null, 'size' => 'default', 'tone' => 'light', 'src' => null, 'alt' => null])
@@ -20,6 +20,7 @@
         'sm' => 'size-6 text-[11px]',
         'default' => 'size-7 text-[12px]',
         'lg' => 'size-9 text-[13px]',
+        'xl' => 'size-12 text-[16px]',
     ];
 @endphp
 

@@ -28,6 +28,8 @@ it('renders each gallery page in both themes', function (string $uri, string $he
     ['/checklist', 'Checklist'],
     ['/workflow', 'Workflow'],
     ['/sidebar', 'Sidebar'],
+    ['/chat', 'Chat'],
+    ['/community', 'Community'],
 ]);
 
 it('serves only built gallery assets', function () {

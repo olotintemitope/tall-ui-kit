@@ -13,6 +13,8 @@
         'tables' => ['label' => 'Data table', 'href' => route('gallery.tables')],
         'workflow' => ['label' => 'Workflow', 'href' => route('gallery.workflow')],
         'checklist' => ['label' => 'Checklist', 'href' => route('gallery.checklist')],
+        'chat' => ['label' => 'Chat', 'href' => route('gallery.chat')],
+        'community' => ['label' => 'Community', 'href' => route('gallery.community')],
         'dates' => ['label' => 'Dates', 'href' => route('gallery.dates')],
         'sidebar' => ['label' => 'Sidebar', 'href' => route('gallery.sidebar')],
     ];

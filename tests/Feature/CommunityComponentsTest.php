@@ -1,0 +1,245 @@
+<?php
+
+use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
+use TallUiKit\Support\KitContrast;
+use TallUiKit\Support\RichText;
+use Workbench\App\Livewire\Community\ChatDemo;
+use Workbench\App\Livewire\Community\FeedDemo;
+use Workbench\App\Livewire\Community\PeopleDemo;
+use Workbench\App\Livewire\Community\PollDemo;
+
+/*
+| Chat and community components (docs/components/community.md): markup, accessibility
+| attributes, escaping of user text, the demo endpoints (idempotent send, rollback,
+| votes) and the Livewire payload budget.
+*/
+
+function cm(string $blade, array $data = []): string
+{
+    return Blade::render($blade, $data);
+}
+
+describe('rich text', function () {
+    it('escapes everything, then links urls, mentions and hashtags', function () {
+        $html = (string) RichText::render('<img src=x onerror=alert(1)> see https://ex.com/a?b=1&c=2. @ada #launch www.ex.org', '/u/:name', '/t/:tag');
+
+        expect($html)->not->toContain('<img')
+            ->toContain('&lt;img src=x onerror=alert(1)&gt;')
+            ->toContain('<a href="https://ex.com/a?b=1&amp;c=2" class="ui-rich-link" rel="nofollow ugc noopener">https://ex.com/a?b=1&amp;c=2</a>.')
+            ->toContain('<a href="/u/ada" class="ui-rich-mention">@ada</a>')
+            ->toContain('<a href="/t/launch" class="ui-rich-tag">#launch</a>')
+            ->toContain('href="https://www.ex.org"');
+    });
+
+    it('never links javascript urls, attribute breakouts or e-mail addresses', function () {
+        $html = (string) RichText::render('javascript:alert(1) https://e.com/"onmouseover=x ada@example.com');
+
+        expect($html)->not->toContain('href="javascript')
+            ->toContain('href="https://e.com/"')
+            ->toContain('&quot;onmouseover=x')
+            ->not->toContain('ui-rich-mention');
+    });
+});
+
+describe('chat', function () {
+    $messages = [
+        ['key' => 'a', 'author' => 'Ada Obi', 'time' => '2026-11-15 09:00:00', 'body' => "Line one\nLine two <b>bold</b>"],
+        ['key' => 'b', 'author' => 'Ada Obi', 'time' => '2026-11-15 09:02:00', 'body' => 'Grouped'],
+        ['key' => 'c', 'mine' => true, 'time' => '2026-11-16 10:00:00', 'body' => 'Mine', 'seen' => true],
+        ['key' => 'd', 'mine' => true, 'time' => '2026-11-16 10:01:00', 'body' => 'Failed', 'status' => 'failed'],
+        ['key' => 'e', 'author' => 'Bola Ade', 'time' => '2026-11-16 10:05:00', 'deleted' => true],
+    ];
+
+    it('is a non-live log with a separate polite announcer, days and grouping', function () use ($messages) {
+        $html = cm('<x-ui.chat label="Chat with Ada" :messages="$messages" now="2026-11-16 12:00:00" send-action="send" older-action="older" has-older />', compact('messages'));
+
+        expect($html)->toContain('role="log"')->toContain('aria-live="off"')->toContain('aria-label="Chat with Ada"')
+            ->toContain('role="status" aria-live="polite" aria-atomic="true"')
+            ->toContain('>Yesterday</h3>')->toContain('>Today</h3>')
+            ->toContain('Load older messages')
+            ->and(substr_count($html, 'data-chat-message '))->toBe(5)
+            ->and($html)->toContain('<span class="sr-only">Ada Obi')
+            ->toContain('Line one'."\n".'Line two &lt;b&gt;bold&lt;/b&gt;')
+            ->not->toContain('<b>bold</b>')
+            ->toContain('This message was deleted.')
+            ->toContain('Not sent.')->toContain('Retry')
+            ->toContain('data-chat-seen>Seen<')
+            ->toContain('x-data="uiComposer(');
+    });
+
+    it('marks the sending, edited and failed states in words', function () {
+        $html = cm('<x-ui.chat.message key="x" mine body="Hi" status="sending" /><x-ui.chat.message key="y" mine body="Hi" edited /><x-ui.chat.message key="z" mine body="Hi" status="failed" retry-action="retry" />');
+
+        expect($html)->toContain('data-chat-state="sending">Sending<')
+            ->toContain('data-chat-state="edited">Edited<')
+            ->toContain('wire:click="retry(\'z\')"');
+    });
+
+    it('shows image attachments as buttons for the shared dialog and files as rows', function () {
+        $html = cm('<x-ui.chat label="Files" :messages="[[\'key\' => \'i\', \'author\' => \'Ada\', \'time\' => \'2026-11-16 10:00:00\', \'attachments\' => [[\'type\' => \'image\', \'src\' => \'/a.png\', \'alt\' => \'A chart\'], [\'type\' => \'file\', \'name\' => \'a.pdf\', \'href\' => \'/a.pdf\', \'meta\' => \'2 KB\']]]]" />');
+
+        expect($html)->toContain('aria-label="View image: A chart"')->toContain('data-chat-image')
+            ->toContain('data-chat-image-dialog')->toContain('href="/a.pdf"')->toContain('2 KB');
+    });
+
+    it('says who is typing once, in a status region with hidden dots', function () {
+        expect(cm('<x-ui.chat.typing :names="[\'Ada\', \'Bola\']" />'))->toContain('role="status"')->toContain('Ada and Bola are typing')->toContain('ui-typing-dots inline-flex items-center gap-0.5" aria-hidden="true"')
+            ->and(cm('<x-ui.chat.typing :names="[\'A\', \'B\', \'C\']" />'))->toContain('Several people are typing')
+            ->and(cm('<x-ui.chat.typing />'))->toContain('role="status"')->not->toContain('ui-typing-dots');
+    });
+
+    it('builds a composer with a label, hint, counter and the control scale', function () {
+        $html = cm('<x-ui.chat.composer label="Reply" action="send" :maxlength="280" attach="files" size="sm" id="c1" />');
+
+        expect($html)->toContain('<label for="c1-input" class="sr-only">Reply</label>')
+            ->toContain('maxlength="280"')->toContain('aria-describedby="c1-hint  c1-count "')
+            ->toContain('Enter to send, Shift+Enter for a new line.')
+            ->toContain('0 / 280')->toContain('min-h-8')
+            ->toContain('aria-label="Attach files"')->toContain('wire:model="files"')
+            ->toContain('data-upload-list="files"')
+            ->and(cm('<x-ui.chat.composer disabled disabled-reason="Closed." />'))->toContain('disabled')->toContain('Closed.');
+    });
+
+    it('lists conversations with one tab stop, aria-current and spoken unread counts', function () {
+        $html = cm('<x-ui.chat.inbox :conversations="[[\'key\' => \'a\', \'name\' => \'Ada\', \'preview\' => \'Hi\', \'active\' => true, \'href\' => \'/a\'], [\'key\' => \'b\', \'name\' => \'Crew\', \'people\' => [\'A\', \'B\', \'C\'], \'unread\' => 3, \'href\' => \'/b\']]" />');
+
+        expect($html)->toContain('<nav')->toContain('aria-current="true"')
+            ->and(substr_count($html, 'tabindex="0"'))->toBe(1)
+            ->and($html)->toContain('<span class="sr-only"> unread</span>')
+            ->toContain('data-avatar-group')
+            ->not->toContain('truncate')->not->toContain('line-clamp');
+    });
+});
+
+describe('community', function () {
+    it('renders a post as an article with a safe body, compact counts and a named like toggle', function () {
+        $html = cm('<x-ui.post key="p1" author="Ada Obi" verified body="<script>x</script> @bola #tag https://ex.com" :likes="1240" liked :comments="3" like-action="like" share-url="https://ex.com/p1"><x-slot:more><x-ui.dropdown.item>Report</x-ui.dropdown.item></x-slot:more></x-ui.post>');
+
+        expect($html)->toContain('<article')->toContain('aria-labelledby="post-p1-author"')
+            ->toContain('Verified')->not->toContain('<script>x')->toContain('&lt;script&gt;x&lt;/script&gt;')
+            ->toContain('class="ui-rich-mention">@bola')->toContain('href="https://ex.com"')
+            ->toContain('aria-pressed="true" data-post-like data-count="1240"')
+            ->toContain('>1.2k<')->toContain('1,240 likes')
+            ->toContain('data-like-action="like"')->toContain('data-post-share')
+            ->toContain('aria-label="More actions for the post by Ada Obi"');
+    });
+
+    it('renders reactions as toggles with labels and a picker below its button', function () {
+        $html = cm('<x-ui.reactions subject="p1" action="react" :reactions="[[\'key\' => \'like\', \'count\' => 3, \'mine\' => true], [\'key\' => \'sad\', \'count\' => 0]]" />');
+
+        expect($html)->toContain('role="group"')->toContain('aria-label="Reactions"')
+            ->toContain('aria-pressed="true" data-reaction="like"')
+            ->toContain('<span class="sr-only">Like</span>')
+            ->not->toContain('data-reaction="sad"')
+            ->toContain('popovertarget="')->toContain('aria-label="Add reaction"')
+            ->toContain('aria-label="Choose a reaction"')
+            ->and(substr_count($html, 'data-reaction-pick='))->toBe(6);
+    });
+
+    it('nests comments to the depth limit with reply, collapse and continue links', function () {
+        $comments = [['key' => 'c1', 'author' => 'Ada', 'body' => '<i>x</i>', 'more' => 2, 'replies' => [
+            ['key' => 'c2', 'author' => 'Bola', 'body' => 'Two', 'replies' => [['key' => 'c3', 'author' => 'Chidi', 'body' => 'Three']]],
+        ]]];
+        $html = cm('<x-ui.comment-thread :comments="$comments" :depth="2" reply-action="reply" more-action="more" continue-href="/t/:key" />', compact('comments'));
+
+        expect($html)->toContain('x-data="uiThread"')->toContain('aria-label="Comments"')
+            ->toContain('&lt;i&gt;x&lt;/i&gt;')->toContain('Reply<span class="sr-only"> to Ada</span>')
+            ->toContain('aria-controls="')->toContain('Hide replies')
+            ->toContain('Continue thread (1 reply)')->toContain('href="/t/c2"')
+            ->not->toContain('Three')
+            ->toContain('Show 2 more replies')->toContain('wire:click="more(\'c1\')"')
+            ->toContain('Add a comment');
+    });
+
+    it('shows a poll form before voting and progress results after, with the viewer\'s vote in words', function () {
+        $options = [['key' => 'a', 'label' => 'Nine', 'votes' => 3], ['key' => 'b', 'label' => 'One', 'votes' => 1]];
+        $open = cm('<x-ui.poll key="p" question="When?" :options="$options" action="vote" />', compact('options'));
+        $voted = cm('<x-ui.poll key="p" question="When?" :options="$options" :voted="[\'a\']" />', compact('options'));
+        $ended = cm('<x-ui.poll key="p" question="When?" :options="$options" closed />', compact('options'));
+
+        expect($open)->toContain('type="radio"')->toContain('<legend class="sr-only">When?</legend>')->toContain('data-poll-submit')->toContain('role="alert"')->not->toContain('<progress')
+            ->and($voted)->toContain('<progress')->toContain('Nine (your vote)')->toContain('aria-valuetext="75%, 3 votes"')->toContain('4 votes')
+            ->and($ended)->toContain('Poll ended')
+            ->and(cm('<x-ui.poll key="m" question="Q" multiple :options="$options" />', compact('options')))->toContain('type="checkbox"')->toContain('Choose any');
+    });
+
+    it('renders people with stats and a follow toggle whose text gives the state', function () {
+        $card = cm('<x-ui.member-card key="u1" name="Ada Obi" role="Lead" following follow-action="follow" message-href="/m" :stats="[[\'label\' => \'Followers\', \'value\' => 12480]]" />');
+        $header = cm('<x-ui.profile-header key="u1" name="Ada Obi" verified :stats="[[\'label\' => \'Followers\', \'value\' => 12480]]" />');
+
+        expect($card)->toContain('<article')->toContain('data-follow-action="follow"')->toContain('aria-pressed="true"')
+            ->toContain('>Following<')->toContain('<span class="sr-only"> Ada Obi</span>')->toContain('12.5k')->toContain('data-stat-strip')
+            ->and($header)->toContain('<h1 class="type-title')->toContain('size-12')->toContain('Verified')->toContain('12.5k');
+    });
+
+    it('lists channels with collapsible sections, unread and mentions in words', function () {
+        $html = cm('<x-ui.channel-list :sections="[[\'key\' => \'s\', \'label\' => \'Channels\', \'channels\' => [[\'key\' => \'g\', \'name\' => \'general\', \'href\' => \'/g\', \'unread\' => true, \'active\' => true], [\'key\' => \'f\', \'name\' => \'finance\', \'href\' => \'/f\', \'mentions\' => 2, \'private\' => true]]]]" />');
+
+        expect($html)->toContain('<nav')->toContain('aria-label="Channels"')->toContain('aria-expanded="true"')
+            ->toContain('aria-current="page"')->toContain('<span class="sr-only">, unread</span>')
+            ->toContain('<span class="sr-only"> mentions</span>')->toContain('<span class="sr-only">Private: </span>');
+    });
+
+    it('ranks rows with rank changes in words and highlights the viewer', function () {
+        $html = cm('<x-ui.leaderboard value-label="streams" :rows="[[\'label\' => \'A\', \'value\' => 1200, \'change\' => 2], [\'label\' => \'B\', \'value\' => 900, \'change\' => -1, \'current\' => true], [\'label\' => \'C\', \'value\' => 5, \'new\' => true], [\'label\' => \'D\', \'value\' => 1, \'change\' => 0]]" />');
+
+        expect($html)->toContain('<ol')->toContain('Up 2')->toContain('Down 1')->toContain('New')->toContain('Same')
+            ->toContain('aria-current="true"')->toContain('You')->toContain('1,200<span class="sr-only"> streams</span>')
+            ->not->toContain('medal')->not->toContain('data-avatar');
+    });
+});
+
+describe('demo endpoints', function () {
+    it('accepts a draft once however often it is sent', function () {
+        $component = Livewire::test(ChatDemo::class);
+        $before = count($component->get('messages'));
+        $component->call('send', 'Hello', 'key-1')->call('send', 'Hello', 'key-1');
+
+        expect(count($component->get('messages')))->toBe($before + 1)
+            ->and($component->get('accepted'))->toBe(['key-1']);
+
+        $component->call('send', '', 'key-2')->assertStatus(422);
+    });
+
+    it('loads older messages above and reacts to messages', function () {
+        $component = Livewire::test(ChatDemo::class)->call('loadOlder')->assertSet('hasOlder', false)->call('react', 'm2', 'like');
+
+        expect($component->get('messages.0.key'))->toBe('o1')
+            ->and(collect($component->get('messages'))->firstWhere('key', 'm2')['reactions'][0]['count'])->toBe(1);
+    });
+
+    it('refuses a like to show the rollback, and records votes and replies once', function () {
+        $feed = Livewire::test(FeedDemo::class);
+        expect($feed->instance()->like('p2', true))->toBeFalse()
+            ->and($feed->instance()->like('p1', true))->toBeTrue();
+
+        Livewire::test(PollDemo::class)->call('vote', 'launch-time', ['b'])->assertSet('voted', ['b'])->assertSet('votes.b', 32)
+            ->call('vote', 'launch-time', ['a'])->assertStatus(422);
+
+        $thread = Livewire::test(FeedDemo::class)->call('reply', 'c2', 'Thanks', 'r1')->call('reply', 'c2', 'Thanks', 'r1');
+        expect(collect($thread->get('comments'))->firstWhere('key', 'c2')['replies'])->toHaveCount(1);
+
+        Livewire::test(PeopleDemo::class)->call('follow', 'u-bola', true)->assertSet('following.u-bola', true)
+            ->call('openConversation', 'k2')->assertSet('unread.k2', 0)->call('follow', 'nobody', true)->assertStatus(422);
+    });
+
+    it('keeps each chat and feed response under the 40 KB payload budget', function () {
+        $sizes = [
+            'send' => Livewire::test(ChatDemo::class)->call('send', 'Payload check', 'k-payload')->effects,
+            'older' => Livewire::test(ChatDemo::class)->call('loadOlder')->effects,
+            'feed' => Livewire::test(FeedDemo::class)->call('react', 'p1', 'love')->effects,
+            'reply' => Livewire::test(FeedDemo::class)->call('reply', 'c2', 'Thanks', 'k')->effects,
+            'poll' => Livewire::test(PollDemo::class)->call('vote', 'launch-time', ['a'])->effects,
+            'people' => Livewire::test(PeopleDemo::class)->call('follow', 'u-bola', true)->effects,
+        ];
+
+        foreach ($sizes as $name => $effects) {
+            expect(strlen(json_encode($effects)))->toBeLessThan(40_000, $name);
+        }
+    });
+});
+
+it('measures the chat and community colour pairs', function () {
+    expect(collect(KitContrast::pairs())->filter(fn ($p) => preg_match('/^(Chat|Composer|Inbox|Like|Post|Reaction|Follow|Poll|Channel|Leaderboard)/', $p[0]))->count())->toBeGreaterThanOrEqual(30);
+});

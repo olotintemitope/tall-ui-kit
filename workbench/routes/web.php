@@ -18,7 +18,7 @@ Route::middleware('web')->group(function () {
         return response()->file($path, ['Content-Type' => str_ends_with($file, '.css') ? 'text/css' : 'text/javascript']);
     })->where('file', '[A-Za-z0-9._-]+')->name('kit-assets');
 
-    foreach (['/' => 'index', '/forms' => 'forms', '/overlays' => 'overlays', '/data' => 'data', '/charts' => 'charts', '/sidebar' => 'sidebar', '/checklist' => 'checklist', '/dates' => 'dates'] as $uri => $page) {
+    foreach (['/' => 'index', '/forms' => 'forms', '/overlays' => 'overlays', '/data' => 'data', '/charts' => 'charts', '/sidebar' => 'sidebar', '/checklist' => 'checklist', '/dates' => 'dates', '/chat' => 'chat', '/community' => 'community'] as $uri => $page) {
         Route::get($uri, fn () => view('gallery.'.$page))->name('gallery.'.$page);
     }
 
