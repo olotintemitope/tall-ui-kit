@@ -1,0 +1,1 @@
+@include('docs.patterns._page', ['intro' => 'Form pages are elevated: a tinted page with white panels, one section per subject, actions in the panel footer.', 'sections' => [['docs/patterns.md', 'Settings page'], ['docs/components/forms.md', 'Layouts']]])

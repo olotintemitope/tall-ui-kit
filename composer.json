@@ -48,6 +48,11 @@
         ],
         "post-autoload-dump": [
             "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "docs:build": [
+            "Composer\\Config::disableProcessTimeout",
+            "npm run build",
+            "@php vendor/bin/testbench docs:build --ansi"
         ]
     },
     "config": {
@@ -57,5 +62,8 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts-descriptions": {
+        "docs:build": "Build the static docs site into site/ (needs npm install once)."
+    }
 }

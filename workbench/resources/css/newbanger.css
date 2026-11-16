@@ -2,5 +2,7 @@
 @import '../../../resources/css/tall-ui-kit.css';
 @import '../../../resources/css/themes/newbanger.css';
 
+@import './docs.css';
+
 @source '../views';
 @source '../../app';

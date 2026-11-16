@@ -1,0 +1,1 @@
+@include('docs.patterns._page', ['intro' => 'Modal work goes in a dialog: a form dialog for edits, a confirmation with a verb for anything that cannot be undone.', 'sections' => [['docs/patterns.md', 'Dialog form'], ['docs/components/overlays.md', 'Dialogs and confirmations']]])

@@ -19,6 +19,7 @@ export default defineConfig({
                 neutral: here('./resources/css/neutral.css'),
                 newbanger: here('./resources/css/newbanger.css'),
                 gallery: here('./resources/js/gallery.js'),
+                docs: here('./resources/js/docs.js'),
             },
             output: {
                 entryFileNames: '[name].js',

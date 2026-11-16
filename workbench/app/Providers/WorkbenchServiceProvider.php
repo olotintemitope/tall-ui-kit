@@ -5,6 +5,7 @@ namespace Workbench\App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Workbench\App\Docs\BuildDocsCommand;
 
 /**
  * The workbench gallery (composer serve): every page renders sample data only and
@@ -17,5 +18,9 @@ class WorkbenchServiceProvider extends ServiceProvider
         Gate::before(fn () => true);
         // <x-workbench::gallery.layout> for the static gallery pages.
         Blade::anonymousComponentPath(__DIR__.'/../../resources/views', 'workbench');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([BuildDocsCommand::class]);
+        }
     }
 }

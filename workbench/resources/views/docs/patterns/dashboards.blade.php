@@ -1,0 +1,1 @@
+@include('docs.patterns._page', ['intro' => 'A dashboard is a flat section: a stat strip and one or two charts, never a grid of KPI cards with icons.', 'sections' => [['docs/patterns.md', 'Dashboard section (flat, not a card grid)'], ['docs/patterns.md', 'Detail page']]])

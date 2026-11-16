@@ -1,0 +1,1 @@
+@include('docs.patterns._page', ['intro' => 'Setup steps are a checklist: data in, progress and the next step out, persisted locally or on the server.', 'sections' => [['docs/components/feedback.md', 'Checklist']]])

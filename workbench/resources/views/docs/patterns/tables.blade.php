@@ -1,0 +1,1 @@
+@include('docs.patterns._page', ['intro' => 'Data pages are flat and white with 1px rules. List pages use the data table; small static tables use x-ui.table, which scrolls inside its own box.', 'sections' => [['docs/patterns.md', 'List page (search, filters, bulk actions)'], ['docs/patterns.md', 'Empty, loading, error']]])

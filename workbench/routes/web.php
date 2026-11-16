@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Workbench\App\Docs\DocsController;
 use Workbench\App\Livewire\TableGallery;
 
 /*
@@ -24,4 +25,14 @@ Route::middleware('web')->group(function () {
     Route::get('/workflow', fn () => view('gallery.workflow'))->name('gallery.workflow');
 
     Route::get('/tables', TableGallery::class)->name('gallery.tables');
+
+    // The docs site (composer docs:build renders these routes to site/).
+    Route::prefix('docs')->group(function () {
+        Route::get('/', [DocsController::class, 'guide'])->name('docs.index');
+        Route::get('/search.js', [DocsController::class, 'search'])->name('docs.search');
+        Route::get('/components', [DocsController::class, 'components'])->name('docs.components');
+        Route::get('/components/{slug}', [DocsController::class, 'component'])->where('slug', '[a-z0-9-]+')->name('docs.component');
+        Route::get('/patterns/{slug}', [DocsController::class, 'pattern'])->where('slug', '[a-z0-9-]+')->name('docs.pattern');
+        Route::get('/{page}', [DocsController::class, 'guide'])->where('page', '[a-z0-9-]+')->name('docs.guide');
+    });
 });
