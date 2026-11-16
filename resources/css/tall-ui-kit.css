@@ -2235,7 +2235,8 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
         line-height: var(--text-caption--line-height);
         font-weight: 500;
         color: var(--color-on-secondary);
-        pointer-events: none;
+        /* Hoverable (WCAG 1.4.13): the pointer can move onto the tip without it closing. */
+        pointer-events: auto;
     }
 
     .ui-badge {
