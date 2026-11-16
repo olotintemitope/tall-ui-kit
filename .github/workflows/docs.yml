@@ -1,0 +1,62 @@
+# Builds the docs site (composer docs:build) and publishes it to GitHub Pages.
+#
+# Disabled on purpose: it runs only when started by hand (Actions > Docs > Run
+# workflow), and only after Pages is enabled with "GitHub Actions" as the source.
+# The repository is private: on GitHub Free, Pages needs a public repository; on
+# Pro, Team or Enterprise a private repository can publish, but the site is public
+# on the internet unless the organisation uses Enterprise Cloud and the site's
+# visibility is set to private. See docs/audit-2026-11.md and the README, "Docs site".
+name: Docs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # the changelog page is generated from every tag
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: composer update --no-interaction --no-progress --prefer-dist # composer.lock is not committed (a library)
+      - run: npm ci
+      - run: composer docs:build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
