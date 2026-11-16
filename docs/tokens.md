@@ -95,7 +95,7 @@ Use the `type-*` utility (font, size, line-height, weight, colour). A colour uti
 ## Spacing, radii, elevation, focus
 
 - 4px grid. Label to control 6px; control to hint or error 4px; stacked fields 16px; field-row column gap 12px; between sections or panels 24px; page header to content 16px; panel padding 16px (20px from `sm`).
-- Controls `h-9` (36px), `sm` `h-8` for dense toolbars. Radii: checkboxes and segments inside a segmented track 4px (`rounded-sm`), controls 6px (`rounded-md`), panels, menus and dialogs 8px (`rounded-lg`), badges full.
+- Controls: one size scale for inputs, selects, the combobox, number and tag inputs, colour, date pickers, copy controls and buttons: `sm` 32px (`h-8`, dense toolbars), `default` 36px (`h-9`; `md` is an alias) and `lg` 40px (`h-10`), from `TallUiKit\Support\FormControl::size()` and `::height()`. Segmented controls, the theme toggle and tabs have `sm` and `default`. Radii: checkboxes and segments inside a segmented track 4px (`rounded-sm`), controls 6px (`rounded-md`), panels, menus and dialogs 8px (`rounded-lg`), badges full.
 - Elevation: 0 `bg-page-muted`; 1 `shadow-panel` + `border-panel-border` (`x-ui.panel`); 2 `shadow-popover` + border (dropdowns, toasts); 3 `shadow-dialog` + border (dialogs, command palette). Two component shadows: `shadow-thumb` (switch thumb) and `shadow-bar` (top edge of the sticky `x-ui.form-actions`).
 - Focus: `focus-ring` utility, a 2px `focus` outline with 2px offset. Inputs: border turns `focus` plus a 2px `primary/20` ring.
 - Motion: see Motion below. Colour changes 100ms; enter and move 150 to 200ms; count-ups 300ms.

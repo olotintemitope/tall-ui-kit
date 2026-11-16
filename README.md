@@ -19,7 +19,7 @@ The repository is private, so add it as a VCS repository (your Composer needs a 
 ```
 
 ```bash
-composer require olotintemitope/tall-ui-kit:^0.3
+composer require olotintemitope/tall-ui-kit:^0.7
 npm install gsap
 php artisan vendor:publish --tag=tall-ui-kit-config   # optional
 ```
@@ -116,6 +116,7 @@ Not in the package (app code): navigation data, shells and command palette data,
   - [Data table](docs/components/data-table.md), [exports](docs/components/exports.md)
   - [Icons and copy to clipboard](docs/components/copy-and-icons.md)
   - [Workflow and progress: stepper, timeline, tag input, avatar group, sortable, slider, banner, tree, progress](docs/components/workflow.md)
+- [Audit, November 2026](docs/audit-2026-11.md): findings, fixes and the audit rules every component is held to
 - [Accessibility and focus](docs/accessibility.md), [motion](docs/motion.md), [performance budgets](docs/performance.md), [JavaScript](docs/javascript.md)
 
 ## Configuration
@@ -131,6 +132,18 @@ composer serve                # http://127.0.0.1:8000 (?theme=neutral or ?theme=
 ```
 
 Pages: Basics, Forms, Overlays, Data display, Charts, Data table (Livewire, 320 sample rows on a private SQLite file), Workflow (Livewire demos of the sortable, tree, tag input, slider, banner and uploads), Sidebar.
+
+## Docs site
+
+`composer docs:build` renders the docs and playground site to `site/` from the workbench (the same routes as `composer serve` under `/docs`), so it never drifts from the components: Getting started, Tokens (every colour with its contrast in all four theme and mode sets), Patterns (forms, tables, dialogs, onboarding checklist, dashboards), Rules, Audit rules, a Changelog generated from the tags and commits, and one page per component (live examples with a Theme and Mode switch, props generated from `@props` and the component's comment, slots, events, keyboard map, accessibility notes, Do and Don't, Blade snippets with the kit's copy button). Search is a small client-side index (`site/assets/docs-search.js`); reading works without JavaScript. It builds offline from `node_modules` and `vendor`.
+
+```bash
+composer docs:build                                   # npm run build, then site/
+python3 -m http.server 8106 -d site                   # any static server
+BASE=http://127.0.0.1:8106 node scripts/docs-check.mjs --sets=neutral:light,neutral:dark,newbanger:light,newbanger:dark
+```
+
+`scripts/docs-check.mjs` runs axe-core on every page, checks console errors and sideways scroll, and exercises search, copy, theme and mode. Publishing: `.github/workflows/docs.yml` builds and deploys to GitHub Pages, started by hand only (see its header for the plan requirements: the repository is private).
 
 ## Checks
 
