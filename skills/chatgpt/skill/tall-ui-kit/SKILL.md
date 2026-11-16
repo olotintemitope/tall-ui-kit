@@ -10,7 +10,7 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 ## Before writing UI
 
 1. Check the app uses the kit: `vendor/olotintemitope/tall-ui-kit` exists, or `resources/views/components/ui/` exists in the app (NewBanger still carries its in-repo copy). Use whichever is there; the names and props are the same.
-2. Read the props of the component you need in [references/components.md](references/components.md) (the full table) or the component's own Blade file: every file starts with a `{{-- --}}` comment listing its props and slots. Never guess a prop.
+2. Read the props of the component you need in [references/components.md](references/components.md) (the full table) or the component's own Blade file: every file starts with a `{{-- --}}` comment listing its props and slots. Never guess a prop. In the kit repo the docs site has a page per component with live examples, generated props, keyboard map and Do/Don't (see Docs site below).
 3. Build only from kit components, tokens and type roles. If something is missing, compose it from kit parts; do not hand-write a new look.
 
 ## Hard rules (a screen that breaks one is wrong)
@@ -33,6 +33,13 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 - **Motion comes from the kit.** Put `wire:transition.navigate` on the layout's `<main>` only (the main region cross-fades on `wire:navigate`, the shell holds still); charts draw in once by themselves (`motion="none"` opts out). Never add page, chart or idle animations of your own; only transform and opacity animate, and reduced motion is instant ([references/motion.md](references/motion.md)).
 - **Shell pages change with `wire:navigate`.** The sidebar's items, logo and Settings navigate in place by default; give the shell's `x-ui.sidebar` a `persist` key that changes with its items, so it survives page changes. Plain `wire:navigate`, never `.hover` (prefetch storms). External links, area switches, log out, downloads and payment hand-offs stay full loads (`reload` on an item). Page scripts must work after `livewire:navigated`: never hold `<body>` or a page element in module code ([references/navigation.md](references/navigation.md), Page changes).
 - **Livewire performance:** public properties hold ids and scalars; `wire:key` on every looped row; `wire:model.live.debounce.300ms` only where results update live; no `wire:poll` without a reason (30s+, `.visible`); no Alpine component per item in long lists.
+
+## Shared prop names and sizes
+
+- Sizes are one scale on every control and button: `size="sm"` 32px, default 36px (`md` is an alias), `lg` 40px. Use the same size for an input and the button beside it.
+- Status colour: `variant` and `tone` are interchangeable on `x-ui.badge`, `x-ui.alert` and `x-ui.toast` (and the toast store); `danger` and `error` mean the same tone. Alerts have `info`.
+- `label`, `hint`, `error`, `disabled` mean the same everywhere: `x-ui.checkbox` takes `hint` (alias of `description`) and `error`; `x-ui.radio-group` takes `error`; `x-ui.fieldset` takes `label`/`hideLabel` (aliases of `legend`/`hideLegend`). Heading levels: `headingLevel` (also on `x-ui.notification-group`), `x-ui.page-header` `level` (1 by default; 2 when the page already has its h1). Tooltips take `placement` (alias of `position`).
+- Old names keep working; prefer the shared names in new code.
 
 ## Building a page
 
@@ -112,6 +119,11 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | Icons | `x-ui.icon name="..."` (Lucide names); icon-only buttons need `aria-label` |
 | Light / dark switch | `x-ui.theme-toggle` (`label`, `size`, `iconOnly`); `WithColorScheme` + a bound `ColorSchemeStore` to keep it per user; the logo: `x-ui.logo` |
 
+## Docs site and audit rules
+
+- In the kit repo, `composer docs:build` renders `site/` from the workbench (served live at `/docs` by `composer serve`): Getting started, Tokens (colours with contrast in all four theme and mode sets, type, spacing, motion), Patterns (forms, tables, dialogs, onboarding checklist, dashboards), Rules, Audit rules, Changelog, and one page per component family (`workbench/app/Docs/Catalog.php` maps every Blade file to a page; examples in `workbench/resources/views/docs/examples/<slug>/`, notes in `workbench/resources/docs/<slug>.php`). A new component needs a Catalog entry, at least one example and a notes file, or `DocsSiteTest` fails. Browser check: `node scripts/docs-check.mjs`.
+- Audit rules every component is held to ([references/audit.md](references/audit.md)): the one size scale; spacing on the 4px grid; radii sm/md/lg/full only; 1px borders; type roles; 16px icons with a 2px stroke; focus on `:focus-visible`; disabled never by opacity; loading keeps the name and sets `aria-busy`; invalid is a `danger` edge plus `aria-invalid` and a caption linked by `aria-describedby`; empty states are one meta line; Escape inside a popup never closes the dialog around it (`preventDefault` as well as stop); tooltips describe the control, stay while hovered and close on Escape (WCAG 1.4.13); visible text is in the accessible name (2.5.3); every drag has buttons as an alternative (2.5.7); focus never falls to `<body>`. Breaking API changes are deferred, never made in a minor: add an alias instead.
+
 ## References (load when needed)
 
 - [references/rules.md](references/rules.md): every rule in detail (borders, radii, cut-off text, contrast, states).
@@ -123,7 +135,8 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 - [references/workflow.md](references/workflow.md): stepper, timeline, tag input, avatar group, sortable, slider, banner (DismissStore), tree, and the progress family.
 - [references/accessibility.md](references/accessibility.md), [references/performance.md](references/performance.md), [references/motion.md](references/motion.md), [references/theming.md](references/theming.md), [references/javascript.md](references/javascript.md).
 - [references/patterns.md](references/patterns.md): page recipes.
+- [references/audit.md](references/audit.md): the November 2026 audit: findings, fixes, prop aliases, deferred breaking changes and the audit rules.
 
 ## Before you hand over
 
-Check the screen against the hard rules above, then: no console errors; no page-level sideways scroll at 1440, 1024, 768, 390, 320; axe-core clean (WCAG 2.2 AA + best-practice); keyboard path works (Tab order, Escape closes, focus returns); long names, emails and titles wrap; empty, loading and error states exist. Check dark too: the screen in the dark scheme has no hard-coded light colour and no console errors. In the kit repo: `composer test`, `composer contrast` (four sets: each theme in light and dark), `npm run a11y` (both schemes).
+Check the screen against the hard rules above, then: no console errors; no page-level sideways scroll at 1440, 1024, 768, 390, 320; axe-core clean (WCAG 2.2 AA + best-practice); keyboard path works (Tab order, Escape closes, focus returns); long names, emails and titles wrap; empty, loading and error states exist. Check dark too: the screen in the dark scheme has no hard-coded light colour and no console errors. In the kit repo: `composer test`, `composer contrast` (four sets: each theme in light and dark), `npm run a11y` (both schemes), `composer docs:build` and `node scripts/docs-check.mjs` (axe on every docs page).

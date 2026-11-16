@@ -10,13 +10,13 @@ Target: WCAG 2.2 AA with no exemptions. Browser audit for the kit: `scripts/a11y
 - Names, roles, values: icon-only buttons have `aria-label`; toggles `aria-pressed`; menus and disclosures `aria-expanded`; the current page `aria-current`; busy regions and buttons `aria-busy`; invalid fields `aria-invalid` and `aria-describedby`; live regions are polite and each change is announced once.
 - Charts: `role="img"` with a summary name and a data table; the third line is dashed; legends print values as text.
 - Status messages: toasts, loaders, selection counts and validation summaries are polite live regions; focus never moves to announce them.
-- Reflow and zoom: no page-level sideways scroll at 320px or 200% zoom; segmented controls wrap; data tables scroll inside their own box.
+- Reflow and zoom: no page-level sideways scroll at 320px or 200% zoom; segmented controls never wrap: with `responsive` they turn into an `x-ui.select` below `sm`; data tables scroll inside their own box.
 - Text spacing: components use line boxes, not fixed heights, for text; nothing is truncated (see [Rules](rules.md)).
 - Contrast: see the Contrast table on the workbench gallery; every text pair 4.5:1, every boundary, mark and icon 3:1, in every state.
 - Forced colours: borders, outlines, the selected tab's underline and toggle borders stay visible; checkboxes and radios fall back to the native control; chart swatches and bars keep their colour (`forced-color-adjust: none`); the switch thumb and progress bar use `CanvasText`. Boundaries never rely on `box-shadow`.
 - Reduced motion: transitions and smooth scrolling are off; spinners and the progress bar pulse slowly; skeletons and any `animate-spin` icon stop rotating.
 - Semantics: one `main`, `nav` and `header` per shell; heading levels in order; lists are lists; tables have a caption and `scope`; the detail card is a `dl`; `html` has `lang`; page titles are unique.
-- Dragging: every drag needs a single-pointer alternative. Open item: `x-ui.export-columns` reorders by drag or Alt+Up/Down on the handle only; it needs visible Move up and Move down buttons (and a 24px handle) before it meets 2.5.7 and 2.5.8.
+- Dragging: every drag has a single-pointer alternative (2.5.7): `x-ui.export-columns` and `x-ui.sortable` rows carry Move up and Move down buttons (24px targets) next to the drag handle; the handle covers the keyboard.
 
 Keyboard map: buttons and links Enter (buttons also Space); tabs and segmented Left and Right (Home and End on tabs), selection follows focus; radio groups arrow keys; checkboxes and switches Space; dropdowns Enter, Space or Down to open, arrows to move, Escape to close and return focus; selects as in Select; dialogs and the command palette Tab cycles inside, Escape closes; Cmd+K or `/` opens the palette; Cmd+. toggles focus mode; H toggles privacy mode.
 
