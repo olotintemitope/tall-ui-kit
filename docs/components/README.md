@@ -1,6 +1,6 @@
 # Components
 
-Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md), [workflow and progress](workflow.md), [chat and community](community.md).
+Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md), [workflow and progress](workflow.md), [chat and community](community.md), [files](files.md).
 
 ## Components
 
@@ -24,7 +24,10 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.checkbox` | `label`, `description` (alias `hint`), `error`, `invalid`, `indeterminate`; whole row is the target |
 | `x-ui.radio-group` | `name`, `label`, `hint`, `options`, `selected`, `variant` list or cards, `orientation`, `required`, `invalid`; a checked radio is an ink fill with a white dot; a selected card has a 1px `primary-text` border (5.21:1) and a `primary/5` tint, an unselected one a 1px `control` border (3.65:1); the 3:1 state difference is carried by the radio (ink fill 14.97:1 on the tint vs an empty ring), not the tint (1.06:1) |
 | `x-ui.switch` | `label`, `description`, `checked`, `size`, `name`; `role="switch"` |
-| `x-ui.file` | `multiple`, `accept`, `hint`, `invalid`, `variant` (list, images: thumbnail previews with Remove); slot `files`; works with `wire:model` uploads |
+| `x-ui.file` | `multiple`, `accept`, `hint`, `invalid`, `variant` (list, images: thumbnail previews with Remove); slot `files`; works with `wire:model` uploads. Additive (v0.9): `maxSize`, `maxFiles`, `maxTotalSize`, `validate` (per-file errors, a hint written from `accept` and the limits), `reorder` + `reorderAction`, `removeAction`, `paste`, `capture`, `chunked` + `chunkSize`. See [forms](forms.md) "File" |
+| `x-ui.file-manager` | Grid or list of folders and files with breadcrumbs, sort, selection, bulk bar, inline rename, Move, delete, new folder, drag-and-drop upload, Load more. See [files](files.md) |
+| `x-ui.file-preview` | Image (zoom), PDF, audio, video, text and fallback viewers, details, Download, Open in new tab, Previous / Next; `variant` panel, dialog, sheet. See [files](files.md) |
+| `x-ui.file-card`, `x-ui.attachment-list` | One file as a row, card or compact link with a type label, status pill and actions; a named list of them. See [files](files.md) |
 | `x-ui.form` | `<form>` with `dirty` tracking and focus on the first invalid field after submit |
 | `x-ui.form-section` | `title`, `description`; slot `footer`; 280px text column plus panel |
 | `x-ui.form-page` | tinted region for forms inside a white page |

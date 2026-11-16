@@ -91,6 +91,56 @@ A sticky 200px list from lg (`top-20`); the link of the section under a reading 
 
 `x-ui.field inline`: from `sm` the label and hint sit in a 220px column, the control and its error on the right, centred on the control; stacked on phones. Wiring (`for`, `id`, `aria-describedby`) is the same as a stacked field. `x-ui.form-layout.inline` divides the rows with 1px `line` rules inside a panel.
 
+## File
+
+`x-ui.file` covers its drop area with the real `<input type="file">`, so click, keyboard and drag and drop feed one control and `wire:model` uploads work unchanged. Without any of the props below it renders exactly as in v0.8.
+
+| Prop (v0.9, additive) | Meaning |
+|---|---|
+| `maxSize`, `maxFiles`, `maxTotalSize` | Limits (`maxSize` and `maxTotalSize` take bytes or `"10MB"`). A refused file is listed under "Files not added" with its reason ("Larger than 5 MB.", "Only 4 files can be added.", "This type of file is not accepted.") and is never sent; the others upload as usual |
+| `validate` | Check each file's type against `accept` (on whenever a limit is set) |
+| `hint` | When not given and there are limits: written from `accept` and them, "PDF or images, up to 5 MB each. At most 4 files, 10 MB in total." |
+| `reorder`, `reorderAction` | The chosen files are an `x-ui.sortable` list (drag the grip, Up / Down buttons, or Space and the arrows); `reorderAction` gets the indexes in their old order, e.g. `[2, 0, 1]`; a plain form re-orders the input's files |
+| `removeAction` | Livewire method called with the index when a file is removed (else the temporary upload is removed with `$wire.removeUpload`) |
+| `paste` | Files on the clipboard (a screenshot) are added while focus is in the field |
+| `capture` | `environment` (rear camera, also `true`) or `user` on phones |
+| `chunked`, `chunkSize` | Upload in pieces through the kit's chunk endpoint (below) |
+
+Validate on the server as usual: the browser checks only save a round trip. The behaviour loads lazily (`resources/js/file-core.js`, about 4 KB gzip).
+
+### Chunked uploads
+
+Livewire 4 uploads each file in a single request (its upload docs list `$wire.upload`, `uploadMultiple`, `removeUpload`, `cancelUpload` and the `livewire-upload-*` events, with no chunking or resume), so very large files go through a small endpoint in the kit instead:
+
+```php
+// routes/web.php: behind your auth and a throttle
+TallUiKit\Uploads\ChunkedUploads::routes('ui/uploads', ['web', 'auth', 'throttle:600,1']);
+```
+
+```blade
+<x-ui.file wire:model="videoIds" multiple chunked="{{ url('ui/uploads') }}" max-size="2GB">
+    <x-slot:files><x-ui.upload-progress.list for="videoIds" multiple /></x-slot:files>
+</x-ui.file>
+```
+
+```php
+public array $videoIds = [];
+
+public function save(): void
+{
+    foreach ($this->videoIds as $id) {
+        $upload = TallUiKit\Uploads\ChunkedUploads::find($id); // null unless this user started it
+        abort_unless($upload?->done(), 422);
+        // validate $upload->mimeType() (read from the content) and $upload->size(), then:
+        $path = $upload->store('videos', 's3');
+    }
+}
+```
+
+Contract: `POST {prefix}` with `{name, size, type}` answers `201 {id, offset: 0, chunk_size}`; `PATCH {prefix}/{id}` with the raw bytes and `Upload-Offset` appends them at the current end (`409 {offset}` when the offset does not match, `413` above the chunk size) and answers `{offset, done}`; `GET {prefix}/{id}` gives the offset to resume from; `DELETE {prefix}/{id}` cancels. Each upload is a folder on a local disk (`tall-ui-kit.chunked_uploads.disk`, `directory`, `chunk_size` 2 MB, `max_size` 2 GB, `expire_after` 24 hours): pieces append in order, the last turns `data.part` into `data`. Uploads belong to the user who started them (else the session); anyone else gets 404. Names are reduced to a safe base name. Schedule `tall-ui-kit:prune-uploads` to delete old ones.
+
+In the browser each file is sent in pieces one after another; a dropped connection waits for the network (`online`, or a backoff up to 30 seconds), asks the server for its offset and carries on; after 8 failed tries the row fails with Retry, which resumes. An upload id is remembered for the tab, so choosing the same file again after a reload resumes it. Progress goes out as Livewire's own upload events on the input, so `x-ui.upload-progress.list` follows it (its Cancel and Retry act on the chunked upload). When all files are done, their ids are set on the `wire:model` property.
+
 ## Dates and times
 
 Every date or time control is a text field plus a calendar (or clock) button and a popup below the field. No native `<input type="date|time|month|week|datetime-local">` anywhere: the browser's picker cannot be kept below its field, styled, or made to match the kit (`DatePickerTest` fails on one in any view). One engine, `x-ui.date-picker`, behind six components; behaviour in `resources/js/datepicker.js`, parsing and formats in `resources/js/date-core.js` (tested under `node --test`), server side in `TallUiKit\Support\DateInput`.
