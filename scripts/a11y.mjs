@@ -20,7 +20,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const arg = (name, fallback) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split('=')[1] ?? fallback;
 
 const base = process.env.BASE ?? 'http://127.0.0.1:8077';
-const pages = arg('pages', '/,/forms,/overlays,/data,/charts,/tables,/workflow,/checklist,/dates,/sidebar').split(',');
+const pages = arg('pages', '/,/forms,/overlays,/data,/charts,/tables,/workflow,/checklist,/dates,/sidebar,/files').split(',');
 const widths = arg('widths', '1440,390').split(',').map(Number);
 const themes = arg('themes', 'neutral,newbanger').split(',');
 const schemes = arg('schemes', 'light,dark').split(',');
@@ -56,6 +56,12 @@ for (const theme of themes) {
                 states.push(['open calendar', async () => { await page.getByRole('button', { name: 'Choose date' }).first().click(); }]);
                 states.push(['open range', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Choose dates' }).first().click(); }]);
                 states.push(['open time', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Choose time' }).first().click(); }]);
+            }
+            if (path === '/files') {
+                states.push(['selected', async () => { await page.locator('div#drive [role=option]').first().click(); }]);
+                states.push(['move dialog', async () => { await page.locator('div#drive [data-fm-action=move]').click(); }]);
+                states.push(['sort menu', async () => { await page.keyboard.press('Escape'); await page.waitForTimeout(200); await page.locator('div#drive [data-fm-sort]').click(); }]);
+                states.push(['preview sheet', async () => { await page.keyboard.press('Escape'); await page.getByRole('button', { name: 'Open in a sheet' }).click(); }]);
             }
             if (path === '/forms') {
                 states.push(['open select', async () => { await page.getByRole('combobox', { name: 'Payout day' }).click(); }]);

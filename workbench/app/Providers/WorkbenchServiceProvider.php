@@ -13,6 +13,18 @@ use Workbench\App\Docs\BuildDocsCommand;
  */
 class WorkbenchServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        // /files: one local test disk for Livewire's temporary uploads and the chunk endpoint.
+        config([
+            'filesystems.disks.kit-test' => ['driver' => 'local', 'root' => storage_path('app/kit-test'), 'throw' => false],
+            'livewire.temporary_file_upload.disk' => 'kit-test',
+            'tall-ui-kit.chunked_uploads.disk' => 'kit-test',
+            'tall-ui-kit.chunked_uploads.chunk_size' => 256 * 1024,
+            'tall-ui-kit.chunked_uploads.max_size' => 200 * 1024 * 1024,
+        ]);
+    }
+
     public function boot(): void
     {
         Gate::before(fn () => true);

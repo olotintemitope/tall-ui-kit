@@ -15,6 +15,7 @@
         'checklist' => ['label' => 'Checklist', 'href' => route('gallery.checklist')],
         'chat' => ['label' => 'Chat', 'href' => route('gallery.chat')],
         'community' => ['label' => 'Community', 'href' => route('gallery.community')],
+        'files' => ['label' => 'Files', 'href' => route('gallery.files')],
         'dates' => ['label' => 'Dates', 'href' => route('gallery.dates')],
         'sidebar' => ['label' => 'Sidebar', 'href' => route('gallery.sidebar')],
     ];

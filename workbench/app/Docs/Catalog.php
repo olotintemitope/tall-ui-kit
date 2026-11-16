@@ -90,6 +90,11 @@ final class Catalog
             'tree' => ['Tree', ['ui.tree', 'ui.tree.node']],
             'sortable' => ['Sortable', ['ui.sortable', 'ui.sortable.item']],
         ],
+        'Files' => [
+            'file-manager' => ['File manager', ['ui.file-manager']],
+            'file-preview' => ['File preview', ['ui.file-preview', 'ui.file-preview.body']],
+            'file-card' => ['File card and attachment list', ['ui.file-card', 'ui.attachment-list']],
+        ],
         'Community' => [
             'chat' => ['Chat', ['ui.chat', 'ui.chat.message', 'ui.chat.day', 'ui.chat.typing', 'ui.chat.composer']],
             'chat-inbox' => ['Inbox', ['ui.chat.inbox']],

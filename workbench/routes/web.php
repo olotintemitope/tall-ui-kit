@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use TallUiKit\Uploads\ChunkedUploads;
 use Workbench\App\Docs\DocsController;
+use Workbench\App\Files\DemoFileController;
 use Workbench\App\Livewire\TableGallery;
 
 /*
@@ -18,13 +20,16 @@ Route::middleware('web')->group(function () {
         return response()->file($path, ['Content-Type' => str_ends_with($file, '.css') ? 'text/css' : 'text/javascript']);
     })->where('file', '[A-Za-z0-9._-]+')->name('kit-assets');
 
-    foreach (['/' => 'index', '/forms' => 'forms', '/overlays' => 'overlays', '/data' => 'data', '/charts' => 'charts', '/sidebar' => 'sidebar', '/checklist' => 'checklist', '/dates' => 'dates', '/chat' => 'chat', '/community' => 'community'] as $uri => $page) {
+    foreach (['/' => 'index', '/forms' => 'forms', '/overlays' => 'overlays', '/data' => 'data', '/charts' => 'charts', '/sidebar' => 'sidebar', '/checklist' => 'checklist', '/dates' => 'dates', '/chat' => 'chat', '/community' => 'community', '/files' => 'files'] as $uri => $page) {
         Route::get($uri, fn () => view('gallery.'.$page))->name('gallery.'.$page);
     }
 
     Route::get('/workflow', fn () => view('gallery.workflow'))->name('gallery.workflow');
 
     Route::get('/tables', TableGallery::class)->name('gallery.tables');
+
+    // /files: generated bodies for the demo drive (previews and downloads).
+    Route::get('/files-demo/{id}', DemoFileController::class)->where('id', '[a-z0-9-]+')->name('files-demo.file');
 
     // The docs site (composer docs:build renders these routes to site/).
     Route::prefix('docs')->group(function () {
@@ -36,3 +41,9 @@ Route::middleware('web')->group(function () {
         Route::get('/{page}', [DocsController::class, 'guide'])->where('page', '[a-z0-9-]+')->name('docs.guide');
     });
 });
+
+/*
+ * x-ui.file `chunked` on /files: the kit's chunk endpoint on the workbench test disk. The
+ * workbench has no users, so uploads belong to the session (an app keeps 'auth').
+ */
+ChunkedUploads::routes('workbench/uploads', ['web']);

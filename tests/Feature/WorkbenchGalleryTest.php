@@ -30,6 +30,7 @@ it('renders each gallery page in both themes', function (string $uri, string $he
     ['/sidebar', 'Sidebar'],
     ['/chat', 'Chat'],
     ['/community', 'Community'],
+    ['/files', 'Files'],
 ]);
 
 it('serves only built gallery assets', function () {
