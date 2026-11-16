@@ -5,7 +5,7 @@ description: Build Laravel Livewire pages and components with the private TALL U
 
 # TALL UI kit
 
-A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 4. Components are anonymous Blade components named `x-ui.*` and `x-data-table.*`. Look and feel: Stripe, Linear, Vercel. Hierarchy comes from the `type-*` roles, never from boxes, fills or icons.
+A flat, dense, accessible kit for Laravel 12 and 13, Livewire 4.4, Alpine and Tailwind 4. Components are anonymous Blade components named `x-ui.*` and `x-data-table.*`. Look and feel: Stripe, Linear, Vercel. Hierarchy comes from the `type-*` roles, never from boxes, fills or icons.
 
 ## Before writing UI
 

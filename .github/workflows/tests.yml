@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Laravel 12 supports PHP 8.2+; Laravel 13 needs PHP 8.3+.
+          - { php: '8.2', laravel: '^12.0', testbench: '^10.0', pest: '^3.8', pest-laravel: '^3.2' }
+          - { php: '8.3', laravel: '^12.0', testbench: '^10.0', pest: '^4.4', pest-laravel: '^4.1' }
+          - { php: '8.4', laravel: '^12.0', testbench: '^10.0', pest: '^4.4', pest-laravel: '^4.1' }
+          - { php: '8.3', laravel: '^13.0', testbench: '^11.0', pest: '^4.4', pest-laravel: '^4.1' }
+          - { php: '8.4', laravel: '^13.0', testbench: '^11.0', pest: '^4.4', pest-laravel: '^4.1' }
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, gd, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer update --no-interaction --no-progress --prefer-dist -W \
+            --with "laravel/framework:${{ matrix.laravel }}" \
+            --with "orchestra/testbench:${{ matrix.testbench }}" \
+            --with "pestphp/pest:${{ matrix.pest }}" \
+            --with "pestphp/pest-plugin-laravel:${{ matrix.pest-laravel }}"
+
+      - name: Tests
+        run: composer test
+
+      - name: Contrast
+        run: composer contrast

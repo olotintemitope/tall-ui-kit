@@ -4,7 +4,7 @@
         <header class="flex flex-col gap-2">
             <p class="type-label">Guide</p>
             <h1 class="type-title">TALL UI kit</h1>
-            <p class="type-body max-w-prose">A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 4: anonymous Blade components under <code class="type-numeric">x-ui.*</code> and <code class="type-numeric">x-data-table.*</code>, two themes, each with light and dark colour schemes. Every example on this site is the kit itself, rendered by <code class="type-numeric">composer docs:build</code>.</p>
+            <p class="type-body max-w-prose">A flat, dense, accessible kit for Laravel 12 and 13, Livewire 4.4, Alpine and Tailwind 4: anonymous Blade components under <code class="type-numeric">x-ui.*</code> and <code class="type-numeric">x-data-table.*</code>, two themes, each with light and dark colour schemes. Every example on this site is the kit itself, rendered by <code class="type-numeric">composer docs:build</code>.</p>
             <p class="type-meta"><a class="underline underline-offset-2 rounded-sm focus-ring" href="{{ Site::url('components/index') }}">Browse the components</a>, read the <a class="underline underline-offset-2 rounded-sm focus-ring" href="{{ Site::url('rules') }}">rules</a>, or start with a <a class="underline underline-offset-2 rounded-sm focus-ring" href="{{ Site::url('patterns/forms') }}">pattern</a>.</p>
         </header>
 

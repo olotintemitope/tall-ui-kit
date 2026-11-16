@@ -1,6 +1,6 @@
 # TALL UI kit
 
-`olotintemitope/tall-ui-kit`: a flat, dense, accessible UI kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 4. About 170 anonymous Blade components under the familiar `x-ui.*` and `x-data-table.*` names, a server-driven data table trait, server-rendered charts, Tailwind 4 tokens with two themes, and Alpine behaviour as ES modules. Extracted from the NewBanger app, where every component was built and QA'd.
+`olotintemitope/tall-ui-kit`: a flat, dense, accessible UI kit for Laravel 12 and 13, Livewire 4.4, Alpine and Tailwind 4. About 170 anonymous Blade components under the familiar `x-ui.*` and `x-data-table.*` names, a server-driven data table trait, server-rendered charts, Tailwind 4 tokens with two themes, and Alpine behaviour as ES modules. Extracted from the NewBanger app, where every component was built and QA'd.
 
 Private package, proprietary licence.
 
@@ -24,7 +24,7 @@ npm install gsap
 php artisan vendor:publish --tag=tall-ui-kit-config   # optional
 ```
 
-Requires PHP 8.4, `laravel/framework` 13, `livewire/livewire` 4.4 and `mallardduck/blade-lucide-icons` 1.23 (pinned: 1.24 redraws icons, see [icons](docs/components/copy-and-icons.md)). The service provider is auto-discovered.
+Requires PHP 8.2 or newer with `laravel/framework` 12, or PHP 8.3 or newer with `laravel/framework` 13 (both tested in CI), `livewire/livewire` 4.4 and `mallardduck/blade-lucide-icons` 1.23 (pinned: 1.24 redraws icons, see [icons](docs/components/copy-and-icons.md)). The service provider is auto-discovered.
 
 ### CSS (Tailwind 4)
 
