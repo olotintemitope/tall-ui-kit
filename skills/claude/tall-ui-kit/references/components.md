@@ -1,6 +1,6 @@
 # Components
 
-Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md), [workflow and progress](workflow.md).
+Every `x-ui.*` component with its props and slots. Families: [forms](forms.md), [HTML elements](html-elements.md), [navigation](navigation.md), [overlays](overlays.md), [feedback](feedback.md), [data display](data-display.md), [data table](data-table.md), [exports](exports.md), [copy and icons](copy-and-icons.md), [workflow and progress](workflow.md), [chat and community](community.md).
 
 ## Components
 
@@ -70,6 +70,7 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.form-layout.*` | Form layouts: `docs/components/forms.md` |
 | `x-ui.stepper`, `x-ui.timeline` (+ `.item`, `.day`), `x-ui.tag-input`, `x-ui.avatar-group`, `x-ui.sortable` (+ `.item`), `x-ui.slider`, `x-ui.banner`, `x-ui.tree` | Workflow components: `steps`/`current`/`variant`/`orientation`/`clickable`; `items`/`groupByDay`/`limit`; array `wire:model`, `suggestions`, `max`, `pattern`; `people`/`max`; `items`/`action` (one call with the new order); single or `dual`, `format`; `tone`, `dismissible`, `name`, `persist` (the `DismissStore`); `nodes`, `selectable`/`checkable`, `lazy`. See [workflow](workflow.md) |
 | `x-ui.progress` (sizes, tones, `labelPosition`, `format`, `buffer`), `x-ui.progress-ring`, `x-ui.progress-steps`, `x-ui.upload-progress` (+ `.list`) | Progress family: see [workflow](workflow.md) "Progress" |
+| `x-ui.chat` (+ `.message`, `.day`, `.typing`, `.composer`, `.inbox`), `x-ui.post`, `x-ui.comment-thread`, `x-ui.reactions`, `x-ui.member-card`, `x-ui.profile-header`, `x-ui.follow-button`, `x-ui.poll`, `x-ui.channel-list`, `x-ui.leaderboard` | Chat and community: `messages`/`olderAction`/`sendAction` (one call with the text and an idempotency key); `conversations`; `likeAction` (optimistic, rolled back on `false`); `comments`/`depth`/`replyAction`; `reactions`/`options`/`action`; `following`/`followAction`; `options`/`multiple`/`voted`/`action`; `sections`; `rows` with `change`/`current`. See [chat and community](community.md) |
 
 ## Typography components
 

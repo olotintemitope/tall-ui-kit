@@ -32,6 +32,7 @@ A flat, dense, accessible kit for Laravel 13, Livewire 4.4, Alpine and Tailwind 
 - **URLs use UUIDs, people see short references.** Build web links with `route('name', $model)` bound by `{model:uuid}`; show records by a short reference (`TXN-9F3C21AB`) in the numeric/mono role. Never put numeric ids in web URLs.
 - **Motion comes from the kit.** Put `wire:transition.navigate` on the layout's `<main>` only (the main region cross-fades on `wire:navigate`, the shell holds still); charts draw in once by themselves (`motion="none"` opts out). Never add page, chart or idle animations of your own; only transform and opacity animate, and reduced motion is instant ([references/motion.md](references/motion.md)).
 - **Shell pages change with `wire:navigate`.** The sidebar's items, logo and Settings navigate in place by default; give the shell's `x-ui.sidebar` a `persist` key that changes with its items, so it survives page changes. Plain `wire:navigate`, never `.hover` (prefetch storms). External links, area switches, log out, downloads and payment hand-offs stay full loads (`reload` on an item). Page scripts must work after `livewire:navigated`: never hold `<body>` or a page element in module code ([references/navigation.md](references/navigation.md), Page changes).
+- **User text is escaped, then linked.** Chat messages, posts and comments go through `TallUiKit\Support\RichText` (the components do it): never `{!! !!}` user text. Sends, replies, votes and follows are one Livewire call each and idempotent on the server; return `false` to roll an optimistic change back.
 - **Livewire performance:** public properties hold ids and scalars; `wire:key` on every looped row; `wire:model.live.debounce.300ms` only where results update live; no `wire:poll` without a reason (30s+, `.visible`); no Alpine component per item in long lists.
 
 ## Shared prop names and sizes
@@ -117,6 +118,9 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 | Charts | `x-ui.chart` / `x-ui.card.chart`: line, bar, stacked-bar, bar-horizontal, sparkline only; up to 3 series |
 | Money and numbers | `x-ui.money` (privacy-aware), `x-ui.number`, `x-ui.delta`; `TallUiKit\Support\Format` in PHP |
 | Icons | `x-ui.icon name="..."` (Lucide names); icon-only buttons need `aria-label` |
+| A conversation, a message box, an inbox | `x-ui.chat` (`messages` as data, `sendAction` gets the text and an idempotency key, `olderAction`, `typing`), `x-ui.chat.composer`, `x-ui.chat.inbox` ([references/community.md](references/community.md)) |
+| Feed, comments, reactions, polls | `x-ui.post` (optimistic `likeAction`, `more` dropdown slot), `x-ui.comment-thread` (`depth`, `replyAction`), `x-ui.reactions` (picker below), `x-ui.poll` (results as progress bars) |
+| People, channels, rankings | `x-ui.member-card`, `x-ui.profile-header` (Follow toggle), `x-ui.channel-list`, `x-ui.leaderboard` (rank change in words, your row highlighted; no medals or avatars) |
 | Light / dark switch | `x-ui.theme-toggle` (`label`, `size`, `iconOnly`); `WithColorScheme` + a bound `ColorSchemeStore` to keep it per user; the logo: `x-ui.logo` |
 
 ## Docs site and audit rules
@@ -133,6 +137,7 @@ More recipes (list page with filters, detail page, dashboard section, dialog for
 - [references/data-table.md](references/data-table.md): `WithDataTable`, `Column`, `Filter`, `Action`, layouts, focus, performance.
 - [references/overlays.md](references/overlays.md), [references/feedback.md](references/feedback.md), [references/navigation.md](references/navigation.md), [references/data-display.md](references/data-display.md): dialogs, loading, toasts, notifications, tabs, sidebar, cards, charts.
 - [references/workflow.md](references/workflow.md): stepper, timeline, tag input, avatar group, sortable, slider, banner (DismissStore), tree, and the progress family.
+- [references/community.md](references/community.md): chat, composer, inbox, post, comment thread, reactions, member card and profile header, poll, channel list, leaderboard; `RichText` (escape, then link).
 - [references/accessibility.md](references/accessibility.md), [references/performance.md](references/performance.md), [references/motion.md](references/motion.md), [references/theming.md](references/theming.md), [references/javascript.md](references/javascript.md).
 - [references/patterns.md](references/patterns.md): page recipes.
 - [references/audit.md](references/audit.md): the November 2026 audit: findings, fixes, prop aliases, deferred breaking changes and the audit rules.

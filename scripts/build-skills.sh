@@ -31,6 +31,7 @@ copy components/data-table.md data-table.md
 copy components/exports.md exports.md
 copy components/copy-and-icons.md copy-and-icons.md
 copy components/workflow.md workflow.md
+copy components/community.md community.md
 copy audit-2026-11.md audit.md
 
 # Links between docs point at docs/ paths; inside the skill every file sits in one folder.
@@ -47,7 +48,7 @@ k="$gpt/custom-gpt/knowledge"
 cat "$ref/rules.md" "$ref/tokens.md" "$ref/theming.md" > "$k/01-rules-tokens-theming.md"
 cat "$ref/components.md" "$ref/patterns.md" > "$k/02-components-and-patterns.md"
 cat "$ref/forms.md" "$ref/html-elements.md" > "$k/03-forms-and-html-elements.md"
-cat "$ref/navigation.md" "$ref/overlays.md" "$ref/feedback.md" "$ref/workflow.md" > "$k/04-navigation-overlays-feedback.md"
+cat "$ref/navigation.md" "$ref/overlays.md" "$ref/feedback.md" "$ref/workflow.md" "$ref/community.md" > "$k/04-navigation-overlays-feedback.md"
 cat "$ref/data-display.md" "$ref/data-table.md" "$ref/exports.md" > "$k/05-cards-charts-tables-exports.md"
 cat "$ref/accessibility.md" "$ref/performance.md" "$ref/motion.md" "$ref/javascript.md" "$ref/copy-and-icons.md" "$ref/audit.md" > "$k/06-accessibility-performance-motion-js-icons.md"
 
