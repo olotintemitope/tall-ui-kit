@@ -284,6 +284,21 @@ document.addEventListener('alpine:init', () => {
             return this.state === 'copied';
         },
 
+        // WCAG 1.4.13: the tip stays while the pointer moves onto it, and Escape hides it
+        // without closing a dialog around it.
+        leaveTip(button) {
+            setTimeout(() => {
+                if (!button.nextElementSibling?.matches(':hover')) this.tip = false;
+            }, 100);
+        },
+
+        hideTip(event) {
+            if (!this.tip) return;
+            event.preventDefault();
+            event.stopPropagation();
+            this.tip = false;
+        },
+
         get failed() {
             return this.state === 'failed';
         },
