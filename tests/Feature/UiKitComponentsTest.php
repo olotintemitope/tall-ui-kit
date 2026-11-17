@@ -446,6 +446,14 @@ describe('metrics and lists', function () {
     });
 });
 
+it('renders empty states without a default divider', function () {
+    $this->blade('<x-ui.empty-state title="No items yet" description="Nothing is here yet." />')
+        ->assertSee('No items yet')
+        ->assertSee('Nothing is here yet.')
+        ->assertSee('class="py-8"', false)
+        ->assertDontSee('border-t border-line', false);
+});
+
 describe('segmented control', function () {
     it('renders text segments with radio semantics and a roving tab stop', function () {
         $html = (string) $this->blade('<x-ui.segmented wire:model.live="period" label="Period" :options="[\'7\' => \'7d\', \'30\' => \'30d\']" value="30" />');

@@ -5,7 +5,7 @@
 --}}
 @props(['title', 'description' => null, 'actionLabel' => null, 'actionHref' => null])
 
-<div {{ $attributes->class(['border-t border-line py-8']) }}>
+<div {{ $attributes->class(['py-8']) }}>
     <p class="type-body-strong">{{ $title }}</p>
 
     @if ($description)
