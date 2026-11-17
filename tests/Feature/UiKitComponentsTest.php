@@ -343,7 +343,8 @@ describe('metrics and lists', function () {
     it('renders a stat strip with figure values, money through privacy mode and an empty dash', function () {
         $this->blade('<x-ui.stat-strip :columns="3"><x-ui.stat label="Users" sub="Registered" :value="1200" /><x-ui.stat label="Revenue" :value="5000" money /><x-ui.stat label="Unknown" /></x-ui.stat-strip>')
             ->assertSee('xl:grid-cols-3', false)
-            ->assertSee('border-y border-line', false)
+            ->assertSee('border-y border-l border-line', false)
+            ->assertSee('border-l border-line', false)
             ->assertSee('type-label', false)
             ->assertSee('type-figure', false)
             ->assertSee('type-caption', false)
