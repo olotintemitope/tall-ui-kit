@@ -18,15 +18,15 @@ it('keeps a dropdown placed below from flipping above', function (string $props,
     expect($html)->toContain($anchor)
         ->and($html)->toContain('$revealBelow($el');
 })->with([
-    'default (right)' => ['', 'x-anchor.bottom-end.noflip.offset.6'],
-    'align left' => ['align="left"', 'x-anchor.bottom-start.noflip.offset.6'],
-    'bottom' => ['placement="bottom"', 'x-anchor.bottom.noflip.offset.6'],
+    'default (right)' => ['', 'x-anchor.bottom-end.noflip.offset.6.fixed'],
+    'align left' => ['align="left"', 'x-anchor.bottom-start.noflip.offset.6.fixed'],
+    'bottom' => ['placement="bottom"', 'x-anchor.bottom.noflip.offset.6.fixed'],
 ]);
 
 it('lets an explicit top placement stay above', function () {
     $html = Blade::render('<x-ui.dropdown placement="top-start"><x-slot:trigger><button>Open</button></x-slot:trigger><x-ui.dropdown.item>One</x-ui.dropdown.item></x-ui.dropdown>');
 
-    expect($html)->toContain('x-anchor.top-start.offset.6')->not->toContain('noflip');
+    expect($html)->toContain('x-anchor.top-start.offset.6.fixed')->not->toContain('noflip');
 });
 
 it('keeps a popover placed below from flipping above', function () {

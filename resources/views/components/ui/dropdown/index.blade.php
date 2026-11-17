@@ -78,7 +78,7 @@
         x-bind:id="$id('menu')"
         x-show="open"
         x-cloak
-        x-anchor.{{ $placement }}{{ $flip }}.offset.6="$refs.trigger.firstElementChild"
+        x-anchor.{{ $placement }}{{ $flip }}.offset.6.fixed="$refs.trigger.firstElementChild"
         x-effect="open && $revealBelow($el, $refs.trigger.firstElementChild)"
         x-transition:enter="transition ease-motion-out duration-150"
         x-transition:enter-start="opacity-0 -translate-y-1"
