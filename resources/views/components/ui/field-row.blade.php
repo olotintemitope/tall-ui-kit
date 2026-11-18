@@ -9,5 +9,5 @@
     'grid grid-cols-1 items-start gap-x-3 gap-y-4',
     'md:grid-cols-3' => (int) $cols === 3,
     'md:grid-cols-2' => (int) $cols !== 3,
-    '[&_[data-control-box]]:w-full [&_[data-control-box]]:max-w-none',
+    '[&_[data-control-box]]:w-full [&_[data-control-box]]:max-w-none [&_[data-ui-select]]:w-full [&_[data-ui-select]]:max-w-none',
 ]) }}>{{ $slot }}</div>

@@ -14,9 +14,10 @@
     Props: options (value => label, or a list of ['value' => , 'label' => , 'disabled' => ];
     a string key whose value is an array of value => label is a group), placeholder (an
     empty-value first option), selected (initial value without wire:model; a list with
-    `multiple`), size (sm 32px | default 36px, `md` is an alias | lg 40px), width (auto, the default: as wide as the
-    longest label plus the chevron, at least 6rem, never wider than its container; or
-    full|lg|md|sm|xs), invalid, multiple (a listbox with checkmarks; the trigger lists the
+    `multiple`), size (sm 32px | default 36px, `md` is an alias | lg 40px), width (md by
+    default to match text inputs; auto sizes to the longest label plus chevron, at least
+    6rem and never wider than its container; or full|lg|md|sm|xs), invalid, multiple (a
+    listbox with checkmarks; the trigger lists the
     chosen labels and wraps), rows (kept for the old API: the list scrolls at 18rem).
     <option>s in the slot are parsed into options.
     Binding: wire:model (any modifier) or x-model on the component; .live fires when a
@@ -26,7 +27,7 @@
     morph show the right label. Wiring (id, label, hint, error, aria-describedby) as
     x-ui.input; other attributes (aria-label, data-*, x-on:*, disabled) go to the trigger.
 --}}
-@props(['options' => [], 'placeholder' => null, 'selected' => null, 'size' => 'default', 'invalid' => null, 'width' => null, 'multiple' => false, 'rows' => 5])
+@props(['options' => [], 'placeholder' => null, 'selected' => null, 'size' => 'default', 'invalid' => null, 'width' => 'md', 'multiple' => false, 'rows' => 5])
 @aware(['name' => null, 'id' => null, 'hint' => null, 'error' => null, 'required' => false, 'width' => null])
 
 @php
@@ -90,7 +91,7 @@
         ? ($chosenLabels->implode(', ') ?: ($placeholder ?? 'None selected'))
         : ($chosenLabels->first() ?? $placeholder ?? '');
 
-    $auto = ! $multiple && (blank($width) || $width === 'auto' || ! in_array($width, ['full', 'lg', 'md', 'sm', 'xs'], true));
+    $auto = ! $multiple && $width === 'auto';
     $longest = collect([$placeholder, ...$flat->pluck('label')])->filter(fn ($l) => filled($l))->sortByDesc(fn ($l) => mb_strlen((string) $l))->first();
 
     // wire:island sits beside wire:model on the root: Livewire reads it from the element that made the update.
@@ -112,7 +113,7 @@
     'group/select relative',
     'inline-grid min-w-24 max-w-full align-middle' => $auto,
     'grid' => ! $auto,
-    FormControl::width($width, 'sm') => ! $auto,
+    FormControl::width($width, 'md') => ! $auto,
 ]) }} x-data="uiSelect(@js($initial), @js((bool) $multiple))" x-modelable="value" data-ui-select @if ($multiple) data-multiple @endif @if ($auto) data-select-auto @endif>
     @if ($auto && $longest)
         <span class="invisible [grid-area:1/1] h-0 overflow-hidden whitespace-pre pl-3 pr-9 font-body text-body" aria-hidden="true" data-select-sizer>{{ $longest }}</span>

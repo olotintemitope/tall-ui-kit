@@ -249,8 +249,9 @@ it('renders the Livewire pagination view with wire:click page changes', function
 it('sizes controls to their content and lets the field or a row override it', function () {
     $this->blade('<x-ui.input />')->assertSee('max-w-md', false);
     $this->blade('<x-ui.textarea />')->assertDontSee('max-w-', false);
-    // Selects size to their longest label (never a fixed narrow width; text is never cut).
-    $this->blade('<x-ui.select :options="[\'a\' => \'All statuses\']" />')->assertSee('data-select-auto', false)->assertSee('data-select-sizer>All statuses<', false)->assertDontSee('max-w-xs', false);
+    // Selects match the text input width by default; content sizing stays opt-in.
+    $this->blade('<x-ui.select :options="[\'a\' => \'All statuses\']" />')->assertSee('max-w-md', false)->assertDontSee('data-select-auto', false);
+    $this->blade('<x-ui.select width="auto" :options="[\'a\' => \'All statuses\']" />')->assertSee('data-select-auto', false)->assertSee('data-select-sizer>All statuses<', false)->assertDontSee('max-w-xs', false);
     $this->blade('<x-ui.date />')->assertSee('w-40', false);
     $this->blade('<x-ui.input width="xs" />')->assertSee('w-24', false);
     $this->blade('<x-ui.field label="Amount" name="amount" width="sm"><x-ui.input /></x-ui.field>')->assertSee('max-w-xs', false);
@@ -259,7 +260,8 @@ it('sizes controls to their content and lets the field or a row override it', fu
     $this->blade('<x-ui.field-row :cols="3"><x-ui.field label="A" name="a"><x-ui.input /></x-ui.field></x-ui.field-row>')
         ->assertSee('md:grid-cols-3', false)
         ->assertSee('gap-x-3', false)
-        ->assertSee('[&amp;_[data-control-box]]:max-w-none', false);
+        ->assertSee('[&amp;_[data-control-box]]:max-w-none', false)
+        ->assertSee('[&amp;_[data-ui-select]]:max-w-none', false);
 });
 
 it('marks required fields with a muted asterisk', function () {
