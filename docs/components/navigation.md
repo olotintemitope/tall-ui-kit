@@ -30,6 +30,8 @@ Use tabs to switch content in place or between sibling pages; use `x-ui.segmente
 
 Behaviour: rows are at least 32px and grow when a label wraps; the active item has a subtle fill, full-strength text at 500 and a 1px inset ring, never an accent bar; a group parent shows active (full-strength text) when a child is, and takes the fill in the icon rail; disabled items stay legible (no opacity), lose the link, get a dashed underline and `aria-describedby` to their reason; the nav scrolls inside while the header and account block stay pinned; Up and Down move between items (Home and End jump); collapse animates the width (150ms); the icon rail hides labels, names each link with `aria-label` and shows a tooltip on hover and focus; below `lg` the drawer is a native `<dialog>` (focus trap, Escape, scrim, slides in) opened by the top bar's menu button (`open-sidebar-drawer`); focus mode hides the sidebar from `lg`. The `rail:` variant styles the collapsed state (shell: `html[data-sidebar=collapsed]` from `lg`; static: its own `data-collapsed`).
 
+For a fixed sidebar shell, use the kit's `--ui-sidebar-width` on the desktop content grid track and sidebar mount width. It is `15rem` when expanded and `3.5rem` when collapsed; it updates with `html[data-sidebar]` so the main content reclaims the rail's space.
+
 Contrast, measured per state by `TallUiKit\Support\SidebarContrast` (shown in the gallery, checked by `tests/Feature/SidebarTest.php`):
 
 | State | Dark `#212322` | Light `panel-footer` | Inset `page-muted` |
