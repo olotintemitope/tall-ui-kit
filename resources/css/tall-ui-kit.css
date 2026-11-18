@@ -21,6 +21,36 @@
  */
 @custom-variant sidebar-collapsed (&:where([data-sidebar='collapsed'], [data-sidebar='collapsed'] *));
 
+@layer utilities {
+    [data-stat-strip] > .ui-stat-strip-grid > :nth-child(2n) {
+        border-right-width: 0;
+    }
+
+    @media (width >= 40rem) {
+        [data-stat-strip] > .ui-stat-strip-grid > :nth-child(2n) {
+            border-right-width: 1px;
+        }
+
+        [data-stat-strip] > .ui-stat-strip-grid > :nth-child(3n) {
+            border-right-width: 0;
+        }
+    }
+
+    @media (width >= 80rem) {
+        [data-stat-strip] > .ui-stat-strip-grid > :nth-child(3n) {
+            border-right-width: 1px;
+        }
+
+        [data-stat-strip][data-columns='2'] > .ui-stat-strip-grid > :nth-child(2n),
+        [data-stat-strip][data-columns='3'] > .ui-stat-strip-grid > :nth-child(3n),
+        [data-stat-strip][data-columns='4'] > .ui-stat-strip-grid > :nth-child(4n),
+        [data-stat-strip][data-columns='5'] > .ui-stat-strip-grid > :nth-child(5n),
+        [data-stat-strip][data-columns='6'] > .ui-stat-strip-grid > :nth-child(6n) {
+            border-right-width: 0;
+        }
+    }
+}
+
 /* Shells can size their content track from the same state as the fixed sidebar. */
 @media (width >= 64rem) {
     :root {

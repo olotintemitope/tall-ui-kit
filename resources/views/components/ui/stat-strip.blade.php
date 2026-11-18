@@ -7,12 +7,13 @@
 @props(['columns' => 4])
 
 @php
-    $xl = [2 => 'xl:grid-cols-2', 3 => 'xl:grid-cols-3', 4 => 'xl:grid-cols-4', 5 => 'xl:grid-cols-5', 6 => 'xl:grid-cols-6'][$columns] ?? 'xl:grid-cols-4';
+    $columnCount = in_array($columns, [2, 3, 4, 5, 6], true) ? $columns : 4;
+    $xl = [2 => 'xl:grid-cols-2', 3 => 'xl:grid-cols-3', 4 => 'xl:grid-cols-4', 5 => 'xl:grid-cols-5', 6 => 'xl:grid-cols-6'][$columnCount];
 @endphp
 
-{{-- Each cell draws its right and bottom rule; the negative margin clips the outer ones. --}}
-<div {{ $attributes->class(['overflow-hidden border-y border-l border-line']) }} data-stat-strip>
-    <dl class="-mr-px -mb-px grid grid-cols-2 sm:grid-cols-3 {{ $xl }}">
+{{-- Cells draw internal rules; the strip closes the right edge on every row. --}}
+<div {{ $attributes->class(['overflow-hidden border-y border-l border-r border-line']) }} data-stat-strip data-columns="{{ $columnCount }}">
+    <dl class="ui-stat-strip-grid -mb-px grid grid-cols-2 sm:grid-cols-3 {{ $xl }}">
         {{ $slot }}
     </dl>
 </div>

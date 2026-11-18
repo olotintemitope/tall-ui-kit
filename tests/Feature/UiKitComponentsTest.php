@@ -341,9 +341,11 @@ it('renders the page header, section label and arrow link', function () {
 
 describe('metrics and lists', function () {
     it('renders a stat strip with figure values, money through privacy mode and an empty dash', function () {
-        $this->blade('<x-ui.stat-strip :columns="3"><x-ui.stat label="Users" sub="Registered" :value="1200" /><x-ui.stat label="Revenue" :value="5000" money /><x-ui.stat label="Unknown" /></x-ui.stat-strip>')
+        $this->blade('<x-ui.stat-strip :columns="3"><x-ui.stat label="Users" sub="Registered" :value="1200" /><x-ui.stat label="Revenue" :value="5000" money /><x-ui.stat label="Unknown" /><x-ui.stat label="New" :value="3" /></x-ui.stat-strip>')
             ->assertSee('xl:grid-cols-3', false)
-            ->assertSee('border-y border-l border-line', false)
+            ->assertSee('border-y border-l border-r border-line', false)
+            ->assertSee('data-columns="3"', false)
+            ->assertSee('ui-stat-strip-grid', false)
             ->assertSee('type-label', false)
             ->assertSee('type-figure', false)
             ->assertSee('type-caption', false)
@@ -352,6 +354,11 @@ describe('metrics and lists', function () {
             ->assertSee('data-money', false)
             ->assertSee('₦5,000')
             ->assertSee('&ndash;', false);
+
+        $styles = file_get_contents(dirname(__DIR__, 2).'/resources/css/tall-ui-kit.css');
+
+        expect($styles)->toContain('[data-stat-strip] > .ui-stat-strip-grid > :nth-child(2n)')
+            ->toContain('[data-stat-strip][data-columns=\'3\']');
 
         $this->blade('<x-ui.stat label="Custom"><span>slot value</span></x-ui.stat>')->assertSee('<span>slot value</span>', false);
     });
