@@ -11,7 +11,7 @@
 @endphp
 
 {{-- Each cell draws its right and bottom rule; the negative margin clips the outer ones. --}}
-<div {{ $attributes->class(['overflow-hidden border-y border-line']) }} data-stat-strip>
+<div {{ $attributes->class(['overflow-hidden border-y border-l border-line']) }} data-stat-strip>
     <dl class="-mr-px -mb-px grid grid-cols-2 sm:grid-cols-3 {{ $xl }}">
         {{ $slot }}
     </dl>
