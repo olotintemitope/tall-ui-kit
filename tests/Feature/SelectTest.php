@@ -16,6 +16,7 @@ it('renders a combobox button, a listbox and options wired to the field', functi
         ->toContain('<div role="option" data-value="" aria-selected="true">Choose a day</div>')
         ->toContain('<div role="option" data-value="fri">Friday</div>')
         ->toContain('x-anchor.bottom-start.noflip.offset.6.fixed')
+        ->toContain('data-select-popup')
         ->not->toContain('<select')->not->toContain('<option');
 });
 
@@ -78,5 +79,11 @@ it('puts the select behaviour in its own module, loaded with the kit', function 
 
     expect(file_get_contents(kit_path('resources/js/ui.js')))->toContain("import './select';")
         ->and($js)->toContain("Alpine.data('uiSelect'")->toContain("case 'PageDown'")->toContain("case 'Tab'")->toContain("case 'Escape'")
-        ->toContain('aria-activedescendant')->toContain("Livewire.hook('morphed'")->toContain('$revealBelow(popup, trigger)');
+        ->toContain('aria-activedescendant')->toContain("Livewire.hook('morphed'")->toContain('$revealBelow(popup, trigger)')
+        ->toContain("setAttribute('popover', 'manual')")->toContain('popup.showPopover()')->toContain('popup.hidePopover()')
+        ->toContain('positionPopup()')->toContain("attribute.name.startsWith('x-anchor.')")
+        ->toContain("window.addEventListener('scroll', this.reposition, true)")
+        ->toContain("popup.style.inset = 'auto'")->toContain("popup.style.margin = '0'")
+        ->toContain("this.$refs.popup.hidePopover()")->toContain("window.removeEventListener('resize', this.reposition)")
+        ->toContain("window.removeEventListener('scroll', this.reposition, true)");
 });

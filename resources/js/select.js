@@ -5,8 +5,9 @@
  * Cheap on load: each instance is a small Alpine object. The options are server-rendered
  * plain elements inside x-ignore (no Alpine per option) and are read from the DOM the
  * first time the list is used; ids, aria-selected="false" and the listbox name are filled
- * in then. Positioning is the lazy x-anchor (anchor.js), and the outside-click listener
- * exists only while the list is open.
+ * in then. Browsers with the Popover API use the top layer and position the panel against
+ * its trigger; older browsers use the lazy x-anchor (anchor.js). Outside-click and
+ * repositioning listeners exist only while the list is open.
  *
  * Keyboard (focus never leaves the trigger; aria-activedescendant names the active option):
  *   closed  Enter, Space, Down, Up, Alt+Down open (on the chosen option); Home and End open
@@ -40,9 +41,17 @@ document.addEventListener('alpine:init', () => {
         bufferTimer: null,
         outside: null,
         spacer: null,
+        reposition: null,
+        topLayer: typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover'),
 
         init() {
             this.text = this.$root.querySelector('[data-select-label]')?.textContent ?? '';
+            if (this.topLayer) {
+                const popup = this.$refs.popup;
+                popup.setAttribute('popover', 'manual');
+                const anchor = [...popup.attributes].find((attribute) => attribute.name.startsWith('x-anchor.'));
+                if (anchor) popup.removeAttribute(anchor.name);
+            }
             // Only a real change re-reads the options (wire:model hands over 25 for "25", null for "").
             this.$watch('value', (now, before) => this.signature(now) !== this.signature(before) && this.sync());
             live.add(this);
@@ -51,7 +60,15 @@ document.addEventListener('alpine:init', () => {
         destroy() {
             live.delete(this);
             this.unlisten();
+            if (this.topLayer && this.$refs.popup.matches(':popover-open')) this.$refs.popup.hidePopover();
+            if (this.reposition) {
+                window.removeEventListener('resize', this.reposition);
+                window.removeEventListener('scroll', this.reposition, true);
+                this.reposition = null;
+            }
+            this.open = false;
             this.spacer?.remove();
+            this.spacer = null;
         },
 
         signature(value) {
@@ -220,7 +237,19 @@ document.addEventListener('alpine:init', () => {
             this.$nextTick(() => {
                 this.setActive(index);
                 this.makeRoom();
-                this.$revealBelow(popup, trigger).then(() => this.fit());
+                if (this.topLayer) {
+                    popup.showPopover();
+                    this.positionPopup();
+                    this.reposition = () => this.positionPopup();
+                    window.addEventListener('resize', this.reposition);
+                    window.addEventListener('scroll', this.reposition, true);
+                }
+                requestAnimationFrame(() => {
+                    this.$revealBelow(popup, trigger).then(() => {
+                        if (this.topLayer) this.positionPopup();
+                        this.fit();
+                    });
+                });
             });
         },
 
@@ -254,12 +283,32 @@ document.addEventListener('alpine:init', () => {
 
         close(focus = true) {
             if (!this.open) return;
+            if (this.topLayer && this.$refs.popup.matches(':popover-open')) this.$refs.popup.hidePopover();
             this.open = false;
             this.setActive(-1, false);
             this.unlisten();
             this.spacer?.remove();
             this.spacer = null;
+            if (this.reposition) {
+                window.removeEventListener('resize', this.reposition);
+                window.removeEventListener('scroll', this.reposition, true);
+                this.reposition = null;
+            }
             if (focus) this.$refs.trigger.focus({ preventScroll: true });
+        },
+
+        /* Native popovers escape transformed table toolbars into the top layer. */
+        positionPopup() {
+            const popup = this.$refs.popup;
+            const trigger = this.$refs.trigger;
+            const rect = trigger.getBoundingClientRect();
+            const width = popup.getBoundingClientRect().width;
+            const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+            popup.style.position = 'fixed';
+            popup.style.inset = 'auto';
+            popup.style.margin = '0';
+            popup.style.left = `${left}px`;
+            popup.style.top = `${rect.bottom + 6}px`;
         },
 
         toggle() {
