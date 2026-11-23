@@ -72,6 +72,17 @@ Accessibility: the list is `role="log"` (named, focusable for keyboard scrolling
 
 `x-ui.chat.composer`: a textarea that grows to 6 rows, then scrolls; Enter sends and Shift+Enter adds a line (`enterSends` false: Ctrl or Cmd+Enter sends); an input method (IME) never sends early. `action` is called once with `params`, the text and an idempotency key; Send is blocked while it runs, so a double click or double Enter cannot post twice. `maxlength` adds a counter ("120 / 2,000", danger text in the last 10%); `attach` (a `wire:model` upload property) adds Attach and `x-ui.upload-progress.list`; `disabled` with `disabledReason`; `size` sm, md, lg (32, 36, 40px). Events: `ui-chat-send` (no action), `ui-composer-sent`, `ui-composer-cancel` (Escape).
 
+Mentions: `mentions` (a list of `['key' => ..., 'name' => ...]`) makes the textarea a combobox. Typing "@" at the start of the text or after a space opens a list below the box (never above it); typing narrows it (name start first, then word start, then anywhere; at most 6); Up and Down move, Enter or Tab inserts "@Name ", Escape closes the list and keeps the draft, and an email address never opens it. Each pick dispatches a bubbling `ui-composer-mention`, detail `{ key, name, params }`, so the app can record who was mentioned. `mentionsLabel` ("People") names the list. `typingAction` (a Livewire method) is called with `params` while someone types, at most once every 3 seconds, to drive `x-ui.chat.typing` for the others.
+
+Slots: `tools` holds extra icon buttons beside Attach (`x-ui.button size="icon"`, outline or ghost, each with an `aria-label`: emoji, record, insert code); `context` is one line above the box, such as "Replying to Ada" with a cancel button.
+
+```blade
+<x-ui.chat.composer action="send" typing-action="typing" :mentions="$members" mentions-label="Course members" id="room-composer">
+    <x-slot:context>Replying to Ada Obi <x-ui.button variant="ghost" size="icon-sm" aria-label="Cancel reply" wire:click="cancelReply"><x-ui.icon name="x" /></x-ui.button></x-slot:context>
+    <x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Insert code" wire:click="insertCode"><x-ui.icon name="code" /></x-ui.button></x-slot:tools>
+</x-ui.chat.composer>
+```
+
 ## Inbox
 
 `x-ui.chat.inbox`: `conversations` (`key`, `name`, `avatar`, `people` for a group, `preview`, `time`, `unread`, `active`, `href`, `muted`), `action` (when rows have no `href`), `navigate`, slots `search` and `filters`. One Tab stop; arrows, Home and End move. Previews wrap (never clipped or ellipsed); pass a short one. Unread is bold text plus an info pill read as "3 unread".

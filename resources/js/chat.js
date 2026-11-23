@@ -7,6 +7,8 @@
  * first chat starts (until then the server-rendered list shows as usual). The composer,
  * the thread and the inbox keys are small and stay here.
  */
+import { mentionAt, matchPeople, insertMention } from './mention-core';
+
 let core = null;
 const loadCore = () => (core ??= import('./chat-core'));
 
@@ -55,6 +57,30 @@ document.addEventListener('alpine:init', () => {
         failed: false,
         hasFiles: false,
         key: draftKey(),
+        // @mentions: the mention being typed (start of the "@", the query) and the
+        // highlighted suggestion. Null when no suggestion list is open.
+        mention: null,
+        active: 0,
+        typedAt: 0,
+
+        get suggestions() {
+            return this.mention ? matchPeople(options.mentions, this.mention.query) : [];
+        },
+
+        get mentionOpen() {
+            return this.mention !== null && this.suggestions.length > 0;
+        },
+
+        get activeId() {
+            return this.mentionOpen ? `${this.$root.id}-mention-${this.active}` : null;
+        },
+
+        get mentionStatus() {
+            if (!this.mentionOpen) return '';
+            const count = this.suggestions.length;
+
+            return `${count} ${count === 1 ? 'person' : 'people'}`;
+        },
 
         get counter() {
             return `${number.format(this.body.length)} / ${number.format(options.maxlength ?? 0)}`;
@@ -79,7 +105,68 @@ document.addEventListener('alpine:init', () => {
             if (this.$root.querySelector('[autofocus]')) this.$nextTick(() => this.$refs.input?.focus());
         },
 
+        /** Called on every input and click: opens, narrows or closes the mention list. */
+        detect() {
+            if (!options.mentions?.length) return;
+            const input = this.$refs.input;
+            const found = input ? mentionAt(this.body, input.selectionStart) : null;
+            if (found?.query !== this.mention?.query || found?.start !== this.mention?.start) this.active = 0;
+            this.mention = found;
+        },
+
+        moveMention(step) {
+            const count = this.suggestions.length;
+            if (!count) return;
+            this.active = (this.active + step + count) % count;
+        },
+
+        pickMention(index = this.active) {
+            const person = this.suggestions[index];
+            const input = this.$refs.input;
+            if (!person || !this.mention || !input) return;
+            const next = insertMention(this.body, this.mention.start, input.selectionStart, person.name);
+            this.body = next.text;
+            this.mention = null;
+            this.$nextTick(() => {
+                input.focus({ preventScroll: true });
+                input.setSelectionRange(next.caret, next.caret);
+                this.grow();
+            });
+            this.$dispatch('ui-composer-mention', { key: person.key, name: person.name, params: this.params() });
+        },
+
+        /** At most one typing call every 3 seconds, and none for an empty box. */
+        typing() {
+            if (!options.typingAction || !this.$wire || this.body.trim() === '') return;
+            const now = Date.now();
+            if (now - this.typedAt < 3000) return;
+            this.typedAt = now;
+            this.$wire.call(options.typingAction, ...this.params());
+        },
+
         keydown(event) {
+            if (this.mentionOpen) {
+                if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    this.moveMention(event.key === 'ArrowDown' ? 1 : -1);
+
+                    return;
+                }
+                if ((event.key === 'Enter' || event.key === 'Tab') && !event.isComposing && event.keyCode !== 229) {
+                    event.preventDefault();
+                    this.pickMention();
+
+                    return;
+                }
+                if (event.key === 'Escape') {
+                    // Closes the list only; the draft and the composer stay.
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.mention = null;
+
+                    return;
+                }
+            }
             if (event.key === 'Escape') {
                 event.preventDefault();
                 event.stopPropagation();
@@ -144,6 +231,7 @@ document.addEventListener('alpine:init', () => {
 
         done(body, key) {
             this.body = '';
+            this.mention = null;
             this.key = draftKey();
             this.failed = false;
             this.hasFiles = false;

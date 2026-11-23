@@ -84,6 +84,6 @@ it('puts the select behaviour in its own module, loaded with the kit', function 
         ->toContain('positionPopup()')->toContain("attribute.name.startsWith('x-anchor.')")
         ->toContain("window.addEventListener('scroll', this.reposition, true)")
         ->toContain("popup.style.inset = 'auto'")->toContain("popup.style.margin = '0'")
-        ->toContain("this.$refs.popup.hidePopover()")->toContain("window.removeEventListener('resize', this.reposition)")
+        ->toContain('this.$refs.popup.hidePopover()')->toContain("window.removeEventListener('resize', this.reposition)")
         ->toContain("window.removeEventListener('scroll', this.reposition, true)");
 });

@@ -101,6 +101,43 @@ describe('chat', function () {
             ->and(cm('<x-ui.chat.composer disabled disabled-reason="Closed." />'))->toContain('disabled')->toContain('Closed.');
     });
 
+    it('turns the composer into a mention combobox only when people can be mentioned', function () {
+        $html = cm('<x-ui.chat.composer id="c2" mentions-label="Members" :mentions="[[\'key\' => \'u1\', \'name\' => \'Ada Obi\'], [\'key\' => \'u2\', \'name\' => \'\']]" typing-action="typing" />');
+
+        expect($html)->toContain('role="combobox"')->toContain('aria-autocomplete="list"')
+            ->toContain('aria-controls="c2-mentions"')->toContain('id="c2-mentions"')
+            ->toContain('role="listbox"')->toContain('aria-label="Members"')
+            ->toContain('$revealBelow')->toContain('data-composer-mention-status')
+            ->toContain('Ada Obi')->toContain('typing')
+            ->and(cm('<x-ui.chat.composer id="c3" />'))->not->toContain('role="combobox"')->not->toContain('data-composer-mentions');
+    });
+
+    it('drops people without a name from the mention list', function () {
+        $html = cm('<x-ui.chat.composer id="c4" :mentions="[[\'key\' => \'u2\', \'name\' => \'\']]" />');
+
+        expect($html)->not->toContain('role="combobox"');
+    });
+
+    it('takes tools beside Attach and a context line above the box', function () {
+        $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
+
+        expect($html)->toContain('data-composer-context')->toContain('Replying to Ada')
+            ->toContain('data-composer-tools')->toContain('aria-label="Create a poll"');
+        expect(strpos($html, 'data-composer-attach'))->toBeLessThan(strpos($html, 'data-composer-tools'));
+        expect(strpos($html, 'data-composer-tools'))->toBeLessThan(strpos($html, 'data-composer-input'));
+    });
+
+    it('runs the mention script tests: finding, matching and inserting', function () {
+        if (! Illuminate\Support\Facades\Process::run('node --version')->successful()) {
+            $this->markTestSkipped('Node is not installed.');
+        }
+
+        $result = Illuminate\Support\Facades\Process::path(kit_path())->run('node --test tests/js/mention-core.test.mjs');
+
+        expect($result->exitCode())->toBe(0, $result->output().$result->errorOutput())
+            ->and($result->output())->toContain('fail 0');
+    });
+
     it('lists conversations with one tab stop, aria-current and spoken unread counts', function () {
         $html = cm('<x-ui.chat.inbox :conversations="[[\'key\' => \'a\', \'name\' => \'Ada\', \'preview\' => \'Hi\', \'active\' => true, \'href\' => \'/a\'], [\'key\' => \'b\', \'name\' => \'Crew\', \'people\' => [\'A\', \'B\', \'C\'], \'unread\' => 3, \'href\' => \'/b\']]" />');
 
