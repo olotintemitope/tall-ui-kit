@@ -52,7 +52,8 @@ document.addEventListener('alpine:init', () => {
     }));
 
     Alpine.data('uiComposer', (options = {}) => ({
-        body: '',
+        // `draft`: text to start with (a draft the app kept), so it is not lost on a reload.
+        body: typeof options.draft === 'string' ? options.draft : '',
         sending: false,
         failed: false,
         hasFiles: false,
@@ -121,6 +122,7 @@ document.addEventListener('alpine:init', () => {
                 this.hasFiles = files.files.length > 0;
             });
             if (this.$root.querySelector('[autofocus]')) this.$nextTick(() => this.$refs.input?.focus());
+            if (this.body !== '') this.$nextTick(() => this.grow());
         },
 
         /** Called on every input and click: opens, narrows or closes the mention list. */
@@ -330,6 +332,11 @@ document.addEventListener('alpine:init', () => {
             this.failed = false;
             this.hasFiles = false;
             if (this.$refs.files) this.$refs.files.value = '';
+            // The message took its attachments: clear the upload rows under the box.
+            this.$root.querySelectorAll('[data-upload-list]').forEach((el) => {
+                const list = window.Alpine.$data(el);
+                if (list) list.files = [];
+            });
             this.$nextTick(() => this.grow());
             const params = this.params();
             this.$dispatch('ui-composer-sent', { body, key, params });

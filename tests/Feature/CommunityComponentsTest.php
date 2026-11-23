@@ -159,6 +159,15 @@ describe('chat', function () {
         expect($without)->not->toContain('@max-md:order-first')->not->toContain('flex-wrap" data-composer-row');
     });
 
+    it('starts from a kept draft, forwards removeAction to the upload list and clears it after a send', function () {
+        $html = cm('<x-ui.chat.composer id="c11" attach="files" multiple remove-action="dropFile" draft="Half-written note" />');
+        $js = file_get_contents(kit_path('resources/js/chat.js'));
+
+        expect($html)->toContain('Half-written note')->toContain('dropFile');
+        expect($js)->toContain("body: typeof options.draft === 'string' ? options.draft : ''")
+            ->toContain('this.$root.querySelectorAll(\'[data-upload-list]\')');
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
