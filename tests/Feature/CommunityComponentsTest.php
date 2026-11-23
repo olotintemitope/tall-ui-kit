@@ -150,6 +150,15 @@ describe('chat', function () {
         expect(file_get_contents(kit_path('docs/rules.md')))->toContain('`x-ui.chat.composer` mention list opens above the box');
     });
 
+    it('gives the text box its own row when tools would squeeze it on a narrow composer', function () {
+        $with = cm('<x-ui.chat.composer id="c9"><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Mention someone"><x-ui.icon name="at-sign" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
+        $without = cm('<x-ui.chat.composer id="c10" />');
+
+        expect($with)->toContain('ui-composer @container')->toContain('flex items-end gap-2 flex-wrap')
+            ->toContain('@max-md:order-first @max-md:basis-full')->toContain('@max-md:ms-auto');
+        expect($without)->not->toContain('@max-md:order-first')->not->toContain('flex-wrap" data-composer-row');
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
