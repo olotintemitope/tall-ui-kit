@@ -57,6 +57,29 @@ class Index extends Component
 
 Cells: `payouts/cells/status.blade.php` is one line, e.g. `<x-ui.badge lean size="sm" :variant="$variant">{{ $label }}</x-ui.badge>`; money cells `<x-ui.money lean :value="$row->amount" />`.
 
+## Portal page (every route the same width and rhythm)
+
+```blade
+<x-ui.page>
+    <x-ui.page-header boxed title="Payouts" description="Requests waiting for review."
+        :breadcrumbs="[['label' => 'Dashboard', 'href' => route('dashboard')], ['label' => 'Payouts']]">
+        <x-slot:more>
+            <x-ui.dropdown.item wire:click="export"><x-ui.icon name="download" />Export</x-ui.dropdown.item>
+        </x-slot:more>
+        <x-slot:actions>
+            <x-ui.button variant="outline" :href="route('payouts.settings')">Settings</x-ui.button>
+            <x-ui.button wire:click="create">New payout</x-ui.button>
+        </x-slot:actions>
+    </x-ui.page-header>
+
+    <x-ui.stat-strip :columns="3">...</x-ui.stat-strip>
+    <x-ui.card><x-ui.card.content class="p-4">{{-- filters --}}</x-ui.card.content></x-ui.card>
+    <x-data-table :table="$table" />
+</x-ui.page>
+```
+
+One `x-ui.page` per route (`width="form"` for create and edit forms). The header carries one dark action at most; every other visible one is `outline`, and the rest go in `more`. Filters and empty states sit in a card; a stat strip stands alone. Period and navigation controls go in a toolbar under the header, not in it.
+
 ## Detail page
 
 ```blade

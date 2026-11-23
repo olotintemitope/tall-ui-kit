@@ -52,7 +52,7 @@ final class Catalog
             'sidebar' => ['Sidebar', ['ui.sidebar', 'ui.sidebar.header', 'ui.sidebar.section', 'ui.sidebar.item', 'ui.sidebar.group', 'ui.sidebar.account']],
             'breadcrumb' => ['Breadcrumb', ['ui.breadcrumb']],
             'pagination' => ['Pagination', ['ui.pagination', 'ui.load-more']],
-            'page-header' => ['Page header', ['ui.page-header']],
+            'page-header' => ['Page and page header', ['ui.page', 'ui.page-header']],
             'link' => ['Link', ['ui.link', 'ui.link-arrow']],
         ],
         'Overlays' => [

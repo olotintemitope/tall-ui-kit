@@ -43,7 +43,8 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.segment-bar` | `segments` (label, value, chart token `color`), `label`, `empty`; 8px bar plus legend |
 | `x-ui.ranked-list`, `x-ui.ranked-item` | list `empty`; item `label`, `sub`, `rank`, `value`, `share` (0 to 1: compact bar row), `href` (the label links) |
 | `x-ui.alert` | `tone` (alias `variant`) danger (or `error`), warning, success, info, neutral; flat inline notice: 1px border all round in a light status tone (`danger-edge`, `warning-edge`, `success-edge`, `line`), a very light fill (`-50`, `panel-footer`) and AA tone text, measured on their fills: danger-strong 7.64:1, warning-strong 8.73:1, success-strong 7.23:1, ink 15.15:1; no edge, no icon. Toasts and the error summary use the same look |
-| `x-ui.page-header` | `title` (wraps; long unbroken titles break), `eyebrow`, `description`, `level` (1); slot `actions` (wrap on narrow screens) |
+| `x-ui.page` | A portal page: the tinted level-0 page (`page-muted`) and one centred content column, sections 16px apart. `width` full (default, 80rem) or form (48rem); the column carries `data-page-shell`; one root element (a Livewire root); other attributes go on the column |
+| `x-ui.page-header` | `title` (wraps; long unbroken titles break), `eyebrow`, `description`, `level` (1), `breadcrumbs` (list of `label`, `href`: drawn above, 12px apart), `breadcrumbLabel`, `boxed` (title and actions on a raised borderless surface, for `x-ui.page`), `moreLabel`; slots `actions` (one primary, at most one secondary; natural width from sm, wrap below it) and `more` (`x-ui.dropdown.item` rows behind an ellipsis button before the actions) |
 | `x-ui.section-label` | `as` |
 | `x-ui.link-arrow` | `href` |
 | `x-ui.pagination` | `paginator`, `elements`, `livewire`, `scrollTo`, `aria-label` (default "Pagination"; name it when a page has two); default for Livewire and plain paginators |
