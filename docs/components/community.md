@@ -91,6 +91,8 @@ Slots: `tools` holds extra icon buttons beside Attach (`x-ui.button size="icon"`
 
 `x-ui.post`: `key`, `author`, `avatar`, `handle`, `verified`, `time`, `body`, `href` (permalink on the time), `likes`, `liked`, `comments`, `likeAction`, `commentHref` or `commentAction`, `shareUrl`, `mentionUrl`, `hashtagUrl`, `headingLevel`. Slots: default (under the body, e.g. reactions or a poll), `media`, `more` (`x-ui.dropdown.item` rows), `footer` (e.g. a comment thread). Like is optimistic: pressed and counted at once, then `likeAction(key, on)`; `false` or a failed request rolls back and shows a toast. Counts are compact ("1.2k"); the full number is spoken. Share uses the system share sheet, or copies the link with "Link copied."
 
+Threads and questions: `title` becomes the post's heading and names the article (linked to `titleHref`, else `href`); `status` puts a badge beside it ("Solved", `statusVariant` success); `authorBadge` a role beside the author ("Instructor"); `likeLabel`, `likeIcon` and `commentLabel` rename the actions ("Upvote", "Replies").
+
 ## Comment thread
 
 `x-ui.comment-thread`: `comments` (`key`, `author`, `avatar`, `time`, `body`, `edited`, `replies`, `more`), `depth` (3; deeper replies become "Continue thread" via `continueHref` with `:key`), `replyAction(parent, text, key)` (null parent for the "Add a comment" box), `moreAction(key)` ("Show 3 more replies"), `maxlength`. Timeline look: avatar markers on a 1px rail. One reply box for the thread, copied under the comment being answered (focus moves in; Escape or a sent reply returns focus to Reply). "Hide replies" collapses a thread (`aria-expanded`).

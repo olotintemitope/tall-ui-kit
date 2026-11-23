@@ -185,6 +185,17 @@ describe('chat', function () {
         expect($plain)->toContain('data-reply-template')->not->toContain('data-post-like')->not->toContain('Mark as answer')->toContain('Add a comment');
     });
 
+    it('titles a post for a thread or question, with a status, a role and renamed actions', function () {
+        $html = Blade::render('<x-ui.post key="q1" author="Ada Obi" author-badge="Instructor" title="When do I post to the ledger?" status="Solved" title-href="/q/1" body="Which lesson?" like-label="Upvote" like-icon="arrow-big-up" comment-label="Answers" :likes="3" :comments="2" />');
+
+        expect($html)->toContain('aria-labelledby="post-q1-title"')->toMatch('/<h3 id="post-q1-title"[^>]*><a href="\/q\/1"/')
+            ->toContain('When do I post to the ledger?')->toContain('Solved')->toContain('Instructor')
+            ->toContain('<p id="post-q1-author"')->toContain('Upvote')->toContain('Answers')->not->toMatch('/<span>Like<\/span>/');
+
+        $plain = Blade::render('<x-ui.post key="p9" author="Bola" body="Hello" />');
+        expect($plain)->toContain('aria-labelledby="post-p9-author"')->toContain('<h3 id="post-p9-author"')->toContain('<span>Like</span>')->not->toContain('post-p9-title');
+    });
+
     it('likes from a comment through the post like handler', function () {
         expect(file_get_contents(kit_path('resources/js/community-core.js')))->toContain("button.closest('[data-comment], [data-post]')");
     });
