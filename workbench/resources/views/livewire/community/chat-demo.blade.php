@@ -24,6 +24,15 @@
                 <x-ui.button variant="outline" size="sm" wire:click="simulateReply" loading="simulateReply" data-simulate-reply>Simulate a reply</x-ui.button>
             </div>
         </x-slot:header>
+        <x-slot:composer>
+            {{-- @mentions: the loaded people, plus findPeople() for anyone else in the team. --}}
+            <x-ui.chat.composer action="send" :maxlength="2000" :mentions="$people" mention-search="findPeople" typing-action="typing" mentions-label="Team" id="demo-chat-composer">
+                <x-slot:tools>
+                    <x-ui.button type="button" variant="ghost" size="icon" aria-label="Mention someone" x-on:click="startMention()" data-composer-mention-tool><x-ui.icon name="at-sign" /></x-ui.button>
+                </x-slot:tools>
+            </x-ui.chat.composer>
+        </x-slot:composer>
     </x-ui.chat>
     <p class="type-meta" data-chat-accepted>Messages accepted by the server: <span class="type-numeric text-ink-body">{{ count($accepted) }}</span></p>
+    <p class="type-meta" data-chat-mentioned>Mentioned in your last message: <span class="text-ink-body">{{ $lastMentioned === [] ? 'nobody' : implode(', ', $lastMentioned) }}</span></p>
 </div>

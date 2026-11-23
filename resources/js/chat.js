@@ -62,9 +62,24 @@ document.addEventListener('alpine:init', () => {
         mention: null,
         active: 0,
         typedAt: 0,
+        // Everyone who can be mentioned (grows with mentionSearch results) and the
+        // people picked in this draft; their keys go to `action` with the text.
+        people: [...(options.mentions ?? [])],
+        picked: [],
+        searchTimer: null,
+        searched: new Set(),
 
         get suggestions() {
-            return this.mention ? matchPeople(options.mentions, this.mention.query) : [];
+            return this.mention ? matchPeople(this.people, this.mention.query) : [];
+        },
+
+        get mentionsEnabled() {
+            return !!(options.mentions?.length || options.mentionSearch);
+        },
+
+        /** Keys of the picked people whose "@Name" is still in the text. */
+        get mentionKeys() {
+            return this.picked.filter((person) => this.body.includes(`@${person.name}`)).map((person) => person.key);
         },
 
         get mentionOpen() {
@@ -107,11 +122,58 @@ document.addEventListener('alpine:init', () => {
 
         /** Called on every input and click: opens, narrows or closes the mention list. */
         detect() {
-            if (!options.mentions?.length) return;
+            if (!this.mentionsEnabled) return;
             const input = this.$refs.input;
             const found = input ? mentionAt(this.body, input.selectionStart) : null;
             if (found?.query !== this.mention?.query || found?.start !== this.mention?.start) this.active = 0;
             this.mention = found;
+            if (found && found.query !== '') this.search(found.query);
+        },
+
+        /**
+         * mentionSearch: ask the server for people beyond the loaded list, 300ms after
+         * typing stops, once per query. Results ({ key, name, avatar }) join the list.
+         */
+        search(query) {
+            if (!options.mentionSearch || !this.$wire) return;
+            clearTimeout(this.searchTimer);
+            this.searchTimer = setTimeout(async () => {
+                if (this.searched.has(query)) return;
+                this.searched.add(query);
+                const found = await this.$wire.call(options.mentionSearch, query).catch(() => []);
+                const known = new Set(this.people.map((person) => String(person.key)));
+                for (const person of Array.isArray(found) ? found : []) {
+                    const key = String(person?.key ?? '');
+                    if (key === '' || !person?.name || known.has(key)) continue;
+                    known.add(key);
+                    this.people.push({ key, name: String(person.name), avatar: person.avatar ?? null });
+                }
+            }, 300);
+        },
+
+        /** Inserts text at the caret (emoji pickers and other tools). */
+        insert(text) {
+            const input = this.$refs.input;
+            const caret = input ? input.selectionStart ?? this.body.length : this.body.length;
+            const end = input ? input.selectionEnd ?? caret : caret;
+            this.body = this.body.slice(0, caret) + text + this.body.slice(end);
+            const next = caret + String(text).length;
+            if (!input) return;
+            // Write the value and caret now, not a tick later: keys typed in between
+            // would land before the caret moves.
+            input.value = this.body;
+            input.focus({ preventScroll: true });
+            input.setSelectionRange(next, next);
+            this.grow();
+            this.detect();
+        },
+
+        /** The "@" tool: starts a mention at the caret, with a space before it when needed. */
+        startMention() {
+            const input = this.$refs.input;
+            const caret = input ? input.selectionStart ?? this.body.length : this.body.length;
+            const before = this.body.slice(0, caret);
+            this.insert(before === '' || /\s$/.test(before) ? '@' : ' @');
         },
 
         moveMention(step) {
@@ -127,11 +189,12 @@ document.addEventListener('alpine:init', () => {
             const next = insertMention(this.body, this.mention.start, input.selectionStart, person.name);
             this.body = next.text;
             this.mention = null;
-            this.$nextTick(() => {
-                input.focus({ preventScroll: true });
-                input.setSelectionRange(next.caret, next.caret);
-                this.grow();
-            });
+            if (!this.picked.some((p) => p.key === person.key)) this.picked.push({ key: person.key, name: person.name });
+            // Value and caret now, not a tick later (see insert()).
+            input.value = next.text;
+            input.focus({ preventScroll: true });
+            input.setSelectionRange(next.caret, next.caret);
+            this.grow();
             this.$dispatch('ui-composer-mention', { key: person.key, name: person.name, params: this.params() });
         },
 
@@ -206,9 +269,10 @@ document.addEventListener('alpine:init', () => {
             const body = this.body.trim();
             const key = this.key;
             const params = this.params();
+            const mentions = this.mentionKeys;
 
             if (!options.action || !this.$wire) {
-                this.$dispatch('ui-chat-send', { body, key, params });
+                this.$dispatch('ui-chat-send', { body, key, params, mentions });
                 this.done(body, key);
 
                 return;
@@ -216,7 +280,9 @@ document.addEventListener('alpine:init', () => {
 
             this.sending = true;
             this.failed = false;
-            Promise.resolve(this.$wire.call(options.action, ...params, body, key))
+            // With mentions on, the picked people's keys follow the text and the key.
+            const args = this.mentionsEnabled ? [...params, body, key, mentions] : [...params, body, key];
+            Promise.resolve(this.$wire.call(options.action, ...args))
                 .then((result) => {
                     if (result === false) this.failed = true;
                     else this.done(body, key);
@@ -232,6 +298,7 @@ document.addEventListener('alpine:init', () => {
         done(body, key) {
             this.body = '';
             this.mention = null;
+            this.picked = [];
             this.key = draftKey();
             this.failed = false;
             this.hasFiles = false;

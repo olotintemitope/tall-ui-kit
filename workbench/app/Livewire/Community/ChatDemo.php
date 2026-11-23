@@ -25,6 +25,33 @@ class ChatDemo extends Component
 
     public int $replies = 0;
 
+    /** @var list<array{key: string, name: string}> people the composer lists before any search */
+    public array $people = [
+        ['key' => 'u-bola', 'name' => 'Bola Ade'],
+        ['key' => 'u-ada', 'name' => 'Ada Obi'],
+        ['key' => 'u-chidi', 'name' => 'Chidi Eze'],
+    ];
+
+    /** @var list<string> keys mentioned in the last message sent */
+    public array $lastMentioned = [];
+
+    /** The rest of the team, only reachable through findPeople(). */
+    private const DIRECTORY = [
+        ['key' => 'u-adaeze', 'name' => 'Adaeze Okafor'],
+        ['key' => 'u-tunde', 'name' => 'Tunde Bakare'],
+        ['key' => 'u-ngozi', 'name' => 'Ngozi Eze'],
+    ];
+
+    /** mentionSearch: people beyond the loaded list whose name contains the query. */
+    public function findPeople(string $query): array
+    {
+        $query = mb_strtolower(trim($query));
+
+        return array_values(array_filter(self::DIRECTORY, fn (array $person) => $query !== '' && str_contains(mb_strtolower($person['name']), $query)));
+    }
+
+    public function typing(): void {}
+
     public function mount(): void
     {
         $this->messages = [
@@ -52,7 +79,8 @@ class ChatDemo extends Component
         return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
 
-    public function send(string $body, string $key): bool
+    /** @param  list<string>  $mentions  keys of the people mentioned (x-ui.chat.composer mentions) */
+    public function send(string $body, string $key, array $mentions = []): bool
     {
         $body = trim($body);
         abort_if($body === '' || mb_strlen($body) > 2000 || strlen($key) > 64, 422);
@@ -63,6 +91,7 @@ class ChatDemo extends Component
         }
 
         $this->accepted[] = $key;
+        $this->lastMentioned = array_values(array_filter($mentions, 'is_string'));
         $this->messages[] = ['key' => 'k'.substr(md5($key), 0, 10), 'mine' => true, 'time' => now()->toIso8601String(), 'body' => $body];
 
         return true;

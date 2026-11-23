@@ -118,6 +118,26 @@ describe('chat', function () {
         expect($html)->not->toContain('role="combobox"');
     });
 
+    it('passes avatars and turns mentions on for a server search alone', function () {
+        $html = cm('<x-ui.chat.composer id="c6" :mentions="[[\'key\' => \'u1\', \'name\' => \'Ada Obi\', \'avatar\' => \'/a.png\']]" />');
+
+        expect($html)->toContain('/a.png')->toContain('x-bind:src="person.avatar"')->toContain('person.name.slice(0, 1)');
+
+        $search = cm('<x-ui.chat.composer id="c7" mention-search="findPeople" />');
+
+        expect($search)->toContain('role="combobox"')->toContain('findPeople');
+    });
+
+    it('sends the picked mentions after the key and gives tools an insert hook', function () {
+        $js = file_get_contents(kit_path('resources/js/chat.js'));
+
+        expect($js)->toContain('[...params, body, key, mentions]')
+            ->toContain('this.body.includes(`@${person.name}`)')
+            ->toContain('options.mentionSearch')->toContain('this.searched.has(query)')
+            ->toContain('insert(text)')->toContain('startMention()')
+            ->toContain('this.$dispatch(\'ui-chat-send\', { body, key, params, mentions })');
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
