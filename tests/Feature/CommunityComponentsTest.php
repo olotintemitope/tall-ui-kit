@@ -107,7 +107,7 @@ describe('chat', function () {
         expect($html)->toContain('role="combobox"')->toContain('aria-autocomplete="list"')
             ->toContain('aria-controls="c2-mentions"')->toContain('id="c2-mentions"')
             ->toContain('role="listbox"')->toContain('aria-label="Members"')
-            ->toContain('$revealBelow')->toContain('data-composer-mention-status')
+            ->toContain('placeMentions($el)')->toContain('data-composer-mention-status')
             ->toContain('Ada Obi')->toContain('typing')
             ->and(cm('<x-ui.chat.composer id="c3" />'))->not->toContain('role="combobox"')->not->toContain('data-composer-mentions');
     });
@@ -136,6 +136,18 @@ describe('chat', function () {
             ->toContain('options.mentionSearch')->toContain('this.searched.has(query)')
             ->toContain('insert(text)')->toContain('startMention()')
             ->toContain('this.$dispatch(\'ui-chat-send\', { body, key, params, mentions })');
+    });
+
+    it('opens the mention list below, and above only when docked in a clipped chat', function () {
+        $html = cm('<x-ui.chat.composer id="c8" :mentions="[[\'key\' => \'u1\', \'name\' => \'Ada Obi\']]" />');
+        $js = file_get_contents(kit_path('resources/js/chat.js'));
+
+        expect($html)->toContain('placeMentions($el)')->toContain("mentionAbove ? 'bottom-full mb-1.5' : 'top-full mt-1.5'")
+            ->not->toMatch('/class="[^"]*\\babsolute inset-x-0 top-full/');
+        // Below with the page scrolled to show it, unless a clipping container has no room.
+        expect($js)->toContain('const above = clip !== null && room < list.offsetHeight + 8;')
+            ->toContain('if (!above) this.$nextTick(() => this.$revealBelow(list, this.$refs.input));');
+        expect(file_get_contents(kit_path('docs/rules.md')))->toContain('`x-ui.chat.composer` mention list opens above the box');
     });
 
     it('takes tools beside Attach and a context line above the box', function () {

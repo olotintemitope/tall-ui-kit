@@ -68,6 +68,9 @@ document.addEventListener('alpine:init', () => {
         picked: [],
         searchTimer: null,
         searched: new Set(),
+        // The one exception to "popups open below" (docs/rules.md, rule 6): a composer
+        // docked at the foot of a clipped, full-height chat opens its list above.
+        mentionAbove: false,
 
         get suggestions() {
             return this.mention ? matchPeople(this.people, this.mention.query) : [];
@@ -149,6 +152,30 @@ document.addEventListener('alpine:init', () => {
                     this.people.push({ key, name: String(person.name), avatar: person.avatar ?? null });
                 }
             }, 300);
+        },
+
+        /**
+         * Where the mention list goes. Below, revealed by scrolling, like every popup;
+         * above only when the composer sits inside a container that clips it (overflow
+         * not visible) and there is not room below inside that container, which is a
+         * chat docked at the bottom of the screen: scrolling there would push the whole
+         * chat up and still not show the list.
+         */
+        placeMentions(list) {
+            requestAnimationFrame(() => {
+                if (!list || list.getClientRects().length === 0) return;
+                const form = this.$root;
+                let clip = null;
+                for (let node = form.parentElement; node && node !== document.body; node = node.parentElement) {
+                    const style = getComputedStyle(node);
+                    if (style.overflowY !== 'visible' || style.overflow !== 'visible') { clip = node; break; }
+                }
+                const limit = Math.min(window.innerHeight, clip ? clip.getBoundingClientRect().bottom : Infinity);
+                const room = limit - form.getBoundingClientRect().bottom;
+                const above = clip !== null && room < list.offsetHeight + 8;
+                this.mentionAbove = above;
+                if (!above) this.$nextTick(() => this.$revealBelow(list, this.$refs.input));
+            });
         },
 
         /** Inserts text at the caret (emoji pickers and other tools). */
