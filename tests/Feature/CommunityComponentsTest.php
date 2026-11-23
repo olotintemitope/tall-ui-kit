@@ -171,7 +171,7 @@ describe('chat', function () {
 
     it('draws flat answers with likes and an accepted answer for questions and answers', function () {
         $comments = [
-            ['key' => 'a1', 'author' => 'Bola Ade', 'body' => 'Cash book first.', 'likes' => 4, 'liked' => true],
+            ['key' => 'a1', 'author' => 'Bola Ade', 'body' => 'Cash book first.', 'likes' => 4, 'liked' => true, 'tag' => 'Instructor'],
             ['key' => 'a2', 'author' => 'Chidi Eze', 'body' => 'See lesson 3.', 'likes' => 1, 'accepted' => true, 'replies' => [['key' => 'a2-1', 'author' => 'Ada', 'body' => 'Thanks']]],
         ];
         $html = Blade::render('<x-ui.comment-thread id="qa" :comments="$c" :nested="false" reply-action="answer" like-action="vote" like-label="Helpful" like-icon="thumbs-up" accept-action="accept" add-label="Your answer" add-placeholder="Write an answer" add-submit-label="Post answer" />', ['c' => $comments]);
@@ -179,7 +179,7 @@ describe('chat', function () {
         expect($html)->not->toContain('data-reply-template')->not->toMatch('/>Reply</')
             ->toContain('data-like-action="vote"')->toContain('aria-pressed="true" data-post-like data-count="4"')->toContain('Helpful')
             ->toContain('Accepted answer')->toMatch('/wire:click="accept\\([^)]*a1[^)]*\\)"/')->not->toMatch('/accept\\([^)]*a2(?!-)[^)]*\\)/')
-            ->toContain('Your answer')->toContain('Write an answer')->toContain('Post answer');
+            ->toContain('Your answer')->toContain('Write an answer')->toContain('Post answer')->toContain('Instructor');
 
         $plain = Blade::render('<x-ui.comment-thread id="plain" :comments="$c" reply-action="reply" />', ['c' => $comments]);
         expect($plain)->toContain('data-reply-template')->not->toContain('data-post-like')->not->toContain('Mark as answer')->toContain('Add a comment');

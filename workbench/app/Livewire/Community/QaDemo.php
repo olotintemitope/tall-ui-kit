@@ -14,7 +14,7 @@ class QaDemo extends Component
 {
     /** @var list<array<string, mixed>> */
     public array $answers = [
-        ['key' => 'a1', 'author' => 'Bola Ade', 'time' => '2026-11-16 11:05:00', 'body' => 'Use the cash book first, then post to the ledger at month end.', 'likes' => 4, 'liked' => false],
+        ['key' => 'a1', 'author' => 'Bola Ade', 'time' => '2026-11-16 11:05:00', 'body' => 'Use the cash book first, then post to the ledger at month end.', 'likes' => 4, 'liked' => false, 'tag' => 'Instructor'],
         ['key' => 'a2', 'author' => 'Chidi Eze', 'time' => '2026-11-16 12:40:00', 'body' => 'The worked example in lesson 3 shows both columns side by side.', 'likes' => 1, 'liked' => false],
     ];
 

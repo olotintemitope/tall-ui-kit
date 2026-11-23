@@ -2,7 +2,7 @@
     One comment of x-ui.comment-thread, with its replies (rendered by itself, one level
     deeper). Built by the thread from its `comments` data; not used alone.
     Props: comment ([key, author, avatar, time, body, edited, replies, more, likes, liked,
-    accepted]), level (1),
+    accepted, tag (a role beside the name, e.g. "Instructor")]), level (1),
     shared (the thread's settings).
 --}}
 @props(['comment', 'level' => 1, 'shared' => []])
@@ -44,6 +44,8 @@
         ? '<button type="button" class="ui-act" aria-pressed="'.(! empty($comment['liked']) ? 'true' : 'false').'" data-post-like data-count="'.$likes.'">'.($shared['likeIconHtml'] ?? '').'<span>'.e($shared['likeLabel'] ?? 'Like').'</span><span class="sr-only">,</span> <span class="type-numeric text-ink-muted" data-post-like-count aria-hidden="true">'.e(\TallUiKit\Support\Format::compact($likes)).'</span><span class="sr-only" data-post-like-spoken>'.number_format($likes).' '.($likes === 1 ? 'like' : 'likes').'</span></button>'
         : '';
     $accepted = ! empty($comment['accepted']) ? ($shared['acceptedHtml'] ?? '') : '';
+    // A role beside the name ("Instructor"): a neutral badge.
+    $tag = ! empty($comment['tag']) ? \Illuminate\Support\Facades\Blade::render('<x-ui.badge variant="neutral" size="sm">{{ $t }}</x-ui.badge>', ['t' => (string) $comment['tag']]) : '';
     $acceptButton = ! empty($shared['acceptAction']) && empty($comment['accepted'])
         ? '<button type="button" class="ui-act" wire:click="'.e($shared['acceptAction']).'('.$jsAttr.')" wire:loading.attr="aria-busy" wire:target="'.e($shared['acceptAction']).'">'.e($shared['acceptLabel'] ?? 'Mark as answer').'</button>'
         : '';
@@ -60,4 +62,4 @@
         : '';
 @endphp
 
-<li {{ $attributes->class(['ui-comment relative flex min-w-0 gap-3 pb-4 last:pb-0']) }} data-comment data-key="{{ $key }}" @if (! empty($shared['likeAction'])) data-like-action="{{ $shared['likeAction'] }}" @endif><span class="absolute top-8 bottom-0 left-3.5 w-px -translate-x-1/2 bg-line" aria-hidden="true" data-thread-rail></span><span class="flex h-7 w-7 shrink-0 items-center justify-center" aria-hidden="true">{!! $face !!}</span><div class="min-w-0 flex-1"><p class="type-meta flex flex-wrap items-baseline gap-x-1.5"><span class="type-body-strong wrap-anywhere text-ink">{{ $who }}</span>{!! $meta !!}{!! $accepted !!}</p><p class="type-body mt-0.5 min-w-0 whitespace-pre-wrap wrap-anywhere text-ink-body" data-comment-body>{{ RichText::render($comment['body'] ?? '', $shared['mentionUrl'] ?? null, $shared['hashtagUrl'] ?? null) }}</p><div class="-ml-2 mt-1 flex flex-wrap items-center gap-1">{!! $likeButton !!}{!! $replyButton !!}{!! $acceptButton !!}{!! $toggle !!}</div><div id="{{ $domId }}-reply" wire:ignore data-reply-slot="{{ $key }}" data-reply-name="{{ $who }}"></div>{!! $continue !!}@if ($replies->isNotEmpty() && ! $deeper)<ol id="{{ $domId }}-replies" aria-label="Replies to {{ $who }}" class="mt-3 min-w-0" x-show="! collapsed[{{ $js }}]">@foreach ($replies as $reply)<x-ui.comment-thread.comment :comment="$reply" :level="$level + 1" :shared="$shared" wire:key="{{ $domId }}-{{ $reply['key'] }}" />@endforeach</ol>@endif{!! $moreButton !!}</div></li>
+<li {{ $attributes->class(['ui-comment relative flex min-w-0 gap-3 pb-4 last:pb-0']) }} data-comment data-key="{{ $key }}" @if (! empty($shared['likeAction'])) data-like-action="{{ $shared['likeAction'] }}" @endif><span class="absolute top-8 bottom-0 left-3.5 w-px -translate-x-1/2 bg-line" aria-hidden="true" data-thread-rail></span><span class="flex h-7 w-7 shrink-0 items-center justify-center" aria-hidden="true">{!! $face !!}</span><div class="min-w-0 flex-1"><p class="type-meta flex flex-wrap items-baseline gap-x-1.5"><span class="type-body-strong wrap-anywhere text-ink">{{ $who }}</span>{!! $tag !!}{!! $meta !!}{!! $accepted !!}</p><p class="type-body mt-0.5 min-w-0 whitespace-pre-wrap wrap-anywhere text-ink-body" data-comment-body>{{ RichText::render($comment['body'] ?? '', $shared['mentionUrl'] ?? null, $shared['hashtagUrl'] ?? null) }}</p><div class="-ml-2 mt-1 flex flex-wrap items-center gap-1">{!! $likeButton !!}{!! $replyButton !!}{!! $acceptButton !!}{!! $toggle !!}</div><div id="{{ $domId }}-reply" wire:ignore data-reply-slot="{{ $key }}" data-reply-name="{{ $who }}"></div>{!! $continue !!}@if ($replies->isNotEmpty() && ! $deeper)<ol id="{{ $domId }}-replies" aria-label="Replies to {{ $who }}" class="mt-3 min-w-0" x-show="! collapsed[{{ $js }}]">@foreach ($replies as $reply)<x-ui.comment-thread.comment :comment="$reply" :level="$level + 1" :shared="$shared" wire:key="{{ $domId }}-{{ $reply['key'] }}" />@endforeach</ol>@endif{!! $moreButton !!}</div></li>
