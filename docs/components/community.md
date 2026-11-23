@@ -95,6 +95,8 @@ Slots: `tools` holds extra icon buttons beside Attach (`x-ui.button size="icon"`
 
 `x-ui.comment-thread`: `comments` (`key`, `author`, `avatar`, `time`, `body`, `edited`, `replies`, `more`), `depth` (3; deeper replies become "Continue thread" via `continueHref` with `:key`), `replyAction(parent, text, key)` (null parent for the "Add a comment" box), `moreAction(key)` ("Show 3 more replies"), `maxlength`. Timeline look: avatar markers on a 1px rail. One reply box for the thread, copied under the comment being answered (focus moves in; Escape or a sent reply returns focus to Reply). "Hide replies" collapses a thread (`aria-expanded`).
 
+For questions and answers: `nested` false drops Reply under comments (only the box at the top, for flat answers); `likeAction(key, on)` adds an optimistic like (the post's like; `false` rolls back) with `likeLabel` and `likeIcon`, and a comment carries `likes` and `liked`; `acceptAction(key)` shows `acceptLabel` ("Mark as answer") on comments that are not `accepted`, and an accepted comment shows the `acceptedLabel` badge ("Accepted answer"). `addLabel`, `addPlaceholder` and `addSubmitLabel` name the box at the top.
+
 ## Reactions
 
 `x-ui.reactions`: `reactions` (`key`, `count`, `mine`), `options` (key => [symbol, label]; Like, Love, Funny, Wow, Sad, Celebrate by default), `action(subject, reaction)`, `subject`, `picker`, `size` (sm, md). Toggles are buttons named "Like 12" with `aria-pressed`. The picker is a Popover API panel, placed below its button (never flipped), arrow keys move, Escape returns focus. Optimistic with rollback.

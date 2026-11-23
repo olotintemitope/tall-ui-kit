@@ -6,6 +6,7 @@ use TallUiKit\Support\KitContrast;
 use TallUiKit\Support\RichText;
 use Workbench\App\Livewire\Community\ChatDemo;
 use Workbench\App\Livewire\Community\FeedDemo;
+use Workbench\App\Livewire\Community\QaDemo;
 use Workbench\App\Livewire\Community\PeopleDemo;
 use Workbench\App\Livewire\Community\PollDemo;
 
@@ -168,6 +169,26 @@ describe('chat', function () {
             ->toContain('this.$root.querySelectorAll(\'[data-upload-list]\')');
     });
 
+    it('draws flat answers with likes and an accepted answer for questions and answers', function () {
+        $comments = [
+            ['key' => 'a1', 'author' => 'Bola Ade', 'body' => 'Cash book first.', 'likes' => 4, 'liked' => true],
+            ['key' => 'a2', 'author' => 'Chidi Eze', 'body' => 'See lesson 3.', 'likes' => 1, 'accepted' => true, 'replies' => [['key' => 'a2-1', 'author' => 'Ada', 'body' => 'Thanks']]],
+        ];
+        $html = Blade::render('<x-ui.comment-thread id="qa" :comments="$c" :nested="false" reply-action="answer" like-action="vote" like-label="Helpful" like-icon="thumbs-up" accept-action="accept" add-label="Your answer" add-placeholder="Write an answer" add-submit-label="Post answer" />', ['c' => $comments]);
+
+        expect($html)->not->toContain('data-reply-template')->not->toMatch('/>Reply</')
+            ->toContain('data-like-action="vote"')->toContain('aria-pressed="true" data-post-like data-count="4"')->toContain('Helpful')
+            ->toContain('Accepted answer')->toMatch('/wire:click="accept\\([^)]*a1[^)]*\\)"/')->not->toMatch('/accept\\([^)]*a2(?!-)[^)]*\\)/')
+            ->toContain('Your answer')->toContain('Write an answer')->toContain('Post answer');
+
+        $plain = Blade::render('<x-ui.comment-thread id="plain" :comments="$c" reply-action="reply" />', ['c' => $comments]);
+        expect($plain)->toContain('data-reply-template')->not->toContain('data-post-like')->not->toContain('Mark as answer')->toContain('Add a comment');
+    });
+
+    it('likes from a comment through the post like handler', function () {
+        expect(file_get_contents(kit_path('resources/js/community-core.js')))->toContain("button.closest('[data-comment], [data-post]')");
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
@@ -311,6 +332,19 @@ describe('demo endpoints', function () {
             ->call('openConversation', 'k2')->assertSet('unread.k2', 0)->call('follow', 'nobody', true)->assertStatus(422);
     });
 
+    it('records answers once, votes and one accepted answer in the Q&A demo', function () {
+        $qa = Livewire::test(QaDemo::class)
+            ->call('answer', null, 'Reconcile at month end.', 'k1')
+            ->call('answer', null, 'Reconcile at month end.', 'k1')
+            ->call('like', 'a1', true)
+            ->call('accept', 'a2');
+
+        expect($qa->get('answers'))->toHaveCount(3)
+            ->and($qa->get('answers')[0]['likes'])->toBe(5)
+            ->and(collect($qa->get('answers'))->where('accepted', true)->pluck('key')->all())->toBe(['a2']);
+        expect(Livewire::test(QaDemo::class)->call('like', 'missing', true)->get('answers')[0]['likes'])->toBe(4);
+    });
+
     it('keeps each chat and feed response under the 40 KB payload budget', function () {
         $sizes = [
             'send' => Livewire::test(ChatDemo::class)->call('send', 'Payload check', 'k-payload')->effects,
@@ -319,6 +353,8 @@ describe('demo endpoints', function () {
             'reply' => Livewire::test(FeedDemo::class)->call('reply', 'c2', 'Thanks', 'k')->effects,
             'poll' => Livewire::test(PollDemo::class)->call('vote', 'launch-time', ['a'])->effects,
             'people' => Livewire::test(PeopleDemo::class)->call('follow', 'u-bola', true)->effects,
+            'answer' => Livewire::test(QaDemo::class)->call('answer', null, 'Payload check', 'k-qa')->effects,
+            'vote' => Livewire::test(QaDemo::class)->call('like', 'a1', true)->effects,
         ];
 
         foreach ($sizes as $name => $effects) {

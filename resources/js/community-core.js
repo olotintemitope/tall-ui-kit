@@ -57,7 +57,8 @@ function setLike(button, on, count) {
 }
 
 function like(button) {
-    const post = button.closest('[data-post]');
+    // A post, or a comment of x-ui.comment-thread: both carry data-key and data-like-action.
+    const post = button.closest('[data-comment], [data-post]');
     const was = button.getAttribute('aria-pressed') === 'true';
     const count = Number(button.dataset.count) || 0;
     setLike(button, !was, Math.max(0, count + (was ? -1 : 1)));

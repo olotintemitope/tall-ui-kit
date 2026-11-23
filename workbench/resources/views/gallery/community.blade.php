@@ -38,6 +38,14 @@
             </div>
         </section>
 
+        <section aria-labelledby="qa" class="min-w-0 space-y-3">
+            <x-ui.section-label as="h2" id="qa">Questions and answers</x-ui.section-label>
+            <x-ui.text role="meta">Flat answers (nested off), "Helpful" votes and an accepted answer:</x-ui.text>
+            <div class="max-w-2xl">
+                @livewire(\Workbench\App\Livewire\Community\QaDemo::class)
+            </div>
+        </section>
+
         <section aria-labelledby="reactions" class="min-w-0 space-y-3">
             <x-ui.section-label as="h2" id="reactions">Reactions</x-ui.section-label>
             <x-ui.reactions label="Reactions to the announcement" subject="announcement" :reactions="[['key' => 'like', 'count' => 1240, 'mine' => true], ['key' => 'love', 'count' => 18], ['key' => 'wow', 'count' => 2]]" />
