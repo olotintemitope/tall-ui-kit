@@ -80,6 +80,7 @@ final class Catalog
             'card' => ['Card', ['ui.card', 'ui.card.header', 'ui.card.title', 'ui.card.description', 'ui.card.content', 'ui.card.footer', 'ui.card.summary', 'ui.card.list', 'ui.card.row', 'ui.card.table', 'ui.card.chart', 'ui.card.detail', 'ui.card.detail-item', 'ui.card.link', 'ui.card.profile', 'ui.card.selectable']],
             'stat' => ['Stat', ['ui.stat', 'ui.stat-strip', 'ui.delta']],
             'chart' => ['Chart', ['ui.chart', 'ui.chart.sparkline', 'ui.segment-bar']],
+            'calendar' => ['Calendar', ['ui.calendar']],
             'table' => ['Table', ['ui.table', 'ui.table.th', 'ui.table.row', 'ui.table.td']],
             'data-table' => ['Data table', ['data-table', 'data-table.header', 'data-table.toolbar', 'data-table.filter', 'data-table.tokens', 'data-table.bulk-bar', 'data-table.row-menu', 'data-table.states', 'data-table.footer', 'data-table.pagination', 'data-table.properties', 'data-table.assets', 'ui.filter-token']],
             'export' => ['Export', ['ui.export-menu', 'ui.export-columns']],

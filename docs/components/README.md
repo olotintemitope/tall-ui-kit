@@ -57,6 +57,7 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.tooltip` | `text`, `position` (alias `placement`); slot `content` replaces `text` (e.g. a label with `x-ui.kbd tone="dark"`) |
 | `x-ui.card` (+ header, title, description, content, footer) | `title`, `description`, `flush`, `as`; slots `badge`, `actions`, `footer`. See [Cards](data-display.md) for the typed cards |
 | `x-ui.chart`, `x-ui.chart.sparkline` | See [Charts](data-display.md) |
+| `x-ui.calendar` | A month of events: `month`, `events` (date, title, time, href, tone, meta), `weekStart`, `max`; a table from `sm`, an agenda on phones. See [Calendar](data-display.md) |
 | `x-ui.filter-token` | `label`, `removeLabel`. See Filter tokens |
 | `x-ui.spinner`, `x-ui.loading-inline`, `x-ui.loading-overlay`, `x-ui.progress-bar`, `x-ui.load-more` | See [Loading](feedback.md) |
 | `x-ui.empty-state` | `title`, `description`, `actionLabel`, `actionHref`, slot `action` |

@@ -63,3 +63,27 @@ Banned: pie, donut, gauge, radar, area or gradient fills, 3D, shadows, glow, smo
 **Props**: `type`, `series` (list of `name`, `token`, `points`; `label`, `color`, `data` also accepted, plus an optional `total`), `labels`, `height` (default 160px, `sm` 120px, or an `h-*` class), `money`, `currency`, `stacked`, `yFormat`, `empty`, `title`, `period`, `label`, `total`, `previous`, `deltaPeriod` ("30d"), `upIsGood`, `legend` (false to hide), `toggle`, `loading`, `error`. Slots `actions`, `summary`.
 
 The overview uses the same chart: `x-admin.chart` is a thin wrapper (plot only, `adminChart` name kept, `h-32`), and `x-admin.trend` draws its own row header and passes `total`, `previous` and the period through for the accessible summary.
+
+## Calendar
+
+`x-ui.calendar` shows a month of events. It is display only: no JavaScript, no popups.
+
+- From `sm` up it is a real table: a caption naming the month, a column per weekday (short name shown, full name in `abbr`), a row per week. Days outside the month are muted; today carries `aria-current="date"` and a 1px ink ring on its number.
+- Each day lists its events in time order: the time, then the title (a link when the event has `href`), then an optional `meta` line such as a venue. After `max` events the cell says "+N more".
+- Below `sm` seven readable columns do not fit, so the same month shows as an agenda: a heading per day that has events, its events beneath. An empty month says so.
+- `tone` (neutral, info, success, warning, danger) draws a small dot before the title. The title still says what the event is, so nothing relies on colour.
+
+| Prop | Default | |
+|---|---|---|
+| `month` | this month | `Y-m`, or any date in the month |
+| `events` | `[]` | list of `key`, `date` (Y-m-d or a date-time), `title`, `time` (shown as given; default the date-time's `H:i`), `href`, `tone`, `meta` |
+| `weekStart` | `1` | `1` Monday, `0` Sunday |
+| `max` | `3` | events shown per day before "+N more" |
+| `more` | `+:count more` | the overflow text |
+| `empty` | `Nothing scheduled this month.` | the agenda's empty state |
+| `label` | the month | the table's caption |
+| `headingLevel` | `3` | agenda day headings |
+| `tz`, `now` | `Africa/Lagos`, now | where "today" is |
+
+Month navigation, filters and a legend belong to the page around it (for example `x-ui.month` and `x-ui.filter-token`).
+
