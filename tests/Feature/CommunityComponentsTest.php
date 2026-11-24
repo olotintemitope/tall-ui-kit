@@ -209,6 +209,14 @@ describe('chat', function () {
         expect(cm('<x-ui.chat id="r2" :messages="[[\'key\' => \'a\', \'body\' => \'Hi\']]" />'))->not->toContain('data-chat-reply');
     });
 
+    it('keeps a row per file for one-at-a-time uploads with a removeAction', function () {
+        $one = cm('<x-ui.chat.composer id="c12" attach="upload" :multiple="false" remove-action="dropFile" />');
+
+        expect($one)->not->toMatch('/<input[^>]*data-composer-files[^>]*\\smultiple/')
+            ->toContain('\u0022multiple\u0022:true')->toContain('dropFile');
+        expect(cm('<x-ui.chat.composer id="c13" attach="upload" :multiple="false" />'))->toContain('\u0022multiple\u0022:false');
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
