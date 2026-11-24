@@ -98,6 +98,16 @@ export function mountChat(component, options) {
     resize.observe(list);
 
     const onClick = (event) => {
+        // Reply: one listener for the chat, not a Livewire call per message (response size).
+        const reply = event.target.closest?.('[data-chat-reply]');
+        if (reply && root.contains(reply)) {
+            const key = reply.closest('[data-chat-message]')?.dataset.key;
+            if (options.replyAction && component.$wire) component.$wire.call(options.replyAction, key);
+            else reply.dispatchEvent(new CustomEvent('ui-chat-reply', { detail: { key }, bubbles: true }));
+            root.querySelector('[data-composer-input]:not([disabled])')?.focus({ preventScroll: true });
+
+            return;
+        }
         const image = event.target.closest?.('[data-chat-image]');
         if (!image || !root.contains(image)) return;
         component.viewer = { src: image.dataset.src, alt: image.dataset.alt || 'Image' };

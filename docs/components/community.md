@@ -68,6 +68,8 @@ Behaviour: opens at the newest message; stays at the bottom while you are there;
 
 Accessibility: the list is `role="log"` (named, focusable for keyboard scrolling) with `aria-live="off"`; a separate polite status region reads each incoming message once ("Ada Obi: Are we still on for 3pm?"). Loading history, the first render and your own sends are never announced. Grouped messages keep the author and time for screen readers. States are words. The typing line is its own status region; its dots fade with the motion tokens and hold still under reduced motion.
 
+Replies: a message's `replyTo` (`['author' => ..., 'body' => ...]`) quotes the message it answers above the bubble (pass the excerpt to show); `replyAction` on the chat (or the message) adds a Reply button under each message, called with its key; `replyLabel` names it.
+
 ### Composer
 
 `x-ui.chat.composer`: a textarea that grows to 6 rows, then scrolls; Enter sends and Shift+Enter adds a line (`enterSends` false: Ctrl or Cmd+Enter sends); an input method (IME) never sends early. `action` is called once with `params`, the text and an idempotency key; Send is blocked while it runs, so a double click or double Enter cannot post twice. `maxlength` adds a counter ("120 / 2,000", danger text in the last 10%); `attach` (a `wire:model` upload property) adds Attach and `x-ui.upload-progress.list`; `disabled` with `disabledReason`; `size` sm, md, lg (32, 36, 40px). Events: `ui-chat-send` (no action), `ui-composer-sent`, `ui-composer-cancel` (Escape).

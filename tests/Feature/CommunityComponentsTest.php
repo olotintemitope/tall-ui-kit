@@ -200,6 +200,15 @@ describe('chat', function () {
         expect(file_get_contents(kit_path('resources/js/community-core.js')))->toContain("button.closest('[data-comment], [data-post]')");
     });
 
+    it('quotes the message a reply answers and offers Reply on each message', function () {
+        $html = cm('<x-ui.chat id="r1" reply-action="reply" reply-label="Answer" :messages="[[\'key\' => \'a\', \'author\' => \'Ada\', \'body\' => \'Hi\'], [\'key\' => \'b\', \'mine\' => true, \'body\' => \'Hello\', \'replyTo\' => [\'author\' => \'Ada\', \'body\' => \'Hi <b>there</b>\']]]" />');
+
+        expect($html)->toContain('data-chat-reply-to')->toContain('Hi &lt;b&gt;there&lt;/b&gt;')
+            ->toContain('data-chat-reply')->toContain('>Answer<')->toContain('\u0022replyAction\u0022:\u0022reply\u0022');
+        expect(file_get_contents(kit_path('resources/js/chat-core.js')))->toContain("component.\$wire.call(options.replyAction, key)")->toContain("'ui-chat-reply'");
+        expect(cm('<x-ui.chat id="r2" :messages="[[\'key\' => \'a\', \'body\' => \'Hi\']]" />'))->not->toContain('data-chat-reply');
+    });
+
     it('takes tools beside Attach and a context line above the box', function () {
         $html = cm('<x-ui.chat.composer id="c5" attach="files"><x-slot:context>Replying to Ada</x-slot:context><x-slot:tools><x-ui.button variant="ghost" size="icon" aria-label="Create a poll"><x-ui.icon name="bar-chart-3" /></x-ui.button></x-slot:tools></x-ui.chat.composer>');
 
@@ -366,6 +375,7 @@ describe('demo endpoints', function () {
             'people' => Livewire::test(PeopleDemo::class)->call('follow', 'u-bola', true)->effects,
             'answer' => Livewire::test(QaDemo::class)->call('answer', null, 'Payload check', 'k-qa')->effects,
             'vote' => Livewire::test(QaDemo::class)->call('like', 'a1', true)->effects,
+            'chat-reply' => Livewire::test(ChatDemo::class)->call('reply', 'm4')->call('send', 'Replying', 'k-reply')->effects,
         ];
 
         foreach ($sizes as $name => $effects) {

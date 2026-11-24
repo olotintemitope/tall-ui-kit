@@ -9,6 +9,7 @@
         send-action="send"
         :maxlength="2000"
         retry-action="retry"
+        reply-action="reply"
         react-action="react"
         framed
         height="h-[34rem] max-h-[80vh]"
@@ -27,6 +28,9 @@
         <x-slot:composer>
             {{-- @mentions: the loaded people, plus findPeople() for anyone else in the team. --}}
             <x-ui.chat.composer action="send" :maxlength="2000" :mentions="$people" mention-search="findPeople" typing-action="typing" mentions-label="Team" id="demo-chat-composer">
+                @if ($replyingTo)
+                    <x-slot:context><span class="min-w-0 wrap-anywhere">Replying to {{ collect($messages)->firstWhere('key', $replyingTo)['author'] ?? 'yourself' }}</span><x-ui.button type="button" variant="ghost" size="icon-sm" aria-label="Cancel reply" wire:click="cancelReply"><x-ui.icon name="x" /></x-ui.button></x-slot:context>
+                @endif
                 <x-slot:tools>
                     <x-ui.button type="button" variant="ghost" size="icon" aria-label="Mention someone" x-on:click="startMention()" data-composer-mention-tool><x-ui.icon name="at-sign" /></x-ui.button>
                 </x-slot:tools>

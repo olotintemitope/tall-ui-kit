@@ -2870,6 +2870,40 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
     }
 
     /* x-ui.chat.message bubbles: received on `surface` with a 1px `line` edge, sent on `surface-subtle`. */
+    /* Message row, its column and the avatar slot (x-ui.chat.message): classes, not
+       utility lists, because a chat repeats them on every message of every response. */
+    .ui-chat-message {
+        display: flex;
+        min-width: 0;
+        gap: 8px;
+    }
+    .ui-chat-message[data-mine] {
+        justify-content: flex-end;
+    }
+    .ui-chat-col {
+        display: flex;
+        min-width: 0;
+        max-width: 85%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .ui-chat-message[data-mine] > .ui-chat-col {
+        align-items: flex-end;
+    }
+    @media (min-width: 40rem) {
+        .ui-chat-col {
+            max-width: 75%;
+        }
+    }
+    .ui-chat-face {
+        display: flex;
+        width: 28px;
+        flex-shrink: 0;
+        justify-content: center;
+        padding-top: 2px;
+    }
+
     .ui-chat-bubble {
         min-width: 0;
         border: 1px solid var(--color-line);

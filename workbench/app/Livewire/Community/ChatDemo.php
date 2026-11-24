@@ -32,6 +32,19 @@ class ChatDemo extends Component
         ['key' => 'u-chidi', 'name' => 'Chidi Eze'],
     ];
 
+    /** The message being answered (Reply), quoted on the next message sent. */
+    public ?string $replyingTo = null;
+
+    public function reply(string $key): void
+    {
+        $this->replyingTo = collect($this->messages)->contains('key', $key) ? $key : null;
+    }
+
+    public function cancelReply(): void
+    {
+        $this->replyingTo = null;
+    }
+
     /** @var list<string> keys mentioned in the last message sent */
     public array $lastMentioned = [];
 
@@ -67,7 +80,7 @@ class ChatDemo extends Component
             ['key' => 'm6', 'mine' => true, 'time' => '2026-11-16 09:30:00', 'body' => 'Looks good. @bola can you confirm the load-in time? #december', 'edited' => true],
             ['key' => 'm7', 'author' => 'Chidi Eze', 'time' => '2026-11-16 10:02:00', 'deleted' => true],
             ['key' => 'm8', 'mine' => true, 'time' => '2026-11-16 13:10:00', 'body' => 'Sending the rates sheet now.', 'status' => 'failed'],
-            ['key' => 'm9', 'mine' => true, 'time' => '2026-11-16 13:12:00', 'body' => 'Rates are in the folder too.', 'seen' => 'Seen by Bola'],
+            ['key' => 'm9', 'mine' => true, 'time' => '2026-11-16 13:12:00', 'body' => 'Rates are in the folder too.', 'seen' => 'Seen by Bola', 'replyTo' => ['author' => 'Bola Ade', 'body' => 'Sign-off on the new rates']],
         ];
     }
 
@@ -92,7 +105,10 @@ class ChatDemo extends Component
 
         $this->accepted[] = $key;
         $this->lastMentioned = array_values(array_filter($mentions, 'is_string'));
-        $this->messages[] = ['key' => 'k'.substr(md5($key), 0, 10), 'mine' => true, 'time' => now()->toIso8601String(), 'body' => $body];
+        $quoted = collect($this->messages)->firstWhere('key', $this->replyingTo);
+        $this->messages[] = ['key' => 'k'.substr(md5($key), 0, 10), 'mine' => true, 'time' => now()->toIso8601String(), 'body' => $body]
+            + ($quoted ? ['replyTo' => ['author' => $quoted['author'] ?? 'You', 'body' => $quoted['body'] ?? '']] : []);
+        $this->replyingTo = null;
 
         return true;
     }
