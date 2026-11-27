@@ -511,3 +511,27 @@ describe('segmented control', function () {
         $this->blade('<x-ui.segmented label="Mixed" :options="[\'list\' => [\'label\' => \'List\', \'icon\' => \'list\'], \'board\' => \'Board\']" />');
     })->throws(Exception::class, 'give every option an icon or none');
 });
+
+it('shows the default colour, not "UNDEFINED", for a bound value that was never set', function () {
+    // wire:model on a property a record does not have yet (a new email block's
+    // colour) hands the picker undefined. String(undefined) printed "UNDEFINED".
+    $js = file_get_contents(__DIR__.'/../../resources/js/forms.js');
+
+    expect($js)->toContain("shown(value) {\n            return value === undefined || value === null || value === ''")
+        ->and($js)->toContain('this.hex = this.shown(this.value);')
+        ->not->toContain('this.hex = String(this.value).toUpperCase();');
+
+    // The swatch follows the shown colour rather than binding straight to the
+    // unset value, which a colour input draws as black.
+    $html = Blade::render('<x-ui.color label="Colour" />');
+
+    expect($html)->toContain('x-bind:value="hex.toLowerCase()"')
+        ->and($html)->toContain('x-on:input="picked($event.target.value)"')
+        ->not->toMatch('/<input type="color"[^>]*x-model=/');
+});
+
+it('shows an unset number as empty while focused, not "undefined"', function () {
+    $js = file_get_contents(__DIR__.'/../../resources/js/forms.js');
+
+    expect($js)->toContain("this.value === null || this.value === undefined ? '' : String(this.value)");
+});

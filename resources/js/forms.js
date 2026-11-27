@@ -129,7 +129,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         paint() {
-            this.text = this.focused ? (this.value === null ? '' : String(this.value)) : formatNumber(this.value, this);
+            this.text = this.focused ? (this.value === null || this.value === undefined ? '' : String(this.value)) : formatNumber(this.value, this);
         },
 
         parse(raw) {
@@ -309,10 +309,25 @@ document.addEventListener('alpine:init', () => {
         invalid: false,
         init() {
             this.$watch('value', (value) => {
-                this.hex = String(value).toUpperCase();
+                this.hex = this.shown(value);
                 this.invalid = false;
             });
-            this.hex = String(this.value).toUpperCase();
+            this.hex = this.shown(this.value);
+        },
+        /*
+         * What the field shows for a value. A bound property that has never been set
+         * arrives as undefined (or null, or '') through wire:model / x-model, and
+         * String(undefined) printed "UNDEFINED" in the field. Unset shows the
+         * component's own default instead; the bound value itself is left alone, so
+         * nothing is written until the user picks a colour.
+         */
+        shown(value) {
+            return value === undefined || value === null || value === ''
+                ? String(initial).toUpperCase()
+                : String(value).toUpperCase();
+        },
+        picked(raw) {
+            this.value = String(raw).toUpperCase();
         },
         typed(raw) {
             let text = String(raw).trim();

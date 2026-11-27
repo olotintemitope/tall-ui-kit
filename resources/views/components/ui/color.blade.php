@@ -34,7 +34,7 @@
     data-control-box
     data-color
 >
-    <input type="color" class="ui-color-swatch size-7 shrink-0 rounded-sm focus-ring" x-model="value" aria-label="{{ $swatchLabel }}" data-ui="color" />
+    <input type="color" class="ui-color-swatch size-7 shrink-0 rounded-sm focus-ring" x-bind:value="hex.toLowerCase()" x-on:input="picked($event.target.value)" aria-label="{{ $swatchLabel }}" data-ui="color" />
     <input
         type="text"
         id="{{ $controlId }}"
