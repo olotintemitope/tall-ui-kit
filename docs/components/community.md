@@ -4,7 +4,7 @@ Conversations, an inbox, posts, reactions, comment threads, polls, people, chann
 
 JavaScript: `resources/js/chat.js` (the composer, the thread, the inbox keys and a stub for the chat) and `resources/js/community.js` (a few delegated listeners), both imported by `index.js`. The heavy parts load lazily with `import()`: `chat-core.js` (1.2 KB gzip) when the first chat starts, `community-core.js` (2.1 KB gzip) when a page has a post, reaction row, poll or follow button. One controller per chat or thread, one listener for the page; never an Alpine component per message, post or row.
 
-User text is always escaped first: `TallUiKit\Support\RichText::render($text, $mentionUrl, $hashtagUrl)` splits the text into URLs, `@mentions` and `#hashtags`, escapes every piece, and links only http(s) URLs (`rel="nofollow ugc noopener"`, underlined). Line breaks are kept with `whitespace-pre-wrap`. Nothing a user types can become markup.
+Chat messages, posts and comments render safe CommonMark with GitHub-flavored strikethrough, tables, task lists and automatic HTTP(S) links. Use `**bold**`, `*italic*`, `` `code` ``, headings, quotes and lists. Raw HTML is escaped and unsafe link protocols are rendered as plain text. Generated links carry `rel="nofollow ugc noopener"`. `@mentions` and `#hashtags` remain styled text or become links when `mentionUrl` and `hashtagUrl` patterns are supplied.
 
 Payloads: every workbench demo response stays under 40 KB (tested). Repeated controls use lean classes (`.ui-act`, `.ui-reaction`, `.ui-chat-bubble`, `.ui-composer-input`) and messages and comments are built without per-row Blade conditionals, because each one adds two morph markers to every Livewire response.
 

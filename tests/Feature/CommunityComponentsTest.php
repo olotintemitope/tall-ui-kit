@@ -27,10 +27,20 @@ describe('rich text', function () {
 
         expect($html)->not->toContain('<img')
             ->toContain('&lt;img src=x onerror=alert(1)&gt;')
-            ->toContain('<a href="https://ex.com/a?b=1&amp;c=2" class="ui-rich-link" rel="nofollow ugc noopener">https://ex.com/a?b=1&amp;c=2</a>.')
-            ->toContain('<a href="/u/ada" class="ui-rich-mention">@ada</a>')
-            ->toContain('<a href="/t/launch" class="ui-rich-tag">#launch</a>')
+            ->toContain('<a class="ui-rich-link" href="https://ex.com/a?b=1&amp;c=2" rel="nofollow ugc noopener">https://ex.com/a?b=1&amp;c=2</a>')
+            ->toContain('<a class="ui-rich-mention" href="/u/ada" rel="nofollow ugc noopener">@ada</a>')
+            ->toContain('<a class="ui-rich-tag" href="/t/launch" rel="nofollow ugc noopener">#launch</a>')
             ->toContain('href="https://www.ex.org"');
+    });
+
+    it('renders safe Markdown blocks and inline formatting', function () {
+        $html = (string) RichText::render("# Heading\n\n**bold** *italic* ~~removed~~\n\n- first\n- second\n\n> quoted\n\n[unsafe](javascript:alert(1)) <b>raw</b>");
+
+        expect($html)->toContain('<h1>Heading</h1>')->toContain('<strong>bold</strong>')->toContain('<em>italic</em>')
+            ->toContain('<del>removed</del>')->toContain('<ul>')
+            ->toContain('<blockquote>')->toContain('<span class="ui-rich-link">unsafe</span>')
+            ->toContain('&lt;b&gt;raw&lt;/b&gt;')->not->toContain('<b>raw</b>')
+            ->not->toContain('href="javascript:');
     });
 
     it('never links javascript urls, attribute breakouts or e-mail addresses', function () {
@@ -61,12 +71,18 @@ describe('chat', function () {
             ->toContain('Load older messages')
             ->and(substr_count($html, 'data-chat-message '))->toBe(5)
             ->and($html)->toContain('<span class="sr-only">Ada Obi')
-            ->toContain('Line one'."\n".'Line two &lt;b&gt;bold&lt;/b&gt;')
+            ->toContain('Line one<br />'."\n".'Line two &lt;b&gt;bold&lt;/b&gt;')
             ->not->toContain('<b>bold</b>')
             ->toContain('This message was deleted.')
             ->toContain('Not sent.')->toContain('Retry')
             ->toContain('data-chat-seen>Seen<')
             ->toContain('x-data="uiComposer(');
+    });
+
+    it('renders Markdown in each chat message bubble', function () {
+        $html = cm('<x-ui.chat.message key="m" body="**bold**" />');
+
+        expect($html)->toContain('ui-chat-bubble')->toContain('<strong>bold</strong>');
     });
 
     it('marks the sending, edited and failed states in words', function () {
@@ -250,7 +266,8 @@ describe('chat', function () {
 
 describe('community', function () {
     it('renders a post as an article with a safe body, compact counts and a named like toggle', function () {
-        $html = cm('<x-ui.post key="p1" author="Ada Obi" verified body="<script>x</script> @bola #tag https://ex.com" :likes="1240" liked :comments="3" like-action="like" share-url="https://ex.com/p1"><x-slot:more><x-ui.dropdown.item>Report</x-ui.dropdown.item></x-slot:more></x-ui.post>');
+        $body = "<script>x</script>\n\n@bola #tag https://ex.com";
+        $html = cm('<x-ui.post key="p1" author="Ada Obi" verified :body="$body" :likes="1240" liked :comments="3" like-action="like" share-url="https://ex.com/p1"><x-slot:more><x-ui.dropdown.item>Report</x-ui.dropdown.item></x-slot:more></x-ui.post>', compact('body'));
 
         expect($html)->toContain('<article')->toContain('aria-labelledby="post-p1-author"')
             ->toContain('Verified')->not->toContain('<script>x')->toContain('&lt;script&gt;x&lt;/script&gt;')
@@ -259,6 +276,17 @@ describe('community', function () {
             ->toContain('>1.2k<')->toContain('1,240 likes')
             ->toContain('data-like-action="like"')->toContain('data-post-share')
             ->toContain('aria-label="More actions for the post by Ada Obi"');
+    });
+
+    it('renders Markdown in posts and community comments', function () {
+        $post = cm('<x-ui.post key="p1" author="Ada" body="**bold**" />');
+        $comments = [[
+            'key' => 'c1', 'author' => 'Ada', 'body' => '**bold**',
+        ]];
+        $thread = cm('<x-ui.comment-thread :comments="$comments" />', compact('comments'));
+
+        expect($post)->toContain('data-post-body')->toContain('<strong>bold</strong>')
+            ->and($thread)->toContain('data-comment-body')->toContain('<strong>bold</strong>');
     });
 
     it('renders reactions as toggles with labels and a picker below its button', function () {

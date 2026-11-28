@@ -3,24 +3,28 @@
 namespace TallUiKit\Support;
 
 use Illuminate\Support\HtmlString;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\Autolink\UrlAutolinkParser;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\Mention\Mention;
+use League\CommonMark\Extension\Mention\MentionExtension;
+use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
+use League\CommonMark\Extension\Table\TableExtension;
+use League\CommonMark\Extension\TaskList\TaskListExtension;
+use League\CommonMark\MarkdownConverter;
 
 /**
- * User-written text (chat messages, posts, comments) as safe HTML: every character the
- * user typed is escaped, then URLs, @mentions and #hashtags become links. The text is
- * split into tokens first and each piece is escaped on its own, so no markup the user
- * wrote can survive and no link can be built from half-escaped text. Line breaks are
- * kept by the caller's `whitespace-pre-wrap`.
+ * User-written text (chat messages, posts, comments) as safe, rendered Markdown.
  *
- * Only http(s) links are made (a bare www. gets https://); trailing punctuation and an
- * unbalanced closing bracket stay outside the link. Mentions and hashtags link only when
- * a URL pattern is given (":name" and ":tag" are replaced, URL-encoded); otherwise they
- * are styled text. Links carry rel="nofollow ugc noopener".
+ * Raw HTML is escaped, unsafe protocols are refused, and generated links carry a
+ * nofollow relationship. CommonMark plus safe GitHub-flavored extensions support
+ * emphasis, lists, quotes, links, tables, task lists, code and strikethrough.
  */
 final class RichText
 {
-    private const PATTERN = '~(?<url>\bhttps?://[^\s<>"\']+|\bwww\.[^\s<>"\']+)'
-        .'|(?<=^|[\s(\[{,;])@(?<mention>[A-Za-z0-9_][A-Za-z0-9_.-]{0,38}[A-Za-z0-9_]|[A-Za-z0-9_])'
-        .'|(?<=^|[\s(\[{,;])#(?<tag>[\p{L}\p{N}_]{1,64})~u';
+    /** @var array<string, MarkdownConverter> */
+    private static array $converters = [];
 
     public static function render(?string $text, ?string $mentionUrl = null, ?string $hashtagUrl = null, bool $mentions = true, bool $hashtags = true): HtmlString
     {
@@ -29,36 +33,66 @@ final class RichText
             return new HtmlString('');
         }
 
-        $out = '';
-        $offset = 0;
-        preg_match_all(self::PATTERN, $text, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL);
+        $key = hash('sha256', serialize([$mentionUrl, $hashtagUrl, $mentions, $hashtags]));
+        $converter = self::$converters[$key] ??= self::makeConverter($mentionUrl, $hashtagUrl, $mentions, $hashtags);
 
-        foreach ($matches as $m) {
-            [$whole, $at] = $m[0];
-            $out .= e(substr($text, $offset, $at - $offset));
-            $offset = $at + strlen($whole);
-
-            if (($m['url'][0] ?? null) !== null) {
-                [$url, $tail] = self::trimUrl($whole);
-                $offset -= strlen($tail);
-                $href = str_starts_with($url, 'www.') ? 'https://'.$url : $url;
-                $out .= '<a href="'.e($href).'" class="ui-rich-link" rel="nofollow ugc noopener">'.e($url).'</a>';
-            } elseif (($m['mention'][0] ?? null) !== null && $mentions) {
-                $name = $m['mention'][0];
-                $out .= $mentionUrl
-                    ? '<a href="'.e(str_replace(':name', rawurlencode($name), $mentionUrl)).'" class="ui-rich-mention">@'.e($name).'</a>'
-                    : '<span class="ui-rich-mention">@'.e($name).'</span>';
-            } elseif (($m['tag'][0] ?? null) !== null && $hashtags) {
-                $tag = $m['tag'][0];
-                $out .= $hashtagUrl
-                    ? '<a href="'.e(str_replace(':tag', rawurlencode($tag), $hashtagUrl)).'" class="ui-rich-tag">#'.e($tag).'</a>'
-                    : '<span class="ui-rich-tag">#'.e($tag).'</span>';
-            } else {
-                $out .= e($whole);
-            }
+        $html = trim((string) $converter->convert($text));
+        if (preg_match('/^<p>(.*)<\/p>$/sD', $html, $match)) {
+            $html = $match[1];
         }
 
-        return new HtmlString($out.e(substr($text, $offset)));
+        return new HtmlString($html);
+    }
+
+    private static function makeConverter(?string $mentionUrl, ?string $hashtagUrl, bool $mentions, bool $hashtags): MarkdownConverter
+    {
+        $environment = new Environment([
+            'html_input' => 'escape',
+            'allow_unsafe_links' => false,
+            'renderer' => ['soft_break' => "<br />\n"],
+        ]);
+        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addInlineParser(new UrlAutolinkParser(['http', 'https'], 'https'));
+        $environment->addExtension(new StrikethroughExtension());
+        $environment->addExtension(new TableExtension());
+        $environment->addExtension(new TaskListExtension());
+        $environment->addRenderer(Link::class, new RichTextLinkRenderer(), 10);
+
+        $rules = [];
+        if ($mentions) {
+            $rules['user'] = [
+                'prefix' => '@',
+                'pattern' => '[A-Za-z0-9_][A-Za-z0-9_.-]{0,38}[A-Za-z0-9_]|[A-Za-z0-9_]',
+                'generator' => static function (Mention $mention) use ($mentionUrl): Mention {
+                    $name = $mention->getIdentifier();
+                    $mention->setLabel('@'.$name);
+                    $mention->data->set('attributes', ['class' => 'ui-rich-mention']);
+                    $mention->setUrl($mentionUrl !== null ? str_replace(':name', rawurlencode($name), $mentionUrl) : '#');
+
+                    return $mention;
+                },
+            ];
+        }
+        if ($hashtags) {
+            $rules['tag'] = [
+                'prefix' => '#',
+                'pattern' => '[\p{L}\p{N}_]{1,64}',
+                'generator' => static function (Mention $mention) use ($hashtagUrl): Mention {
+                    $tag = $mention->getIdentifier();
+                    $mention->setLabel('#'.$tag);
+                    $mention->data->set('attributes', ['class' => 'ui-rich-tag']);
+                    $mention->setUrl($hashtagUrl !== null ? str_replace(':tag', rawurlencode($tag), $hashtagUrl) : '#');
+
+                    return $mention;
+                },
+            ];
+        }
+        if ($rules !== []) {
+            $environment->addExtension(new MentionExtension());
+            $environment->mergeConfig(['mentions' => $rules]);
+        }
+
+        return new MarkdownConverter($environment);
     }
 
     /** Plain text, shortened at a word to about `$limit` characters (for previews and announcements). */
@@ -67,23 +101,5 @@ final class RichText
         $flat = trim((string) preg_replace('/\s+/u', ' ', (string) $text));
 
         return mb_strlen($flat) <= $limit ? $flat : rtrim(mb_substr($flat, 0, mb_strrpos(mb_substr($flat, 0, $limit), ' ') ?: $limit), ' ,.;:').'…';
-    }
-
-    /** @return array{0: string, 1: string} the link and the punctuation left after it */
-    private static function trimUrl(string $url): array
-    {
-        $tail = '';
-        while ($url !== '') {
-            $last = substr($url, -1);
-            $unbalanced = ($last === ')' && substr_count($url, '(') < substr_count($url, ')'))
-                || ($last === ']' && substr_count($url, '[') < substr_count($url, ']'));
-            if (! str_contains('.,!?;:\'"', $last) && ! $unbalanced) {
-                break;
-            }
-            $tail = $last.$tail;
-            $url = substr($url, 0, -1);
-        }
-
-        return [$url, $tail];
     }
 }

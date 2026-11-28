@@ -2918,6 +2918,45 @@ html[data-motion-preview='reduced']::view-transition-new(*) {
         overflow-wrap: anywhere;
     }
 
+    /* Safe Markdown inside chats, posts and community replies. */
+    .ui-chat-bubble > * + *,
+    .ui-rich-content > * + * { margin-top: 0.65em; }
+    .ui-chat-bubble h1, .ui-rich-content h1, .ui-chat-bubble h2, .ui-rich-content h2,
+    .ui-chat-bubble h3, .ui-rich-content h3, .ui-chat-bubble h4, .ui-rich-content h4,
+    .ui-chat-bubble h5, .ui-rich-content h5, .ui-chat-bubble h6, .ui-rich-content h6 {
+        font-weight: 600;
+        line-height: 1.3;
+    }
+    .ui-chat-bubble ul, .ui-rich-content ul, .ui-chat-bubble ol, .ui-rich-content ol {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2em;
+        padding-inline-start: 1.4em;
+    }
+    .ui-chat-bubble ul, .ui-rich-content ul { list-style: disc; }
+    .ui-chat-bubble ol, .ui-rich-content ol { list-style: decimal; }
+    .ui-chat-bubble blockquote, .ui-rich-content blockquote {
+        border-inline-start: 2px solid var(--color-line-strong);
+        padding-inline-start: 0.75em;
+        color: var(--color-ink-muted);
+    }
+    .ui-chat-bubble :not(pre) > code, .ui-rich-content :not(pre) > code {
+        border-radius: var(--radius-sm);
+        background: var(--color-surface-muted);
+        padding: 0.1em 0.3em;
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+    }
+    .ui-chat-bubble pre, .ui-rich-content pre {
+        overflow-x: auto;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+        background: var(--color-surface-subtle);
+        padding: 0.65em 0.8em;
+        white-space: pre;
+    }
+    .ui-chat-bubble pre code, .ui-rich-content pre code { font-family: var(--font-mono); }
+
     .ui-chat-bubble[data-mine] {
         border-color: transparent;
         background-color: var(--color-surface-subtle);
