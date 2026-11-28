@@ -60,6 +60,7 @@ Each message: `key` (stable), `author`, `authorKey` (grouping; the author by def
 | `typing` | Names for `x-ui.chat.typing` ("Ada is typing") |
 | `sendAction`, `maxlength`, `attach` | The default composer; or a `composer` slot |
 | `retryAction`, `reactAction` | Per message: called with the key (and the reaction) |
+| `reactionOptions` | Optional key => [symbol, accessible label] map passed to `x-ui.reactions` |
 | `groupMinutes` | 5: one author's messages within this many minutes form a group |
 | `framed`, `height` | A 1px border and 8px radius; the height classes (`h-[36rem] max-h-[85vh]`) |
 | `label`, `empty`, `tz`, `now`, `id`, `mentionUrl`, `hashtagUrl` | Name, empty text, time zone, fixed "now", id, link patterns |

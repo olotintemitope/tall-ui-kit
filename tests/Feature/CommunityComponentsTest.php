@@ -85,6 +85,13 @@ describe('chat', function () {
         expect($html)->toContain('ui-chat-bubble')->toContain('<strong>bold</strong>');
     });
 
+    it('passes custom emoji reaction options to the reaction widget', function () {
+        $html = cm('<x-ui.chat.message key="m" :reactions="$reactions" :reaction-options="$options" />', ['reactions' => [['key' => '🔥', 'count' => 2]], 'options' => ['🔥' => ['🔥', 'Fire']]]);
+
+        expect($html)->toContain('🔥')->toContain('Fire');
+    });
+
+
     it('marks the sending, edited and failed states in words', function () {
         $html = cm('<x-ui.chat.message key="x" mine body="Hi" status="sending" /><x-ui.chat.message key="y" mine body="Hi" edited /><x-ui.chat.message key="z" mine body="Hi" status="failed" retry-action="retry" />');
 
