@@ -19,10 +19,16 @@
 
     $controlId = FormControl::id($id, $name);
     $message = FormControl::error($errors ?? null, $name, $error);
+    // When no field width is explicitly requested, controls should all fill
+    // their column. This keeps textareas, inputs and selects aligned in both
+    // single- and multi-column forms, regardless of their individual defaults.
+    $uniformControlWidth = $width === null
+        ? '[&_[data-control-box]]:w-full [&_[data-control-box]]:max-w-none [&_[data-ui-select]]:w-full [&_[data-ui-select]]:max-w-none'
+        : null;
 @endphp
 
 @if ($inline)
-<div {{ $attributes->class(['grid min-w-0 grid-cols-1 gap-x-6 gap-y-1.5 py-3 sm:grid-cols-[220px_minmax(0,1fr)] sm:items-center']) }} @if ($message) data-invalid @endif data-field-inline>
+<div {{ $attributes->class(['grid min-w-0 grid-cols-1 gap-x-6 gap-y-1.5 py-3 sm:grid-cols-[220px_minmax(0,1fr)] sm:items-center', $uniformControlWidth]) }} @if ($message) data-invalid @endif data-field-inline>
     <div class="flex min-w-0 flex-col">
         @if ($label)
             <label @if ($controlId) for="{{ $controlId }}" id="{{ $controlId }}-label" @endif class="type-field-label">
@@ -41,7 +47,7 @@
     </div>
 </div>
 @else
-<div {{ $attributes->class(['flex min-w-0 flex-col']) }} @if ($message) data-invalid @endif>
+<div {{ $attributes->class(['flex min-w-0 flex-col', $uniformControlWidth]) }} @if ($message) data-invalid @endif>
     @if ($label)
         <label @if ($controlId) for="{{ $controlId }}" id="{{ $controlId }}-label" @endif class="type-field-label mb-1.5">
             {{ $label }}@if ($required)<span class="text-ink-muted" aria-hidden="true"> *</span>@endif

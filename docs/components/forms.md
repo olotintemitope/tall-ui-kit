@@ -4,6 +4,10 @@ Companion to [the components index](README.md); field-level controls (`x-ui.fiel
 
 ## Shared behaviour
 
+Controls inside a field fill that field's column by default. In single-column forms they
+share the same full column width; in two-column forms they each fill one equal column.
+An explicit `width` on `x-ui.field` keeps that field constrained to the requested width.
+
 | Behaviour | How |
 |---|---|
 | Elevation | Forms sit on raised `x-ui.panel`s over the tinted page: give the layout `surface="muted"` (for example a layout prop your shell passes through) or wrap in `x-ui.form-page`. Filter toolbars are the exception: flat on the white data page |

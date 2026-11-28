@@ -13,7 +13,7 @@ Form controls take `wire:model` / `x-model` and other attributes through to the 
 | `x-ui.logo` | `brand.logo_light`, swapped for `brand.logo_dark` in the dark scheme; the brand name as text with no logo. `href`, `height` (22) |
 | `x-ui.button` | `variant` default (alias `primary`), secondary, outline, ghost, destructive, link; `size` default (alias `md`), sm, lg, icon, icon-sm, icon-lg; `href`; `type`; `loading` (action name or true: spinner, same width, `aria-busy`); `busy`; `disabled`; `pressed` (toggle). See [States](../tokens.md) |
 | `x-ui.badge` | `variant` (alias `tone`) neutral, success, warning, danger (or `error`), info, accent, outline (tag); `size` default, sm; `lean` (one `.ui-badge` class and data attributes, about 60 bytes, for table cells). One line always: sized to the label, never wrapped, shrunk or clipped |
-| `x-ui.field` | `label`, `name`, `id`, `hint`, `error`, `required` (muted ` *`), `width` |
+| `x-ui.field` | `label`, `name`, `id`, `hint`, `error`, `required` (muted ` *`), `width`; controls fill the field column by default |
 | `x-ui.field-row` | `cols` 2 or 3; controls fill their column |
 | `x-ui.input` | `type`, `size` (sm 32px, default 36px, lg 40px; the same scale on every control), `width` full, lg, md (default), sm, xs; `invalid`; slots `prefix`, `suffix` (`plain` attribute drops the divider) |
 | `x-ui.textarea` | `rows` (min 3), `width` (default full), `invalid` |
