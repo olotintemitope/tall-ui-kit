@@ -287,6 +287,25 @@ document.addEventListener('alpine:init', () => {
             el.style.overflowY = wanted > max ? 'auto' : 'hidden';
         },
 
+        /** Insert picker text at the current caret without losing the draft. */
+        insert(text) {
+            const input = this.$refs.input;
+            if (!input) return;
+
+            const start = input.selectionStart ?? this.body.length;
+            const end = input.selectionEnd ?? start;
+            const value = String(text);
+            this.body = `${this.body.slice(0, start)}${value}${this.body.slice(end)}`;
+
+            this.$nextTick(() => {
+                if (!input.isConnected) return;
+                const caret = start + value.length;
+                input.focus({ preventScroll: true });
+                input.setSelectionRange(caret, caret);
+                this.grow();
+            });
+        },
+
         params() {
             if (!options.replySlot) return options.params ?? [];
 
